@@ -79,7 +79,8 @@ jobs:
         $GITHUB_WORKSPACE/$DIY_SCRIPT
         # 加载配置
         cp $GITHUB_WORKSPACE/$CONFIG_FILE .config
-        make defconfig
+        # 自动应答所有新配置选项（使用默认值）
+        yes "" | make oldconfig || make defconfig
 
     - name: Download DL Package
       run: |
