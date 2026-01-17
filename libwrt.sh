@@ -54,20 +54,6 @@ rm -rf package/lucky-src
 # 3. 添加其他插件
 # ============================================
 
-# AdGuard Home
-git clone --depth=1 https://github.com/kongfl888/luci-app-adguardhome package/luci-app-adguardhome
-# ⚡ 修复版本号格式 (apk 不支持 1.8-20221120-r1 格式)
-sed -i 's/PKG_VERSION:=.*/PKG_VERSION:=1.8.20221120/' package/luci-app-adguardhome/Makefile 2>/dev/null || true
-
-# 微信推送
-git clone --depth=1 -b openwrt-18.06 https://github.com/tty228/luci-app-wechatpush package/luci-app-serverchan
-
-# iKoolProxy 广告过滤
-git clone --depth=1 https://github.com/ilxp/luci-app-ikoolproxy package/luci-app-ikoolproxy
-
-# 关机按钮
-git clone --depth=1 https://github.com/esirplayground/luci-app-poweroff package/luci-app-poweroff
-
 # Argon 主题及配置
 git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config package/luci-app-argon-config
