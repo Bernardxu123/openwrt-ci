@@ -56,6 +56,8 @@ rm -rf package/lucky-src
 
 # AdGuard Home
 git clone --depth=1 https://github.com/kongfl888/luci-app-adguardhome package/luci-app-adguardhome
+# ⚡ 修复版本号格式 (apk 不支持 1.8-20221120-r1 格式)
+sed -i 's/PKG_VERSION:=.*/PKG_VERSION:=1.8.20221120/' package/luci-app-adguardhome/Makefile 2>/dev/null || true
 
 # 微信推送
 git clone --depth=1 -b openwrt-18.06 https://github.com/tty228/luci-app-wechatpush package/luci-app-serverchan
