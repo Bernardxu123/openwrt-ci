@@ -5,11 +5,6 @@
 # 包含 Nikki、Lucky、MosDNS 等插件
 # ============================================
 
-# Athena LED 控制 (来自原 libwrt.sh)
-rm -rf package/emortal/luci-app-athena-led
-git clone --depth=1 https://github.com/NONGFAH/luci-app-athena-led package/luci-app-athena-led
-chmod +x package/luci-app-athena-led/root/etc/init.d/athena_led package/luci-app-athena-led/root/usr/sbin/athena-led
-
 # 移除要替换的包
 rm -rf feeds/packages/net/mosdns
 rm -rf feeds/packages/net/msd_lite
