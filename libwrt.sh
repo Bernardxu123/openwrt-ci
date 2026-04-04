@@ -2,7 +2,7 @@
 
 # ============================================
 # OpenWrt DIY 脚本 - JDCloud RE-SS-01 专用
-# 包含 Nikki、Lucky、MosDNS 等插件
+# 包含 OpenClash 依赖设置
 # ============================================
 
 # 移除要替换的包
@@ -28,22 +28,9 @@ function git_sparse_clone() {
 }
 
 # ============================================
-# 1. 添加 Nikki (Mihomo 透明代理) ⚡ 关键
+# 1. 禁用掉官方可能会拉取的冲突插件
 # ============================================
-echo ">>> 正在添加 Nikki (Mihomo) ..."
-git clone --depth=1 https://github.com/nikkinikki-org/OpenWrt-nikki.git package/nikki-src
-mv package/nikki-src/luci-app-nikki package/luci-app-nikki
-mv package/nikki-src/nikki package/nikki
-rm -rf package/nikki-src
-
-# ============================================
-# 2. 添加 Lucky (gdy666) - DDNS/端口转发/STUN
-# ============================================
-echo ">>> 正在添加 Lucky ..."
-git clone --depth=1 https://github.com/gdy666/luci-app-lucky.git package/lucky-src
-mv package/lucky-src/luci-app-lucky package/luci-app-lucky
-mv package/lucky-src/lucky package/lucky
-rm -rf package/lucky-src
+rm -rf package/emortal/luci-app-athena-led
 
 # ============================================
 # 3. 添加其他插件
@@ -55,9 +42,6 @@ git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config package/l
 
 # 系统工具 - 文件管理器
 git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-filemanager
-
-# sbwml 的 MosDNS
-git_sparse_clone master https://github.com/sbwml/luci-app-mosdns luci-app-mosdns mosdns v2dat
 
 # ============================================
 # 4. 修复 Makefile 路径

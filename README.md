@@ -18,7 +18,7 @@
 
 | 类别 | 软件包 |
 |------|--------|
-| **代理** | Nikki (Mihomo), Passwall |
+| **代理** | OpenClash, Passwall |
 | **网络** | Lucky, MosDNS, AdGuard Home, UPnP |
 | **文件** | Samba4, Filemanager, SFTP |
 | **系统** | TTYD, Argon 主题 |
@@ -64,4 +64,3 @@
 - [kenzok8/small-package](https://github.com/kenzok8/small-package)
 - [breeze303/openwrt-ci](https://github.com/breeze303/openwrt-ci)
 - [gdy666/luci-app-lucky](https://github.com/gdy666/luci-app-lucky)
-- [nikkinikki-org/OpenWrt-nikki](https://github.com/nikkinikki-org/OpenWrt-nikki)
