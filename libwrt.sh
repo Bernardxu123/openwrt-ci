@@ -2,10 +2,11 @@
 
 # ============================================
 # OpenWrt DIY 脚本 - JDCloud RE-SS-01 专用
+# 基于 LiBwrt/openwrt-6.x main-nss 分支
 # 包含 OpenClash 依赖设置
 # ============================================
 
-# 移除要替换的包
+# 移除要替换的包 (避免与自定义版本冲突)
 rm -rf feeds/packages/net/mosdns
 rm -rf feeds/packages/net/msd_lite
 rm -rf feeds/packages/net/smartdns
@@ -33,18 +34,24 @@ function git_sparse_clone() {
 rm -rf package/emortal/luci-app-athena-led
 
 # ============================================
-# 3. 添加其他插件
+# 2. 添加额外插件 (feeds 中不包含的)
 # ============================================
 
 # Argon 主题及配置
 git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config package/luci-app-argon-config
 
-# 系统工具 - 文件管理器
-git_sparse_clone main https://github.com/kiddin9/kwrt-packages luci-app-filemanager
+# Lucky (DDNS/端口转发/STUN) - 不在 immortalwrt feeds 中
+git clone --depth=1 https://github.com/sirpdboy/luci-app-lucky package/lucky-src
+cp -rf package/lucky-src/luci-app-lucky package/luci-app-lucky
+cp -rf package/lucky-src/lucky package/lucky
+rm -rf package/lucky-src
+
+# MosDNS (使用 sbwml 版本，更稳定且功能完整)
+git clone --depth=1 https://github.com/sbwml/luci-app-mosdns package/luci-app-mosdns
 
 # ============================================
-# 4. 修复 Makefile 路径
+# 3. 修复 Makefile 路径
 # ============================================
 find package/*/ -maxdepth 2 -path "*/Makefile" | xargs -i sed -i 's/..\/..\/luci.mk/$(TOPDIR)\/feeds\/luci\/luci.mk/g' {}
 find package/*/ -maxdepth 2 -path "*/Makefile" | xargs -i sed -i 's/..\/..\/lang\/golang\/golang-package.mk/$(TOPDIR)\/feeds\/packages\/lang\/golang\/golang-package.mk/g' {}
@@ -55,7 +62,7 @@ find package/*/ -maxdepth 2 -path "*/Makefile" | xargs -i sed -i 's/PKG_SOURCE_U
 find package/luci-theme-*/* -type f -name '*luci-theme-*' -print -exec sed -i '/set luci.main.mediaurlbase/d' {} \;
 
 # ============================================
-# 5. 更新并安装 Feeds
+# 4. 更新并安装 Feeds
 # ============================================
 ./scripts/feeds update -a
 ./scripts/feeds install -a

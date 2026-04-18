@@ -97,10 +97,6 @@ jobs:
       run: |
         cd $OPENWRT_PATH
         ./scripts/feeds update -a
-        git clone --depth 1 https://github.com/sbwml/openwrt_pkgs.git package/new/custom
-        mv package/new/custom/luci-app-netspeedtest package/new
-        mv package/new/custom/speedtest-cli package/new
-        rm -rf package/new/custom
         ./scripts/feeds install -a
 
     - name: Load Custom Configuration(加载自定义配置)
@@ -171,18 +167,19 @@ jobs:
         body: |
           **OpenWrt Firmware for JDCloud RE-SS-01 (IPQ6010 魔改版)**
           ### 📒 固件信息
-          - 💻 设备: JDCloud RE-SS-01 (IPQ6010 1GB RAM)
-          - 📦 内核: 6.12 with WiFi & NSS
+          - 💻 设备: JDCloud RE-SS-01 (IPQ6010 1GB DDR4 RAM)
+          - 📦 内核: 6.12 with WiFi & NSS v11.4
           - ⚽ 源码: ${{ env.REPO_URL }}
           - 💝 分支: ${{ env.REPO_BRANCH }}
           - 🌐 默认IP: 192.168.1.1
           - 🔑 默认密码: password
           ### ✨ 预装功能
-          - IPv6 完整支持
-          - OpenClash + Passwall
+          - NSS 硬件加速 (含 SKB Recycler/ECM/MCS/IGS/L2TP/LAG/PPTP/Mesh)
+          - OpenClash + Passwall 双代理
           - Lucky (DDNS/STUN)
+          - MosDNS 分流 DNS
           - Samba4 文件共享
-          - MosDNS + AdGuard Home
+          - IPv6 完整支持
           ### 🧊 固件版本
           - 内核版本：${{ env.VERSION_KERNEL }}
           - ${{ env.VERSION_INFO }}
