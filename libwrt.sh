@@ -78,6 +78,9 @@ vm.swappiness=10
 net.ipv4.tcp_fastopen=3
 # TCP 空闲连接不重置慢启动
 net.ipv4.tcp_slow_start_after_idle=0
+# BBR 拥塞控制 (对 OpenClash 出海流量生效，不影响 NSS 硬件加速)
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
 EOF
 
 echo ">>> DIY 脚本执行完成"
