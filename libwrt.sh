@@ -81,6 +81,38 @@ net.ipv4.tcp_slow_start_after_idle=0
 # BBR 拥塞控制 (对 OpenClash 出海流量生效，不影响 NSS 硬件加速)
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control=bbr
+# PPPoE：启用 MTU 路径探测 (PPPoE MTU=1492，避免 TCP MSS 钳制问题)
+net.ipv4.tcp_mtu_probing=1
+# 连接跟踪：1GB RAM 亚瑟可撑 16 万并发连接
+net.netfilter.nf_conntrack_max=163840
+# 网络缓冲区：增大 socket 读写缓冲，提升大流量吞吐
+net.core.rmem_max=16777216
+net.core.wmem_max=16777216
+net.ipv4.tcp_rmem=4096 87380 16777216
+net.ipv4.tcp_wmem=4096 65536 16777216
 EOF
+
+# ============================================
+# 6. 预置 NSS 硬件加速诊断脚本
+# ============================================
+mkdir -p files/usr/bin
+cat > files/usr/bin/nss-status <<'NSSEOF'
+#!/bin/sh
+echo "========== NSS 驱动状态 =========="
+cat /sys/kernel/debug/qca-nss-drv/stats 2>/dev/null || echo "  NSS debugfs 不可用"
+echo ""
+echo "========== ECM 前端加速状态 =========="
+[ -d /sys/kernel/debug/ecm/ecm_db ] && {
+  echo "  ECM 连接总数: $(cat /sys/kernel/debug/ecm/ecm_db/connection_count 2>/dev/null || echo 'N/A')"
+} || echo "  ECM debugfs 不可用"
+echo ""
+echo "========== 连接跟踪 =========="
+echo "  当前: $(cat /proc/sys/net/netfilter/nf_conntrack_count 2>/dev/null || echo 'N/A')"
+echo "  上限: $(cat /proc/sys/net/netfilter/nf_conntrack_max 2>/dev/null || echo 'N/A')"
+echo ""
+echo "========== PPPoE NSS 卸载 =========="
+dmesg | grep -i "pppoe.*nss\|nss.*pppoe" | tail -3 2>/dev/null || echo "  无可读日志"
+NSSEOF
+chmod +x files/usr/bin/nss-status
 
 echo ">>> DIY 脚本执行完成"
