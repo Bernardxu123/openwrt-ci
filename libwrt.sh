@@ -67,4 +67,17 @@ find package/luci-theme-*/* -type f -name '*luci-theme-*' -print -exec sed -i '/
 ./scripts/feeds update -a
 ./scripts/feeds install -a
 
+# ============================================
+# 5. 预置内核优化参数
+# ============================================
+mkdir -p files/etc/sysctl.d
+cat > files/etc/sysctl.d/99-optimize.conf <<EOF
+# 内存：优先使用物理内存，减少 zram 压缩开销
+vm.swappiness=10
+# TCP Fast Open (客户端+服务端模式)
+net.ipv4.tcp_fastopen=3
+# TCP 空闲连接不重置慢启动
+net.ipv4.tcp_slow_start_after_idle=0
+EOF
+
 echo ">>> DIY 脚本执行完成"
