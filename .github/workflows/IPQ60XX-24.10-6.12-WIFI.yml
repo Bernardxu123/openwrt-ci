@@ -111,6 +111,9 @@ jobs:
       run: |
         cd $OPENWRT_PATH
         make defconfig
+        # 强制启用 BBR/FQ（防止 target config-default 覆盖）
+        echo -e "CONFIG_TCP_CONG_BBR=y\nCONFIG_NET_SCH_FQ=y" >> .config
+        make olddefconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
