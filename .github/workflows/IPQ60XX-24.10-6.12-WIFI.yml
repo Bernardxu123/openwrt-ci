@@ -9,6 +9,7 @@ on:
       - 'configs/ipq60xx-6.12-wifi.config'
       - 'libwrt.sh'
       - 'feeds/6.12.txt'
+      - '.github/workflows/IPQ60XX-24.10-6.12-WIFI.yml'
 
 env:
   REPO_URL: https://github.com/LiBwrt/openwrt-6.x.git
@@ -112,8 +113,8 @@ jobs:
         cd $OPENWRT_PATH
         make defconfig
         # 强制启用 BBR/FQ（防止 target config-default 覆盖）
-        echo -e "CONFIG_TCP_CONG_BBR=y\nCONFIG_NET_SCH_FQ=y" >> .config
-        make olddefconfig
+        echo "CONFIG_TCP_CONG_BBR=y" >> .config
+        echo "CONFIG_NET_SCH_FQ=y" >> .config
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
