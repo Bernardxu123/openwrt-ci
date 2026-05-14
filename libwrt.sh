@@ -68,7 +68,7 @@ find package/luci-theme-*/* -type f -name '*luci-theme-*' -print -exec sed -i '/
 ./scripts/feeds install -a
 
 # ============================================
-# 5. 预置内核优化参数
+# 5. 预置基础 sysctl 参数 (sysctl.d 目录)
 # ============================================
 mkdir -p files/etc/sysctl.d
 cat > files/etc/sysctl.d/99-optimize.conf <<EOF
@@ -78,22 +78,52 @@ vm.swappiness=10
 net.ipv4.tcp_fastopen=3
 # TCP 空闲连接不重置慢启动
 net.ipv4.tcp_slow_start_after_idle=0
-# BBR 拥塞控制 (对 OpenClash 出海流量生效，不影响 NSS 硬件加速)
+EOF
+
+# ============================================
+# 6. 追加关键参数到 /etc/sysctl.conf 末尾
+#    sysctl.conf 在 sysctl.d/* 之后加载，确保不被覆盖
+# ============================================
+cat >> files/etc/sysctl.conf <<EOF
+
+# === BBR 拥塞控制 (对 OpenClash 代理流量生效，不影响 NSS 硬件加速) ===
 net.core.default_qdisc=fq
 net.ipv4.tcp_congestion_control=bbr
-# PPPoE：启用 MTU 路径探测 (PPPoE MTU=1492，避免 TCP MSS 钳制问题)
+
+# === PPPoE 优化 ===
 net.ipv4.tcp_mtu_probing=1
-# 连接跟踪：1GB RAM 亚瑟可撑 16 万并发连接
-net.netfilter.nf_conntrack_max=163840
-# 网络缓冲区：增大 socket 读写缓冲，提升大流量吞吐
+
+# === 网络缓冲区 ===
 net.core.rmem_max=16777216
 net.core.wmem_max=16777216
 net.ipv4.tcp_rmem=4096 87380 16777216
 net.ipv4.tcp_wmem=4096 65536 16777216
+
+# === 连接跟踪 ===
+net.netfilter.nf_conntrack_max=163840
 EOF
 
 # ============================================
-# 6. 预置 NSS 硬件加速诊断脚本
+# 7. rc.local 兜底保障
+#    启动最后阶段加载 BBR 模块 + 强制执行关键参数
+#    (覆盖启动过程中任何其他脚本的修改)
+# ============================================
+cat > files/etc/rc.local <<'RCEOF'
+# 加载 BBR 模块 (如果内核编译为模块)
+modprobe tcp_bbr 2>/dev/null
+
+# 兜底：确保关键 sysctl 参数生效
+sysctl -w net.core.default_qdisc=fq >/dev/null 2>&1
+sysctl -w net.ipv4.tcp_congestion_control=bbr >/dev/null 2>&1
+sysctl -w net.ipv4.tcp_mtu_probing=1 >/dev/null 2>&1
+sysctl -w net.ipv4.tcp_fastopen=3 >/dev/null 2>&1
+sysctl -w net.ipv4.tcp_slow_start_after_idle=0 >/dev/null 2>&1
+
+exit 0
+RCEOF
+
+# ============================================
+# 8. 预置 NSS 硬件加速诊断脚本
 # ============================================
 mkdir -p files/usr/bin
 cat > files/usr/bin/nss-status <<'NSSEOF'
