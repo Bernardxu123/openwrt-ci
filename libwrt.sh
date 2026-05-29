@@ -68,6 +68,23 @@ find package/luci-theme-*/* -type f -name '*luci-theme-*' -print -exec sed -i '/
 ./scripts/feeds install -a
 
 # ============================================
+# 4b. Patch 内核配置 — 启用 BBR + FQ
+#     LiBwrt generic/config-6.12 明确禁用了 BBR 和 FQ
+#     必须直接修改内核配置文件才能生效
+#     (workflow 中 echo >> .config 无效，.config 优先级低于 config-6.12)
+# ============================================
+KERNEL_CONFIG="target/linux/generic/config-6.12"
+if [ -f "$KERNEL_CONFIG" ]; then
+  # 启用 BBR
+  sed -i 's/^# CONFIG_TCP_CONG_BBR is not set$/CONFIG_TCP_CONG_BBR=y/' "$KERNEL_CONFIG"
+  # 启用 FQ
+  sed -i 's/^# CONFIG_NET_SCH_FQ is not set$/CONFIG_NET_SCH_FQ=y/' "$KERNEL_CONFIG"
+  # 设置 BBR 为默认拥塞控制
+  sed -i 's/^CONFIG_DEFAULT_TCP_CONG="cubic"$/CONFIG_DEFAULT_TCP_CONG="bbr"/' "$KERNEL_CONFIG"
+  echo ">>> 内核配置已 Patch: BBR + FQ 启用, 默认拥塞控制改为 bbr"
+fi
+
+# ============================================
 # 5. 预置基础 sysctl 参数 (sysctl.d 目录)
 # ============================================
 mkdir -p files/etc/sysctl.d
