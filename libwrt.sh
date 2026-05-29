@@ -79,6 +79,8 @@ if [ -f "$KERNEL_CONFIG" ]; then
   sed -i 's/^# CONFIG_TCP_CONG_BBR is not set$/CONFIG_TCP_CONG_BBR=y/' "$KERNEL_CONFIG"
   # 启用 FQ
   sed -i 's/^# CONFIG_NET_SCH_FQ is not set$/CONFIG_NET_SCH_FQ=y/' "$KERNEL_CONFIG"
+  # BBR 启用后 Kconfig choice 会多出 DEFAULT_BBR (NEW)，不显式处理会弹交互菜单导致 CI 挂
+  sed -i '/^CONFIG_DEFAULT_CUBIC=y$/a # CONFIG_DEFAULT_BBR is not set' "$KERNEL_CONFIG"
   echo ">>> 内核配置已 Patch: BBR + FQ 启用 (默认拥塞控制由 sysctl 运行时设置)"
 fi
 
