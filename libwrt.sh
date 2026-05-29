@@ -79,9 +79,7 @@ if [ -f "$KERNEL_CONFIG" ]; then
   sed -i 's/^# CONFIG_TCP_CONG_BBR is not set$/CONFIG_TCP_CONG_BBR=y/' "$KERNEL_CONFIG"
   # 启用 FQ
   sed -i 's/^# CONFIG_NET_SCH_FQ is not set$/CONFIG_NET_SCH_FQ=y/' "$KERNEL_CONFIG"
-  # 设置 BBR 为默认拥塞控制
-  sed -i 's/^CONFIG_DEFAULT_TCP_CONG="cubic"$/CONFIG_DEFAULT_TCP_CONG="bbr"/' "$KERNEL_CONFIG"
-  echo ">>> 内核配置已 Patch: BBR + FQ 启用, 默认拥塞控制改为 bbr"
+  echo ">>> 内核配置已 Patch: BBR + FQ 启用 (默认拥塞控制由 sysctl 运行时设置)"
 fi
 
 # ============================================
