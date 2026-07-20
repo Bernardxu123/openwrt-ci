@@ -1,0 +1,19 @@
+# 强制文本文件使用 LF 行尾，避免 Windows CRLF 导致 Linux 上 bash 脚本执行失败
+* text=auto
+
+# Shell 脚本必须 LF
+*.sh text eol=lf
+
+# YAML workflow 必须 LF
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# 配置文件必须 LF
+*.config text eol=lf
+*.conf text eol=lf
+
+# 补丁文件必须 LF
+*.patch text eol=lf
+
+# Makefile 必须 LF (Tab 缩进)
+Makefile text eol=lf

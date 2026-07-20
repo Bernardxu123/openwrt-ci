@@ -1,0 +1,216 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'configs/**'
+      - 'libwrt.sh'
+      - 'scripts/**'
+      - '.github/workflows/build.yml'
+
+env:
+  REPO_URL: https://github.com/LiBwrt/LibWrt.git
+  REPO_BRANCH: 25.12-nss
+  CONFIG_FILE: configs/jdcloud_re_ss01.config
+  DIY_SCRIPT: libwrt.sh
+  FIRMWARE_RELEASE: true
+  TZ: Asia/Shanghai
+
+permissions:
+  contents: write
+
+jobs:
+  Build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 360
+
+    steps:
+    - name: Check Server Performance(检查服务器性能)
+      run: |
+        echo "警告⚠"
+        echo "分配的服务器性能有限，若选择的插件过多，务必注意CPU性能！"
+        echo -e "已知CPU型号（降序）：7763，8370C，8272CL，8171M，E5-2673 \n"
+        echo "--------------------------CPU信息--------------------------"
+        echo "CPU物理数量：$(cat /proc/cpuinfo | grep "physical id" | sort | uniq | wc -l)"
+        echo -e "CPU核心信息：$(cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c) \n"
+        echo "--------------------------内存信息--------------------------"
+        echo "已安装内存详细信息："
+        echo -e "$(sudo lshw -short -C memory | grep GiB) \n"
+        echo "--------------------------硬盘信息--------------------------"
+        echo "硬盘数量：$(ls /dev/sd* | grep -v [1-9] | wc -l)" && df -hT
+
+    - name: Initialization Environment(初始化环境)
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        docker rmi $(docker images -q) || true
+        sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
+        sudo -E apt-get -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mongodb* moby* || true
+        sudo -E apt-get -y update
+        sudo -E apt-get -y install $(curl -fsSL is.gd/depends_ubuntu_2204)
+        sudo -E systemctl daemon-reload
+        sudo -E apt-get -y autoremove --purge
+        sudo -E apt-get -y clean
+        sudo timedatectl set-timezone "$TZ"
+
+    - name: Combine Disks(合并磁盘)
+      uses: easimon/maximize-build-space@master
+      with:
+        swap-size-mb: 1024
+        temp-reserve-mb: 100
+        root-reserve-mb: 1024
+
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Clone Source Code(克隆源代码)
+      run: |
+        df -hT $GITHUB_WORKSPACE
+        git clone --depth 1 -b $REPO_BRANCH $REPO_URL openwrt
+        cd openwrt
+        echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
+        VERSION_INFO=$(git show -s --date=short --format="作者: %an<br/>时间: %cd<br/>内容: %s<br/>hash: %H")
+        echo "VERSION_INFO=$VERSION_INFO" >> $GITHUB_ENV
+
+    - name: Generate Variables(生成变量)
+      run: |
+        SOURCE_REPO="$(echo $REPO_URL | awk -F '/' '{print $(NF)}')"
+        echo "SOURCE_REPO=$SOURCE_REPO" >> $GITHUB_ENV
+        DEVICE_TARGET=$(grep CONFIG_TARGET_BOARD $CONFIG_FILE | awk -F '"' '{print $2}')
+        echo "DEVICE_TARGET=$DEVICE_TARGET" >> $GITHUB_ENV
+        DEVICE_SUBTARGET=$(grep CONFIG_TARGET_SUBTARGET $CONFIG_FILE | awk -F '"' '{print $2}')
+        echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
+
+    - name: Cache Toolchain + ccache(缓存工具链)
+      uses: HiGarfield/cachewrtbuild@main
+      with:
+        ccache: true
+        mixkey: libwrt-25.12-nss-jdcloud-re-ss-01
+        prefix: ${{ env.OPENWRT_PATH }}
+
+    - name: Load Custom Configuration(加载自定义配置)
+      run: |
+        [ -e files ] && mv files $OPENWRT_PATH/files
+        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRT_PATH/.config
+        chmod +x $DIY_SCRIPT
+        cd $OPENWRT_PATH
+        $GITHUB_WORKSPACE/$DIY_SCRIPT
+
+    - name: Apply Patches(预检 + 应用补丁)
+      run: |
+        cd $OPENWRT_PATH
+        for patch in $GITHUB_WORKSPACE/scripts/*.patch; do
+          [ -f "$patch" ] || continue
+          if patch -p1 --dry-run < "$patch" >/dev/null 2>&1; then
+            patch -p1 < "$patch"
+            echo ">>> Applied: $(basename $patch)"
+          else
+            echo ">>> WARNING: $(basename $patch) 不适用当前源码，跳过"
+          fi
+        done
+
+    - name: Download DL Package(下载DL软件包)
+      run: |
+        cd $OPENWRT_PATH
+        make defconfig
+        # 强制启用 BBR/FQ（防止 target config-default 覆盖）
+        echo "CONFIG_TCP_CONG_BBR=y" >> .config
+        echo "CONFIG_NET_SCH_FQ=y" >> .config
+        make download -j8
+        find dl -size -1024c -exec ls -l {} \;
+        find dl -size -1024c -exec rm -f {} \;
+
+    - name: Compile Firmware(开始编译固件)
+      id: compile
+      run: |
+        cd $OPENWRT_PATH
+        echo -e "$(nproc) thread compile"
+        make -j$(nproc) || make -j1 || make -j1 V=s
+        echo "status=success" >> $GITHUB_OUTPUT
+        echo "DATE=$(date +"%Y%m%d-%H%M")" >> $GITHUB_ENV
+        echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
+
+    - name: Check Space Usage(检查空间使用情况)
+      if: (!cancelled())
+      run: df -hT
+
+    - name: Organize Files(整理文件)
+      if: steps.compile.outputs.status == 'success'
+      run: |
+        cd $OPENWRT_PATH/bin/targets/*/*
+        cat sha256sums
+        echo "VERSION_KERNEL=$(find -type f -name "*.manifest" -exec grep -oP '^kernel - \K.*?(?=~|-\d+-)' {} \;)" >> $GITHUB_ENV
+        cp $OPENWRT_PATH/.config build.config
+        mv -f $OPENWRT_PATH/bin/packages/*/*/*.apk packages || mv -f $OPENWRT_PATH/bin/packages/*/*/*.ipk packages
+        tar -zcf Packages.tar.gz packages
+        rm -rf packages feeds.buildinfo version.buildinfo
+        echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
+
+    - name: Merge dev to main(编译成功才合并)
+      if: steps.compile.outputs.status == 'success'
+      run: |
+        cd $GITHUB_WORKSPACE
+        git config user.name "github-actions[bot]"
+        git config user.email "actions@github.com"
+        git fetch --unshallow 2>/dev/null || true
+        git fetch origin main
+        git checkout main
+        git merge dev --ff-only
+        git push origin main
+
+    - name: Upload Firmware To Release(发布固件)
+      if: steps.compile.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true'
+      uses: ncipollo/release-action@v1
+      with:
+        name: R${{ env.DATE }} for JDCloud RE-SS-01
+        allowUpdates: true
+        tag: R${{ env.DATE }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ${{ env.FIRMWARE_PATH }}/*
+        body: |
+          **OpenWrt Firmware for JDCloud RE-SS-01 (IPQ6010 魔改亚瑟)**
+          
+          🕐 编译时间: ${{ env.DATE }}
+          
+          ### 设备与内核
+          - 设备: JDCloud RE-SS-01 (魔改亚瑟)
+          - CPU: IPQ6010 (4x A53 @1.8GHz) / 1GB DDR4 / 128GB eMMC
+          - 内核: ${{ env.VERSION_KERNEL }}
+          - 源码: LiBwrt/LibWrt (25.12-nss) — ImmortalWrt v25.12.1 基础
+          - ${{ env.VERSION_INFO }}
+          
+          ### 预装功能
+          - OpenClash (Meta) + Passwall (Xray/SingBox) 双代理
+          - Lucky (DDNS/STUN/端口转发)
+          - MosDNS 分流 DNS
+          - Samba4 NAS 文件共享
+          - IPv6 完整支持
+          
+          ### NSS 硬件加速
+          - NSS v11.4 固件 + ECM 前端加速
+          - SKB Recycler / WiFi Offload / PPPoE NSS
+          - Bridge / VLAN / IPv6 / Mesh 全系驱动
+          - MCS / IGS / L2TPv2 / LAG / PPTP 高级模块
+          - 预置 nss-status 诊断脚本
+          
+          ### 网络优化 (本轮新增)
+          - BBR + FQ 拥塞控制 + schedutil CPU 调度
+          - conntrack max=163840 / buckets=81920 (hash 冲突 -50%)
+          - RPS 多核软中断分发 + netdev_budget=600
+          - TCP 低延迟 (tw_reuse/fin_timeout=15/syn_backlog=8192)
+          - SMP IRQ 绑核: nss_queue0~3 全绑核 (CPU2 负载 -88%)
+          - NAS 脏页回写 + min_free_kbytes=32768
+          - zram swap + swappiness=10
+          
+          ### 默认信息
+          - 默认 IP: 192.168.31.1
+          - 默认密码: password
+
+    - name: Delete Old Workflows
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        retain_days: 3
+        keep_minimum_runs: 3

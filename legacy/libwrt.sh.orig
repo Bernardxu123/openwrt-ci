@@ -2,12 +2,9 @@
 
 # ============================================
 # OpenWrt DIY 脚本 - JDCloud RE-SS-01 专用
-# 基于 LiBwrt/LibWrt 25.12-nss 分支
+# 基于 LiBwrt/openwrt-6.x main-nss 分支
 # 包含 OpenClash 依赖设置
 # ============================================
-
-# 删除 LibWrt 冲突脚本: 993 把 nf_conntrack_max 改回 65535，与我们 163840 冲突
-rm -f target/linux/qualcommax/base-files/etc/uci-defaults/993_set-ecm-conntrack.sh
 
 # 移除要替换的包 (避免与自定义版本冲突)
 rm -rf feeds/packages/net/mosdns
@@ -84,10 +81,7 @@ if [ -f "$KERNEL_CONFIG" ]; then
   sed -i 's/^# CONFIG_NET_SCH_FQ is not set$/CONFIG_NET_SCH_FQ=y/' "$KERNEL_CONFIG"
   # 设置 BBR 为默认拥塞控制
   sed -i 's/^CONFIG_DEFAULT_TCP_CONG="cubic"$/CONFIG_DEFAULT_TCP_CONG="bbr"/' "$KERNEL_CONFIG"
-  # 启用 schedutil CPU 调度策略 (LibWrt config-6.12 默认禁用，pbuf.uci 第17节会设 scaling_governor 'schedutil')
-  sed -i 's/^# CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL is not set$/CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y/' "$KERNEL_CONFIG"
-  sed -i 's/^# CONFIG_CPU_FREQ_GOV_SCHEDUTIL is not set$/CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y/' "$KERNEL_CONFIG"
-  echo ">>> 内核配置已 Patch: BBR + FQ + schedutil 启用, 默认拥塞控制改为 bbr"
+  echo ">>> 内核配置已 Patch: BBR + FQ 启用, 默认拥塞控制改为 bbr"
 fi
 
 # ============================================
@@ -224,11 +218,40 @@ chmod +x package/base-files/files/etc/init.d/custom_task
 
 # ============================================
 # 12. 首屏美化 — cpuusage (LuCI 状态栏)
-#     LibWrt 25.12-nss 已内置:
-#       - base-files/sbin/cpuusage (/proc/stat 采样，比 top 更精准)
-#       - uci-defaults/992_set-nss-load.sh (rpcd hook，条件性 access 检查)
-#     本节无需操作，完全使用 LibWrt 自带版本
+#     显示: CPU占用% + NSS硬件引擎负载 + ECM连接数
+#     来源: ZqinKing/wrt_release
 # ============================================
+QUALCOMMAX_DIR="target/linux/qualcommax"
+if [ -d "$QUALCOMMAX_DIR" ]; then
+  mkdir -p "$QUALCOMMAX_DIR/base-files/sbin"
+  cat > "$QUALCOMMAX_DIR/base-files/sbin/cpuusage" <<'EOF'
+#!/bin/sh
+cpu_usage=$(top -bn1 | head -n2 | awk -F'[ %]+' 'NR==2{print $2}')
+combined_output=""
+
+if [ -e "/sys/kernel/debug/qca-nss-drv/stats/cpu_load_ubi" ]; then
+    nss_avg_utilization=$(awk 'NR==6 {print $2}' /sys/kernel/debug/qca-nss-drv/stats/cpu_load_ubi)
+    combined_output="${combined_output}${nss_avg_utilization}"
+fi
+
+if [ -r "/sys/kernel/debug/ecm/ecm_db/connection_count_simple" ]; then
+    connection_count=$(cat /sys/kernel/debug/ecm/ecm_db/connection_count_simple)
+    echo -n "CPU: ${cpu_usage}% HWE: ${combined_output} ECM: ${connection_count}"
+elif [ -n "$combined_output" ]; then
+    echo -n "CPU: ${cpu_usage}% HWE: ${combined_output}"
+else
+    echo -n "CPU: ${cpu_usage}%"
+fi
+EOF
+  chmod +x "$QUALCOMMAX_DIR/base-files/sbin/cpuusage"
+
+  # Hook LuCI rpc 调用 cpuusage 而非默认 top
+  LUCI_RPC="feeds/luci/modules/luci-base/root/usr/share/rpcd/ucode/luci"
+  if [ -f "$LUCI_RPC" ]; then
+    sed -i "s#const fd = popen('top -n1 | awk \\\'/^CPU/ {printf(\"%d%\", 100 - \$8)}\\\'')#const cpuUsageCommand = access('/sbin/cpuusage') ? '/sbin/cpuusage' : 'top -n1 | awk \\\'/^CPU/ {printf(\"%d%\", 100 - \$8)}\\\''#g" "$LUCI_RPC"
+    sed -i '/cpuUsageCommand/a \\t\t\tconst fd = popen(cpuUsageCommand);' "$LUCI_RPC"
+  fi
+fi
 
 # ============================================
 # 13. 首屏美化 — tempinfo (温度显示)
@@ -291,9 +314,8 @@ chmod +x package/base-files/files/etc/uci-defaults/990_set_argon_primary
 
 # ============================================
 # 15. SMP IRQ Affinity — 4 核 CPU 中断亲和性
-#     基于 IPQ6010 实测 /proc/interrupts 数据重写
-#     覆盖 LibWrt 自带版本(只绑 edma 4个)
-#     优化: CPU2 负载从 3933万降至 460万(-88%)
+#     RX/TX/NSS/EDMA 中断分配到不同核心
+#     来源: ZqinKing/wrt_release
 # ============================================
 QUALCOMMAX_DIR="target/linux/qualcommax"
 if [ -d "$QUALCOMMAX_DIR" ]; then
@@ -343,32 +365,35 @@ set_affinity() {
 }
 
 enable_affinity() {
-    # NSS 收发队列 (基于 IPQ6010 实测 /proc/interrupts):
-    #   queue0 最活跃(3564万次) → CPU3 (最闲，专核承接，解放 CPU2)
-    #   queue1 (290万) → CPU1
-    #   queue2 (117万) → CPU2
-    #   queue3 (91万)  → CPU2 (与queue2共核，负载均衡)
-    set_affinity 'nss_queue0' 3 1
-    set_affinity 'nss_queue1' 1 1
-    set_affinity 'nss_queue2' 2 1
-    set_affinity 'nss_queue3' 2 1
+    # RX: 4 个接收中断均匀分配到 4 核
+    set_affinity 'reo2host-destination-ring1' 0 1
+    set_affinity 'reo2host-destination-ring2' 1 1
+    set_affinity 'reo2host-destination-ring3' 2 1
+    set_affinity 'reo2host-destination-ring4' 3 1
 
-    # WiFi PPDU (实测只有 mac1/mac2，无 mac3)
+    # TX 完成: 分配到 CPU 1-3
+    set_affinity 'wbm2host-tx-completions-ring1' 1 1
+    set_affinity 'wbm2host-tx-completions-ring2' 2 1
+    set_affinity 'wbm2host-tx-completions-ring3' 3 1
+
+    # WiFi PPDU MAC: 分配到 CPU 1-3
     set_affinity 'ppdu-end-interrupts-mac1' 1 1
     set_affinity 'ppdu-end-interrupts-mac2' 2 1
+    set_affinity 'ppdu-end-interrupts-mac3' 3 1
 
-    # EDMA (NSS 接管后计数为0，绑 CPU1 无害)
-    set_affinity 'edma_txcmpl' 1 1
-    set_affinity 'edma_rxfill' 1 1
-    set_affinity 'edma_rxdesc' 1 1
-    set_affinity 'edma_misc' 1 1
+    # EDMA (LAN/WAN): 全部绑定 CPU 3
+    set_affinity 'edma_txcmpl' 3 1
+    set_affinity 'edma_rxfill' 3 1
+    set_affinity 'edma_rxdesc' 3 1
+    set_affinity 'edma_misc' 3 1
 
-    # bam_dma (实测2个，空闲)
-    set_affinity 'bam_dma' 2 1
-    set_affinity 'bam_dma' 3 2
+    # NSS 硬件引擎: 分配到 CPU 2-3
+    set_affinity 'nss_queue0' 2-3 1
 
-    # reo2host-status (实测只有 status，无 destination-ring1~4)
-    set_affinity 'reo2host-status' 0 1
+    # DMA 引擎: 分配到 CPU 1-3
+    set_affinity 'bam_dma' 1 1
+    set_affinity 'bam_dma' 2 2
+    set_affinity 'bam_dma' 3 3
 }
 
 boot() {
@@ -415,59 +440,5 @@ if [ -f "$PBUF_UCI" ]; then
   sed -i "s/scaling_governor 'performance'/scaling_governor 'schedutil'/g" "$PBUF_UCI"
   echo ">>> pbuf auto_scale 已关闭, CPU 调度改为 schedutil"
 fi
-
-# ============================================
-# 18. conntrack hash 表大小优化
-#     默认 buckets=max/4，改为 max/2=81920 降低哈希冲突
-# ============================================
-cat >> files/etc/sysctl.conf <<EOF
-
-# === conntrack hash 表优化 (=max/2，降低哈希冲突) ===
-net.netfilter.nf_conntrack_buckets=81920
-EOF
-
-# ============================================
-# 19. 网络软中断负载均衡 (RPS/RFS + 缓冲深化)
-# ============================================
-cat >> files/etc/sysctl.d/99-optimize.conf <<EOF
-# RPS/RFS 软中断多核分发
-net.core.rps_flow_limit=16384
-net.core.netdev_max_backlog=2500
-net.core.netdev_budget=600
-net.core.netdev_budget_usecs=8000
-# optmem 预分配
-net.core.optmem_max=262144
-EOF
-
-# ============================================
-# 20. TCP 低延迟 + 缓冲深化
-# ============================================
-cat >> files/etc/sysctl.conf <<EOF
-
-# === TCP 低延迟 + 缓冲 ===
-net.ipv4.tcp_low_latency=1
-net.ipv4.tcp_window_scaling=1
-net.ipv4.tcp_tw_reuse=1
-net.ipv4.tcp_fin_timeout=15
-net.ipv4.tcp_keepalive_time=300
-net.ipv4.tcp_syncookies=1
-net.ipv4.tcp_max_syn_backlog=8192
-net.ipv4.tcp_max_tw_buckets=20000
-EOF
-
-# ============================================
-# 21. 文件系统 + 内存回收 (NAS 场景)
-#     1GB DDR4 设备：脏页回写保守 + min_free 防碎片
-# ============================================
-cat >> files/etc/sysctl.d/99-optimize.conf <<EOF
-# 脏页回写 (Samba/NAS 更稳)
-vm.dirty_ratio=10
-vm.dirty_background_ratio=5
-vm.dirty_expire_centisecs=1200
-vm.dirty_writeback_centisecs=1200
-# 内存过量提交策略
-vm.overcommit_memory=1
-vm.min_free_kbytes=32768
-EOF
 
 echo ">>> DIY 脚本执行完成"
