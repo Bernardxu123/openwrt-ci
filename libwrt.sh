@@ -82,12 +82,12 @@ if [ -f "$KERNEL_CONFIG" ]; then
   sed -i 's/^# CONFIG_TCP_CONG_BBR is not set$/CONFIG_TCP_CONG_BBR=y/' "$KERNEL_CONFIG"
   # 启用 FQ
   sed -i 's/^# CONFIG_NET_SCH_FQ is not set$/CONFIG_NET_SCH_FQ=y/' "$KERNEL_CONFIG"
-  # 设置 BBR 为默认拥塞控制
-  sed -i 's/^CONFIG_DEFAULT_TCP_CONG="cubic"$/CONFIG_DEFAULT_TCP_CONG="bbr"/' "$KERNEL_CONFIG"
+  # 防止 BBR 启用后 Kconfig choice 多出 DEFAULT_BBR (NEW) 导致 CI 交互菜单挂起
+  sed -i '/^CONFIG_DEFAULT_CUBIC=y$/a # CONFIG_DEFAULT_BBR is not set' "$KERNEL_CONFIG"
   # 启用 schedutil CPU 调度策略 (LibWrt config-6.12 默认禁用，pbuf.uci 第17节会设 scaling_governor 'schedutil')
   sed -i 's/^# CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL is not set$/CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y/' "$KERNEL_CONFIG"
   sed -i 's/^# CONFIG_CPU_FREQ_GOV_SCHEDUTIL is not set$/CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y/' "$KERNEL_CONFIG"
-  echo ">>> 内核配置已 Patch: BBR + FQ + schedutil 启用, 默认拥塞控制改为 bbr"
+  echo ">>> 内核配置已 Patch: BBR + FQ + schedutil 启用 (默认拥塞控制由 sysctl 运行时设置)"
 fi
 
 # ============================================
