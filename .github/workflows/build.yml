@@ -162,12 +162,8 @@ jobs:
         cd $GITHUB_WORKSPACE
         git config user.name "github-actions[bot]"
         git config user.email "actions@github.com"
-        git fetch --unshallow 2>/dev/null || true
-        git fetch origin main dev
-        git checkout -B main origin/main
-        # 优先 ff-only；若分支分叉则 reset 到 origin/dev（编译已验证 dev 代码正确）
-        git merge origin/dev --ff-only || git reset --hard origin/dev
-        git push origin main --force-with-lease
+        # 编译已验证当前 HEAD (dev) 代码正确，直接让 main 指向同一 commit
+        git push origin HEAD:refs/heads/main --force
 
     - name: Upload Firmware To Release(发布固件)
       if: steps.compile.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true'
