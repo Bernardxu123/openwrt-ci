@@ -445,7 +445,7 @@ EOF
 cat >> files/etc/sysctl.conf <<EOF
 
 # === TCP 低延迟 + 缓冲 ===
-net.ipv4.tcp_low_latency=1
+# 注: tcp_low_latency 已在内核 4.14+ 移除，6.12 上无效，不再设置
 net.ipv4.tcp_window_scaling=1
 net.ipv4.tcp_tw_reuse=1
 net.ipv4.tcp_fin_timeout=15
