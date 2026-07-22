@@ -125,6 +125,17 @@ jobs:
         # 强制启用 BBR/FQ（防止 target config-default 覆盖）
         echo "CONFIG_TCP_CONG_BBR=y" >> .config
         echo "CONFIG_NET_SCH_FQ=y" >> .config
+        # 强制 NSS 12.5（defconfig 会重置 choice 为默认值 11.4）
+        sed -i 's/CONFIG_NSS_FIRMWARE_VERSION_11_4=y/# CONFIG_NSS_FIRMWARE_VERSION_11_4 is not set/' .config
+        sed -i 's/# CONFIG_NSS_FIRMWARE_VERSION_12_5 is not set/CONFIG_NSS_FIRMWARE_VERSION_12_5=y/' .config
+        # 强制启用被 defconfig 静默丢弃的包
+        echo "CONFIG_PACKAGE_luci-app-passwall=y" >> .config
+        echo "CONFIG_PACKAGE_luci-app-samba4=y" >> .config
+        echo "CONFIG_PACKAGE_samba4-server=y" >> .config
+        echo "CONFIG_PACKAGE_luci-app-ttyd=y" >> .config
+        echo "CONFIG_PACKAGE_ttyd=y" >> .config
+        echo "CONFIG_PACKAGE_luci-app-upnp=y" >> .config
+        echo "CONFIG_PACKAGE_miniupnpd-nftables=y" >> .config
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
