@@ -88,7 +88,7 @@ jobs:
       uses: HiGarfield/cachewrtbuild@main
       with:
         ccache: true
-        mixkey: libwrt-25.12-nss-jdcloud-re-ss-01
+        mixkey: libwrt-25.12-nss125-jdcloud-re-ss-01
         prefix: ${{ env.OPENWRT_PATH }}
 
     - name: Load Custom Configuration(加载自定义配置)
@@ -98,6 +98,12 @@ jobs:
         chmod +x $DIY_SCRIPT
         cd $OPENWRT_PATH
         $GITHUB_WORKSPACE/$DIY_SCRIPT
+
+    - name: Preset Clash Core(预置Clash核心)
+      run: |
+        cd $OPENWRT_PATH
+        chmod +x $GITHUB_WORKSPACE/scripts/preset-clash-core.sh
+        $GITHUB_WORKSPACE/scripts/preset-clash-core.sh arm64
 
     - name: Apply Patches(预检 + 应用补丁)
       run: |
@@ -194,9 +200,9 @@ jobs:
           - IPv6 完整支持
           
           ### NSS 硬件加速
-          - NSS v11.4 固件 + ECM 前端加速
+          - NSS v12.5 固件 + ECM 前端加速
           - SKB Recycler / WiFi Offload / PPPoE NSS
-          - Bridge / VLAN / IPv6 / Mesh 全系驱动
+          - Bridge / VLAN / IPv6 全系驱动
           - MCS / IGS / L2TPv2 / LAG / PPTP 高级模块
           - 预置 nss-status 诊断脚本
           

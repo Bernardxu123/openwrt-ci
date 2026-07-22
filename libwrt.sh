@@ -40,6 +40,14 @@ rm -rf package/emortal/luci-app-athena-led
 # 2. 添加额外插件 (feeds 中不包含的)
 # ============================================
 
+# OpenClash (透明代理) - 不在 ImmortalWrt 默认 feeds 中
+git clone --depth=1 https://github.com/vernesong/OpenClash package/luci-app-openclash
+
+# Passwall (xray-core, sing-box 等依赖已在 ImmortalWrt packages feed)
+git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall package/passwall-src
+cp -rf package/passwall-src/luci-app-passwall package/luci-app-passwall
+rm -rf package/passwall-src
+
 # Argon 主题及配置
 git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config package/luci-app-argon-config
@@ -240,32 +248,41 @@ mkdir -p "$(dirname "$TEMPINFO_PATH")"
 cat > "$TEMPINFO_PATH" <<'EOF'
 #!/bin/sh
 
-IEEE_PATH="/sys/class/ieee80211"
 THERMAL_PATH="/sys/class/thermal"
+IEEE_PATH="/sys/class/ieee80211"
 
-if grep -Eq "ipq40xx|ipq806x" "/etc/openwrt_release"; then
-	wifi_temp="$(awk '{printf("%.1f°C ", $0 / 1000)}' "$IEEE_PATH"/phy*/device/hwmon/hwmon*/temp1_input 2>"/dev/null" | awk '$1=$1')"
-else
-	wifi_temp="$(cat "$IEEE_PATH"/phy*/hwmon*/temp1_input 2>"/dev/null" | awk '{printf("%.1f°C ", $0 / 1000)}' | awk '$1=$1')"
-fi
+cpu_temp=""
+for zone in $THERMAL_PATH/thermal_zone*; do
+    type=$(cat "$zone/type" 2>/dev/null)
+    if [ "$type" = "cpu-thermal" ]; then
+        raw=$(cat "$zone/temp" 2>/dev/null)
+        if [ -n "$raw" ]; then
+            cpu_temp=$((raw / 1000)).$((raw % 1000 / 100))
+        fi
+        break
+    fi
+done
 
-if grep -q "ipq40xx" "/etc/openwrt_release"; then
-	if [ -e "$IEEE_PATH/phy0/hwmon0/temp1_input" ]; then
-		mt76_temp="$(awk -F ': ' '{print $2}' "$IEEE_PATH/phy0/hwmon0/temp1_input" 2>/dev/null")°C"
-	fi
-	[ -z "$mt76_temp" ] || wifi_temp="${wifi_temp:+$wifi_temp }$mt76_temp"
-else
-	cpu_temp="$(awk '{printf("%.1f°C", $0 / 1000)}' "$THERMAL_PATH/thermal_zone0/temp" 2>/dev/null")"
-fi
+wifi_temp=""
+for phy in $IEEE_PATH/phy*; do
+    for hwmon in "$phy"/hwmon*; do
+        [ -f "$hwmon/temp1_input" ] || continue
+        raw=$(cat "$hwmon/temp1_input" 2>/dev/null)
+        if [ -n "$raw" ]; then
+            t="$((raw / 1000)).$((raw % 1000 / 100))"
+            wifi_temp="${wifi_temp:+$wifi_temp }$t"
+        fi
+    done
+done
 
-if [ -n "$cpu_temp" ] && [ -z "$wifi_temp" ]; then
-	echo -n "CPU: $cpu_temp"
-elif [ -z "$cpu_temp" ] && [ -n "$wifi_temp" ]; then
-	echo -n "WiFi: $wifi_temp"
-elif [ -n "$cpu_temp" ] && [ -n "$wifi_temp" ]; then
-	echo -n "CPU: $cpu_temp, WiFi: $wifi_temp"
+if [ -n "$cpu_temp" ] && [ -n "$wifi_temp" ]; then
+    printf "CPU: %s\xc2\xb0C, WiFi: %s\xc2\xb0C" "$cpu_temp" "$wifi_temp"
+elif [ -n "$cpu_temp" ]; then
+    printf "CPU: %s\xc2\xb0C" "$cpu_temp"
+elif [ -n "$wifi_temp" ]; then
+    printf "WiFi: %s\xc2\xb0C" "$wifi_temp"
 else
-	echo -n "No temperature info"
+    printf "No temperature info"
 fi
 EOF
 
