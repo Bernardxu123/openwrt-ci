@@ -6,7 +6,7 @@
 # 包含 OpenClash 依赖设置
 # ============================================
 
-# 删除 LibWrt 冲突脚本: 993 把 nf_conntrack_max 改回 65535，与我们 163840 冲突
+# 删除 LibWrt 冲突脚本: 993 把 nf_conntrack_max 回 65535，与我们 163840 冲突
 rm -f target/linux/qualcommax/base-files/etc/uci-defaults/993_set-ecm-conntrack.sh
 
 # 移除要替换的包 (避免与自定义版本冲突)
@@ -40,14 +40,6 @@ rm -rf package/emortal/luci-app-athena-led
 # 2. 添加额外插件 (feeds 中不包含的)
 # ============================================
 
-# OpenClash (透明代理) - 不在 ImmortalWrt 默认 feeds 中
-git clone --depth=1 https://github.com/vernesong/OpenClash package/luci-app-openclash
-
-# Passwall (xray-core, sing-box 等依赖已在 ImmortalWrt packages feed)
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall package/passwall-src
-cp -rf package/passwall-src/luci-app-passwall package/luci-app-passwall
-rm -rf package/passwall-src
-
 # Argon 主题及配置
 git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
 git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config package/luci-app-argon-config
@@ -60,6 +52,17 @@ rm -rf package/lucky-src
 
 # MosDNS (使用 sbwml 版本，更稳定且功能完整)
 git clone --depth=1 https://github.com/sbwml/luci-app-mosdns package/luci-app-mosdns
+
+# ============================================
+# 2b. Passwall 依赖包 (chinadns-ng, dns2socks, microsocks, ipt2socks 等)
+#     xray-core 和 sing-box 已在 ImmortalWrt feeds 中，无需重复
+#     来源: laipeng668/openwrt-ci-roc
+# ============================================
+git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-pkg-tmp
+for pkg in chinadns-ng dns2socks microsocks ipt2socks v2ray-geodata v2ray-plugin simple-obfs shadow-tls tcping geoview; do
+    [ -d "package/passwall-pkg-tmp/$pkg" ] && cp -rf "package/passwall-pkg-tmp/$pkg" package/
+done
+rm -rf package/passwall-pkg-tmp
 
 # ============================================
 # 3. 修复 Makefile 路径
@@ -132,6 +135,13 @@ net.ipv4.tcp_wmem=4096 65536 16777216
 
 # === 连接跟踪 ===
 net.netfilter.nf_conntrack_max=163840
+
+# === IPv6 完善 ===
+net.ipv6.conf.all.disable_ipv6=0
+net.ipv6.conf.default.disable_ipv6=0
+net.ipv6.conf.all.forwarding=1
+net.ipv6.conf.all.accept_ra=2
+net.ipv6.conf.default.accept_ra=2
 EOF
 
 # ============================================
@@ -180,8 +190,9 @@ chmod +x files/usr/bin/nss-status
 # 9. Passwall 连接超时调优
 #    放宽 Xray REALITY 握手超时 + 增加采样次数
 #    来源: ZqinKing/wrt_release
+#    ⚠️ 路径修正: passwall 克隆到 package/ 而非 feeds/
 # ============================================
-PASSWALL_UTIL="feeds/luci/applications/luci-app-passwall/luasrc/passwall/util_xray.lua"
+PASSWALL_UTIL="package/luci-app-passwall/luasrc/passwall/util_xray.lua"
 if [ -f "$PASSWALL_UTIL" ]; then
   sed -i 's/maxRTT = "1s"/maxRTT = "2s"/g' "$PASSWALL_UTIL"
   sed -i 's/sampling = 3/sampling = 5/g' "$PASSWALL_UTIL"
@@ -248,41 +259,32 @@ mkdir -p "$(dirname "$TEMPINFO_PATH")"
 cat > "$TEMPINFO_PATH" <<'EOF'
 #!/bin/sh
 
-THERMAL_PATH="/sys/class/thermal"
 IEEE_PATH="/sys/class/ieee80211"
+THERMAL_PATH="/sys/class/thermal"
 
-cpu_temp=""
-for zone in $THERMAL_PATH/thermal_zone*; do
-    type=$(cat "$zone/type" 2>/dev/null)
-    if [ "$type" = "cpu-thermal" ]; then
-        raw=$(cat "$zone/temp" 2>/dev/null)
-        if [ -n "$raw" ]; then
-            cpu_temp=$((raw / 1000)).$((raw % 1000 / 100))
-        fi
-        break
-    fi
-done
-
-wifi_temp=""
-for phy in $IEEE_PATH/phy*; do
-    for hwmon in "$phy"/hwmon*; do
-        [ -f "$hwmon/temp1_input" ] || continue
-        raw=$(cat "$hwmon/temp1_input" 2>/dev/null)
-        if [ -n "$raw" ]; then
-            t="$((raw / 1000)).$((raw % 1000 / 100))"
-            wifi_temp="${wifi_temp:+$wifi_temp }$t"
-        fi
-    done
-done
-
-if [ -n "$cpu_temp" ] && [ -n "$wifi_temp" ]; then
-    printf "CPU: %s\xc2\xb0C, WiFi: %s\xc2\xb0C" "$cpu_temp" "$wifi_temp"
-elif [ -n "$cpu_temp" ]; then
-    printf "CPU: %s\xc2\xb0C" "$cpu_temp"
-elif [ -n "$wifi_temp" ]; then
-    printf "WiFi: %s\xc2\xb0C" "$wifi_temp"
+if grep -Eq "ipq40xx|ipq806x" "/etc/openwrt_release"; then
+	wifi_temp="$(awk '{printf("%.1f°C ", $0 / 1000)}' "$IEEE_PATH"/phy*/device/hwmon/hwmon*/temp1_input 2>"/dev/null" | awk '$1=$1')"
 else
-    printf "No temperature info"
+	wifi_temp="$(cat "$IEEE_PATH"/phy*/hwmon*/temp1_input 2>"/dev/null" | awk '{printf("%.1f°C ", $0 / 1000)}' | awk '$1=$1')"
+fi
+
+if grep -q "ipq40xx" "/etc/openwrt_release"; then
+	if [ -e "$IEEE_PATH/phy0/hwmon0/temp1_input" ]; then
+		mt76_temp="$(awk -F ': ' '{print $2}' "$IEEE_PATH/phy0/hwmon0/temp1_input" 2>/dev/null")°C"
+	fi
+	[ -z "$mt76_temp" ] || wifi_temp="${wifi_temp:+$wifi_temp }$mt76_temp"
+else
+	cpu_temp="$(awk '{printf("%.1f°C", $0 / 1000)}' "$THERMAL_PATH/thermal_zone0/temp" 2>/dev/null")"
+fi
+
+if [ -n "$cpu_temp" ] && [ -z "$wifi_temp" ]; then
+	echo -n "CPU: $cpu_temp"
+elif [ -z "$cpu_temp" ] && [ -n "$wifi_temp" ]; then
+	echo -n "WiFi: $wifi_temp"
+elif [ -n "$cpu_temp" ] && [ -n "$wifi_temp" ]; then
+	echo -n "CPU: $cpu_temp, WiFi: $wifi_temp"
+else
+	echo -n "No temperature info"
 fi
 EOF
 
@@ -475,6 +477,7 @@ EOF
 # ============================================
 # 21. 文件系统 + 内存回收 (NAS 场景)
 #     1GB DDR4 设备：脏页回写保守 + min_free 防碎片
+#     ⚠️ overcommit_memory 改为 2 (不过量提交，避免 OOM)
 # ============================================
 cat >> files/etc/sysctl.d/99-optimize.conf <<EOF
 # 脏页回写 (Samba/NAS 更稳)
@@ -482,8 +485,8 @@ vm.dirty_ratio=10
 vm.dirty_background_ratio=5
 vm.dirty_expire_centisecs=1200
 vm.dirty_writeback_centisecs=1200
-# 内存过量提交策略
-vm.overcommit_memory=1
+# 内存过量提交策略 (2=不过量提交，防止 OOM)
+vm.overcommit_memory=2
 vm.min_free_kbytes=32768
 EOF
 

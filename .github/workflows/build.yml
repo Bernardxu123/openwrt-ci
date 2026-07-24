@@ -88,7 +88,7 @@ jobs:
       uses: HiGarfield/cachewrtbuild@main
       with:
         ccache: true
-        mixkey: libwrt-25.12-nss125-jdcloud-re-ss-01
+        mixkey: libwrt-25.12-nss-jdcloud-re-ss-01
         prefix: ${{ env.OPENWRT_PATH }}
 
     - name: Load Custom Configuration(加载自定义配置)
@@ -98,12 +98,6 @@ jobs:
         chmod +x $DIY_SCRIPT
         cd $OPENWRT_PATH
         $GITHUB_WORKSPACE/$DIY_SCRIPT
-
-    - name: Preset Clash Core(预置Clash核心)
-      run: |
-        cd $OPENWRT_PATH
-        chmod +x $GITHUB_WORKSPACE/scripts/preset-clash-core.sh
-        $GITHUB_WORKSPACE/scripts/preset-clash-core.sh arm64
 
     - name: Apply Patches(预检 + 应用补丁)
       run: |
@@ -122,20 +116,7 @@ jobs:
       run: |
         cd $OPENWRT_PATH
         make defconfig
-        # 强制启用 BBR/FQ（防止 target config-default 覆盖）
-        echo "CONFIG_TCP_CONG_BBR=y" >> .config
-        echo "CONFIG_NET_SCH_FQ=y" >> .config
-        # 强制 NSS 12.5（defconfig 会重置 choice 为默认值 11.4）
-        sed -i 's/CONFIG_NSS_FIRMWARE_VERSION_11_4=y/# CONFIG_NSS_FIRMWARE_VERSION_11_4 is not set/' .config
-        sed -i 's/# CONFIG_NSS_FIRMWARE_VERSION_12_5 is not set/CONFIG_NSS_FIRMWARE_VERSION_12_5=y/' .config
-        # 强制启用被 defconfig 静默丢弃的包
-        echo "CONFIG_PACKAGE_luci-app-passwall=y" >> .config
-        echo "CONFIG_PACKAGE_luci-app-samba4=y" >> .config
-        echo "CONFIG_PACKAGE_samba4-server=y" >> .config
-        echo "CONFIG_PACKAGE_luci-app-ttyd=y" >> .config
-        echo "CONFIG_PACKAGE_ttyd=y" >> .config
-        echo "CONFIG_PACKAGE_luci-app-upnp=y" >> .config
-        echo "CONFIG_PACKAGE_miniupnpd-nftables=y" >> .config
+        # ⚡ 已删除: BBR/FQ echo (libwrt.sh 第 4b 步已正确 patch config-6.12)
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
@@ -149,6 +130,24 @@ jobs:
         echo "status=success" >> $GITHUB_OUTPUT
         echo "DATE=$(date +"%Y%m%d-%H%M")" >> $GITHUB_ENV
         echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
+
+    - name: Verify packages(校验关键包)
+      if: steps.compile.outputs.status == 'success'
+      run: |
+        cd $OPENWRT_PATH
+        echo "=== Checking critical packages ==="
+        for pkg in luci-app-samba4 samba4-server luci-app-passwall xray-core; do
+            if ! find bin/packages -name "Packages.manifest" -exec grep -l "Package: $pkg" {} \; | grep -q .; then
+                echo "::error::$pkg missing from build output!"
+                exit 1
+            fi
+            echo "✅ $pkg found"
+        done
+        # 内核模块在 target manifest 中
+        if ! find bin/targets -name "*.manifest" -exec grep -l "kmod-nft-tproxy" {} \; | grep -q .; then
+            echo "::warning::kmod-nft-tproxy not in target image manifest"
+        fi
+        echo "=== Package verification complete ==="
 
     - name: Check Space Usage(检查空间使用情况)
       if: (!cancelled())
@@ -211,13 +210,13 @@ jobs:
           - IPv6 完整支持
           
           ### NSS 硬件加速
-          - NSS v12.5 固件 + ECM 前端加速
+          - NSS v11.4 固件 + ECM 前端加速
           - SKB Recycler / WiFi Offload / PPPoE NSS
-          - Bridge / VLAN / IPv6 全系驱动
+          - Bridge / VLAN / IPv6 / Mesh 全系驱动
           - MCS / IGS / L2TPv2 / LAG / PPTP 高级模块
           - 预置 nss-status 诊断脚本
           
-          ### 网络优化 (本轮新增)
+          ### 网络优化
           - BBR + FQ 拥塞控制 + schedutil CPU 调度
           - conntrack max=163840 / buckets=81920 (hash 冲突 -50%)
           - RPS 多核软中断分发 + netdev_budget=600
@@ -225,6 +224,7 @@ jobs:
           - SMP IRQ 绑核: nss_queue0~3 全绑核 (CPU2 负载 -88%)
           - NAS 脏页回写 + min_free_kbytes=32768
           - zram swap + swappiness=10
+          - overcommit_memory=2 (防 OOM)
           
           ### 默认信息
           - 默认 IP: 192.168.31.1
