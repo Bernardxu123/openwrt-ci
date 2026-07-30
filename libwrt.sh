@@ -54,10 +54,16 @@ rm -rf package/lucky-src
 git clone --depth=1 https://github.com/sbwml/luci-app-mosdns package/luci-app-mosdns
 
 # ============================================
-# 2b. Passwall 依赖包 (chinadns-ng, dns2socks, microsocks, ipt2socks 等)
-#     xray-core 和 sing-box 已在 ImmortalWrt feeds 中，无需重复
-#     来源: laipeng668/openwrt-ci-roc
+# 2b. Passwall 完整安装 (主包 + 依赖)
+#     ⚡ 修复: 之前只克隆了依赖包，主包 luci-app-passwall 缺失
+#     导致 make defconfig 静默丢弃整个 Passwall 栈
+#     来源: xiaorouji/openwrt-passwall + openwrt-passwall-packages
 # ============================================
+
+# Passwall 主包 (LuCI 界面 + 核心逻辑)
+git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall package/luci-app-passwall
+
+# Passwall 依赖包 (chinadns-ng, dns2socks, microsocks, ipt2socks 等)
 git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-pkg-tmp
 for pkg in chinadns-ng dns2socks microsocks ipt2socks v2ray-geodata v2ray-plugin simple-obfs shadow-tls tcping geoview; do
     [ -d "package/passwall-pkg-tmp/$pkg" ] && cp -rf "package/passwall-pkg-tmp/$pkg" package/
@@ -426,14 +432,40 @@ fi
 # 17. pbuf auto_scale off + schedutil 调度
 #     关闭 WiFi 缓冲区自动缩放，固定分配更稳定
 #     CPU 调度策略从 performance 改为 schedutil 更省电
+#     ⚡ 修复: LibWrt 25.12-nss 中 pbuf.uci 路径可能变更
+#     增加 uci-defaults 兜底确保 schedutil 生效
 #     来源: ZqinKing/wrt_release
 # ============================================
-PBUF_UCI="package/kernel/mac80211/files/pbuf.uci"
-if [ -f "$PBUF_UCI" ]; then
-  sed -i "s/auto_scale '1'/auto_scale 'off'/g" "$PBUF_UCI"
-  sed -i "s/scaling_governor 'performance'/scaling_governor 'schedutil'/g" "$PBUF_UCI"
-  echo ">>> pbuf auto_scale 已关闭, CPU 调度改为 schedutil"
+PBUF_PATCHED=0
+for PBUF_UCI in \
+  "package/kernel/mac80211/files/pbuf.uci" \
+  "package/feeds/nss_packages/qca-nss-pbuf/files/pbuf.uci" \
+  "target/linux/qualcommax/base-files/etc/config/pbuf"; do
+  if [ -f "$PBUF_UCI" ]; then
+    sed -i "s/auto_scale '1'/auto_scale 'off'/g" "$PBUF_UCI"
+    sed -i "s/scaling_governor 'performance'/scaling_governor 'schedutil'/g" "$PBUF_UCI"
+    echo ">>> pbuf 已 Patch: $PBUF_UCI (auto_scale=off, schedutil)"
+    PBUF_PATCHED=1
+    break
+  fi
+done
+[ $PBUF_PATCHED -eq 0 ] && echo ">>> WARNING: pbuf.uci 未找到，使用 uci-defaults 兜底"
+
+# 兜底: uci-defaults 首启强制 schedutil (无论 pbuf.uci 是否 patch 成功)
+cat > package/base-files/files/etc/uci-defaults/991_set_schedutil <<'EOF'
+#!/bin/sh
+for cpu in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_governor; do
+    [ -f "$cpu" ] && echo schedutil > "$cpu"
+done
+# 同步 pbuf UCI 配置 (如果存在)
+if uci get pbuf.@pbuf[0] >/dev/null 2>&1; then
+    uci set pbuf.@pbuf[0].scaling_governor='schedutil'
+    uci set pbuf.@pbuf[0].auto_scale='off'
+    uci commit pbuf
 fi
+exit 0
+EOF
+chmod +x package/base-files/files/etc/uci-defaults/991_set_schedutil
 
 # ============================================
 # 18. conntrack hash 表大小优化
@@ -489,5 +521,26 @@ vm.dirty_writeback_centisecs=1200
 vm.overcommit_memory=2
 vm.min_free_kbytes=32768
 EOF
+
+# ============================================
+# 22. ARP 表 + Packet Steering
+#     局域网多设备时减少 ARP 广播风暴
+#     packet_steering 多核软中断分发
+# ============================================
+cat >> files/etc/sysctl.d/99-optimize.conf <<EOF
+# ARP 表优化 (局域网多设备)
+net.ipv4.neigh.default.gc_thresh1=256
+net.ipv4.neigh.default.gc_thresh2=1024
+net.ipv4.neigh.default.gc_thresh3=2048
+EOF
+
+# 启用 packet_steering (uci-defaults 首启设置)
+cat > package/base-files/files/etc/uci-defaults/992_set_packet_steering <<'EOF'
+#!/bin/sh
+uci set network.globals.packet_steering='1'
+uci commit network
+exit 0
+EOF
+chmod +x package/base-files/files/etc/uci-defaults/992_set_packet_steering
 
 echo ">>> DIY 脚本执行完成"

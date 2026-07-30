@@ -135,19 +135,34 @@ jobs:
       if: steps.compile.outputs.status == 'success'
       run: |
         cd $OPENWRT_PATH
-        echo "=== Checking critical packages ==="
-        for pkg in luci-app-samba4 samba4-server luci-app-passwall xray-core; do
-            if ! find bin -name "*.manifest" -exec grep -l "Package: $pkg" {} \; | grep -q .; then
-                echo "::warning::$pkg not found in manifest (may be built-in)"
+        echo "=== 校验关键包 (缺失即失败) ==="
+        MISSING=0
+        # 用户空间包 (在 packages manifest 中)
+        for pkg in luci-app-passwall xray-core sing-box luci-app-openclash \
+                   luci-app-samba4 samba4-server luci-app-lucky luci-app-mosdns \
+                   luci-app-upnp miniupnpd-nftables htop openssh-sftp-server \
+                   luci-app-ttyd ttyd luci-app-filemanager; do
+            if ! find bin/packages -name "*.manifest" -exec grep -l "Package: $pkg" {} \; 2>/dev/null | grep -q .; then
+                echo "::error::关键包 $pkg 未编译成功!"
+                MISSING=1
             else
-                echo "✅ $pkg found"
+                echo "✅ $pkg"
             fi
         done
-        # 内核模块在 target manifest 中
-        if ! find bin/targets -name "*.manifest" -exec grep -l "kmod-nft-tproxy" {} \; | grep -q .; then
-            echo "::warning::kmod-nft-tproxy not in target image manifest"
+        # 内核模块 (在 target manifest 中)
+        for kmod in kmod-nft-tproxy kmod-nf-socket kmod-wireguard kmod-qca-nss-ecm; do
+            if ! find bin/targets -name "*.manifest" -exec grep -l "$kmod" {} \; 2>/dev/null | grep -q .; then
+                echo "::error::内核模块 $kmod 未打入固件!"
+                MISSING=1
+            else
+                echo "✅ $kmod"
+            fi
+        done
+        if [ $MISSING -eq 1 ]; then
+            echo "::error::存在关键包缺失，请检查 make defconfig 日志中的依赖冲突"
+            exit 1
         fi
-        echo "=== Package verification complete ==="
+        echo "=== ✅ 所有关键包验证通过 ==="
 
     - name: Check Space Usage(检查空间使用情况)
       if: (!cancelled())
