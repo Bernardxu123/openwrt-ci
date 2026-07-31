@@ -111,7 +111,24 @@ jobs:
         echo "" | tee -a $GITHUB_WORKSPACE/diagnose.txt
         echo "===== Go 工具链状态 =====" | tee -a $GITHUB_WORKSPACE/diagnose.txt
         grep -E "CONFIG_GOLANG_VERSION|CONFIG_PACKAGE_golang|CONFIG_PACKAGE_libstdcpp" .config | head -10 | tee -a $GITHUB_WORKSPACE/diagnose.txt
+        echo "" | tee -a $GITHUB_WORKSPACE/diagnose.txt
+        echo "===== tmp/.packageinfo 包索引检查 =====" | tee -a $GITHUB_WORKSPACE/diagnose.txt
+        echo "  .packageinfo 大小: $(wc -l < tmp/.packageinfo 2>/dev/null) 行" | tee -a $GITHUB_WORKSPACE/diagnose.txt
+        for p in htop samba4-server ttyd luci-app-openclash luci-app-samba4 miniupnpd-nftables xray-core sing-box nano; do
+            cnt=$(grep -c "^Package: $p$" tmp/.packageinfo 2>/dev/null)
+            echo "  $p : 索引中 $cnt 条" | tee -a $GITHUB_WORKSPACE/diagnose.txt
+        done
+        echo "" | tee -a $GITHUB_WORKSPACE/diagnose.txt
+        echo "===== 强制选择测试: htop + samba4-server + ttyd =====" | tee -a $GITHUB_WORKSPACE/diagnose.txt
         cp .config $GITHUB_WORKSPACE/resolved.config
+        ./scripts/feeds install -a >/dev/null 2>&1
+        echo "CONFIG_PACKAGE_htop=y" >> .config
+        echo "CONFIG_PACKAGE_samba4-server=y" >> .config
+        echo "CONFIG_PACKAGE_ttyd=y" >> .config
+        make defconfig >/dev/null 2>&1
+        for p in htop samba4-server ttyd; do
+            grep -E "^#? ?CONFIG_PACKAGE_${p}(=| is not set)" .config | head -1 | tee -a $GITHUB_WORKSPACE/diagnose.txt
+        done
 
     - name: Upload diagnostic artifacts
       if: always()
