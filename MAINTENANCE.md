@@ -153,13 +153,18 @@ make defconfig                              # 第二次：基于完整配置定�
 | 14 | Argon 蓝紫配色 | uci-defaults `990_set_argon_primary` |
 | 15 | SMP IRQ 亲和性（4 核绑核，nss_queue0→CPU3 等） | `target/.../etc/init.d/smp_affinity` |
 | 16 | NSS 驱动启动优先级提前（START=88） | — |
-| 17 | pbuf auto_scale off + schedutil（多路径搜索不 break + uci-defaults 兜底 + **rc.local 最终兜底**） | uci-defaults `991_set_schedutil` |
+| 17 | pbuf auto_scale off + schedutil（多路径搜索不 break + uci-defaults 兜底 + **rc.local 最终兜底**）+ pbuf 启动优先级 START=89（88drv < 89pbuf < 93绑核） | uci-defaults `991_set_schedutil` |
 | 18 | conntrack hash buckets=max/2 | 追加 sysctl.conf |
 | 19 | RPS/RFS + 缓冲深化 | 追加 sysctl.d |
 | 20 | TCP 低延迟（tw_reuse、fin_timeout、syn_backlog） | 追加 sysctl.conf |
 | 21 | 文件系统/内存回收（NAS 脏页、min_free_kbytes、overcommit=**1** 而非 2） | 追加 sysctl.d |
-| 22 | ARP 表 + packet_steering | uci-defaults `992_set_packet_steering` |
+| 22 | ARP 表 + packet_steering=**0**（LibWrt 官方：与 NSS offload 冲突） | uci-defaults `992_set_packet_steering` |
 | 23 | WiFi 2.4G 默认 HE40 带宽 | uci-defaults `993_set_wifi_he40` |
+| 24 | 版本号可读化：DISTRIB_REVISION=R{日期}（toplevel.mk）+ LuCI 状态页时间戳（10_system.js） | `include/toplevel.mk` + feeds |
+| 25 | miniupnpd 租约 7天→1天（`scripts/upnp/999-change-default-leaseduration.patch`，构建期拷入 feeds） | `feeds/packages/net/miniupnpd/patches/` |
+
+> 注：`scripts/upnp/` 下的 patch 由 libwrt.sh §25 拷入 feeds 对应包目录，
+> **不参与** build.yml 根目录 Apply Patches 循环（路径基准不同）。
 
 ### uci-defaults 首启脚本一览
 
@@ -167,7 +172,7 @@ make defconfig                              # 第二次：基于完整配置定�
 
 - `990_set_argon_primary`：Argon 主题配色
 - `991_set_schedutil`：CPU 调度改 schedutil（兜底，覆盖 pbuf 的 performance 默认）
-- `992_set_packet_steering`：启用 packet_steering 多核软中断分发
+- `992_set_packet_steering`：packet_steering=0（LibWrt 官方与 NSS 冲突，跟随上游）
 - `993_set_wifi_he40`：2.4G WiFi 设 HE40（仅设 htmode，不动 SSID/密码）
 
 > 注：`files/etc/uci-defaults/991_openclash_init` 是 OpenClash 首启参数预置

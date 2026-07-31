@@ -469,6 +469,15 @@ for PBUF_UCI in \
 done
 [ $PBUF_PATCHED -eq 0 ] && echo ">>> WARNING: pbuf.uci 未找到，使用 uci-defaults 兜底"
 
+# pbuf 启动优先级: 88(drv) < 89(pbuf) < 93(smp_affinity)
+# pbuf 在绑核之前配置好内存，避免 NSS 缓冲就绪前中断亲和性已生效
+# (实测路径: pbuf 包位于 package/kernel/mac80211/files/，非 nss-packages feed)
+PBUF_INIT="package/kernel/mac80211/files/qca-nss-pbuf.init"
+if [ -f "$PBUF_INIT" ]; then
+  sed -i 's/START=.*/START=89/g' "$PBUF_INIT"
+  echo ">>> pbuf 启动优先级已调整 (START=89)"
+fi
+
 # 兜底: uci-defaults 首启强制 schedutil (无论 pbuf.uci 是否 patch 成功)
 # 注意: uci-defaults(S95done) 在 qca-nss-pbuf 之前执行，uci set 可能被
 # pbuf init 覆盖，这里仅尽力而为；最终由 rc.local 最后阶段兜底保证。
@@ -552,7 +561,8 @@ EOF
 # ============================================
 # 22. ARP 表 + Packet Steering
 #     局域网多设备时减少 ARP 广播风暴
-#     packet_steering 多核软中断分发
+#     packet_steering 关闭(0): LibWrt 自带 992_set-network.sh
+#     明确与 NSS 硬件加速冲突并主动置 0，跟随上游默认
 # ============================================
 cat >> files/etc/sysctl.d/99-optimize.conf <<EOF
 # ARP 表优化 (局域网多设备)
@@ -561,10 +571,10 @@ net.ipv4.neigh.default.gc_thresh2=1024
 net.ipv4.neigh.default.gc_thresh3=2048
 EOF
 
-# 启用 packet_steering (uci-defaults 首启设置)
+# 跟随 LibWrt: packet_steering 与 NSS offload 冲突，置 0 (uci-defaults 首启设置)
 cat > package/base-files/files/etc/uci-defaults/992_set_packet_steering <<'EOF'
 #!/bin/sh
-uci set network.globals.packet_steering='1'
+uci set network.globals.packet_steering='0'
 uci commit network
 exit 0
 EOF
@@ -584,5 +594,40 @@ fi
 exit 0
 EOF
 chmod +x package/base-files/files/etc/uci-defaults/993_set_wifi_he40
+
+# ============================================
+# 24. 固件版本号可读化
+#     DISTRIB_REVISION: 默认是 git hash (r0-b6364cb)，
+#     替换为 R{日期}，LuCI 状态页/系统页直接可见编译日期，
+#     排查固件新旧一目了然 (保留设置升级不受影响)
+# 来源: breeze303/openwrt-ci + VIKINGYFY/OpenWRT-CI
+# ============================================
+TOPLEVEL_MK="include/toplevel.mk"
+if [ -f "$TOPLEVEL_MK" ]; then
+  sed -i "s/^  REVISION:=\$(shell \$(TOPDIR)\/scripts\/getver.sh)/  REVISION:=R$(date +%Y%m%d)/" "$TOPLEVEL_MK"
+  # 校验: 若上游改行格式导致 sed 未命中，用宽松匹配兜底
+  if ! grep -q "^  REVISION:=R" "$TOPLEVEL_MK"; then
+    sed -i "s/^.*REVISION:=\$(shell.*$/  REVISION:=R$(date +%Y%m%d)/" "$TOPLEVEL_MK"
+  fi
+  echo ">>> DISTRIB_REVISION 已注入: R$(date +%Y%m%d)"
+fi
+
+# LuCI 状态页编译时间戳 (10_system.js: 固件版本后追加 "- R日期")
+find feeds/luci/modules/luci-mod-status/ -type f -name "10_system.js" | while read -r system_js; do
+  sed -i "s/(\(luciversion || ''\))/(\1) + (' \/ R$(date +%Y%m%d)')/g" "$system_js"
+  echo ">>> 编译时间戳已注入: $system_js"
+done
+
+# ============================================
+# 25. miniupnpd 端口映射租约缩短 (7天→1天)
+#     家用 UPnP 设备频繁续约会撑大 conntrack 表，
+#     缩短租约 + 0 值改 8h，降低 NAT 表长期占用
+# 来源: ZqinKing/wrt_release (wrt_core/patches/999-chanage-default-leaseduration.patch)
+# ============================================
+MINIUPNPD_DIR="feeds/packages/net/miniupnpd"
+if [ -d "$MINIUPNPD_DIR" ] && [ -f "$GITHUB_WORKSPACE/scripts/upnp/999-change-default-leaseduration.patch" ]; then
+  install -Dm644 "$GITHUB_WORKSPACE/scripts/upnp/999-change-default-leaseduration.patch" "$MINIUPNPD_DIR/patches/999-change-default-leaseduration.patch"
+  echo ">>> miniupnpd 租约补丁已注入 (604800→86400)"
+fi
 
 echo ">>> DIY 脚本执行完成"

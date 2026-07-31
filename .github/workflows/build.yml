@@ -22,6 +22,11 @@ env:
 permissions:
   contents: write
 
+# 同分支重复触发时取消旧运行 (防止连续 push 白编)
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   Build:
     runs-on: ubuntu-22.04
@@ -57,14 +62,14 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
 
     - name: Combine Disks(合并磁盘)
-      uses: easimon/maximize-build-space@master
+      uses: easimon/maximize-build-space@v1
       with:
         swap-size-mb: 1024
         temp-reserve-mb: 100
         root-reserve-mb: 1024
 
     - name: Checkout
-      uses: actions/checkout@main
+      uses: actions/checkout@v4
 
     - name: Clone Source Code(克隆源代码)
       run: |
@@ -233,10 +238,13 @@ jobs:
     - name: Organize Files(整理文件)
       if: steps.compile.outputs.status == 'success'
       run: |
-        cd $OPENWRT_PATH/bin/targets/*/*
+        # 打包全部 ipk (含 kmod) 随 Release 发布，日后保留设置升级补装包无需重编
+        cd $OPENWRT_PATH/bin
+        tar -czf targets/*/*/Packages.tar.gz packages
+        cd targets/*/*
         echo "VERSION_KERNEL=$(find -type f -name "*.manifest" -exec grep -oP '^kernel - \K.*?(?=~|-\d+-)' {} \;)" >> $GITHUB_ENV
         cp $OPENWRT_PATH/.config build.config
-        # 只保留 factory + sysupgrade + sha256 + build.config，删除其余文件
+        # 只保留 factory + sysupgrade + sha256 + build.config + Packages.tar.gz
         mkdir -p _keep
         cp -f *squashfs-factory.bin *squashfs-sysupgrade.bin _keep/ 2>/dev/null || true
         cp -f build.config _keep/ 2>/dev/null || true
@@ -244,7 +252,7 @@ jobs:
         sha256sum *factory.bin *sysupgrade.bin > sha256sums 2>/dev/null || true
         cd ..
         rm -f *squashfs-factory.bin *squashfs-sysupgrade.bin build.config sha256sums manifest config
-        rm -rf packages Packages.tar.gz feeds.buildinfo version.buildinfo
+        rm -rf packages feeds.buildinfo version.buildinfo
         mv -f _keep/* . 2>/dev/null || true
         rm -rf _keep
         echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
@@ -263,12 +271,18 @@ jobs:
           
           🕐 编译时间: ${{ env.DATE }}
           
+          **固件版本: R${{ env.DATE }}**（LuCI 系统页可直接核对）
+          
           ### 设备与内核
           - 设备: JDCloud RE-SS-01 (魔改亚瑟)
           - CPU: IPQ6010 (4x A53 @1.8GHz) / 1GB DDR4 / 128GB eMMC
           - 内核: ${{ env.VERSION_KERNEL }}
           - 源码: LiBwrt/LibWrt (25.12-nss) — ImmortalWrt v25.12.1 基础
           - ${{ env.VERSION_INFO }}
+          
+          ### 附件说明
+          - `Packages.tar.gz`: 全部 ipk 包存档 (含 kmod)，保留设置升级后补装包直接用
+          - `build.config`: 本次编译配置快照
           
           ### 预装功能
           - OpenClash (Meta) + Passwall (Xray/SingBox) 双代理
@@ -286,9 +300,12 @@ jobs:
           
           ### 网络优化
           - BBR + FQ 拥塞控制 + schedutil CPU 调度
+          - NSS SQM (qdisc 引擎: 硬件侧 FQ-CODEL/WFQ)
+          - packet_steering=0 (LibWrt 官方: 与 NSS offload 冲突)
           - conntrack max=163840 / buckets=81920 (hash 冲突 -50%)
           - RPS 多核软中断分发 + netdev_budget=600
           - TCP 低延迟 (tw_reuse/fin_timeout=15/syn_backlog=8192)
+          - UPnP 租约 7天→1天 (防 conntrack 被占用)
           - SMP IRQ 绑核: nss_queue0~3 全绑核 (CPU2 负载 -88%)
           - NAS 脏页回写 + min_free_kbytes=32768
           - zram swap + swappiness=10
@@ -299,7 +316,7 @@ jobs:
           - 默认密码: password
 
     - name: Delete Old Workflows
-      uses: Mattraks/delete-workflow-runs@main
+      uses: Mattraks/delete-workflow-runs@v2
       with:
         retain_days: 3
         keep_minimum_runs: 3
