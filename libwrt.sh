@@ -207,6 +207,7 @@ mkdir -p package/base-files/files/etc
 cat > package/base-files/files/etc/sysupgrade.conf <<'EOF'
 /etc/lucky/
 /etc/mosdns/
+/etc/openclash/
 EOF
 
 # ============================================
@@ -535,5 +536,20 @@ uci commit network
 exit 0
 EOF
 chmod +x package/base-files/files/etc/uci-defaults/992_set_packet_steering
+
+# ============================================
+# 23. WiFi 2.4G 默认 HE40 带宽
+#     默认 HE20 吞吐仅 ~144Mbps，HE40 翻倍至 ~287Mbps
+#     仅设置 htmode，不改动 SSID/密码 (由 sysupgrade 保留用户配置)
+# ============================================
+cat > package/base-files/files/etc/uci-defaults/993_set_wifi_he40 <<'EOF'
+#!/bin/sh
+if uci get wireless.radio1 >/dev/null 2>&1; then
+    uci set wireless.radio1.htmode='HE40'
+    uci commit wireless
+fi
+exit 0
+EOF
+chmod +x package/base-files/files/etc/uci-defaults/993_set_wifi_he40
 
 echo ">>> DIY 脚本执行完成"
