@@ -94,7 +94,8 @@ jobs:
     - name: Load Custom Configuration(加载自定义配置)
       run: |
         [ -e files ] && mv files $OPENWRT_PATH/files
-        [ -e $CONFIG_FILE ] && mv $CONFIG_FILE $OPENWRT_PATH/.config
+        # 用 cp 保留原始配置文件 (Download 步骤需在首次 defconfig 后重新追加)
+        [ -e $CONFIG_FILE ] && cp $CONFIG_FILE $OPENWRT_PATH/.config
         chmod +x $DIY_SCRIPT
         cd $OPENWRT_PATH
         $GITHUB_WORKSPACE/$DIY_SCRIPT
@@ -115,12 +116,14 @@ jobs:
     - name: Download DL Package(下载DL软件包)
       run: |
         cd $OPENWRT_PATH
-        # ⚡ 关键修复: 必须跑两次 defconfig
-        # 第一次 defconfig 边建包索引(tmp/.packageinfo)边处理配置，
-        # feeds 包在索引建全前被处理，会被重置成默认值(n)，导致
-        # htop/samba4/ttyd/openclash/passwall 等几乎全部 feeds 包丢失。
-        # 第二次 defconfig 基于已建好的完整索引，能正确解析保留所有包。
+        # ⚡ 关键修复: defconfig → 重新追加配置 → 再 defconfig
+        # 第一次 defconfig 会把预制 .config 里的 feeds 可选包重置成 n
+        # (OpenWrt quirk: 手写 config 的 feeds 包在首次解析时被丢弃)。
+        # 诊断已证实: 把配置重新追加到已解析的 .config 上再 defconfig，
+        # feeds 包即可正确保留。故: 先 defconfig 解析基础，再追加原始
+        # 配置重新声明所有包，最后 defconfig 定稿。
         make defconfig
+        cat "$GITHUB_WORKSPACE/$CONFIG_FILE" >> .config
         make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
