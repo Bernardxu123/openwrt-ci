@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - dev
+      - main
     paths:
       - 'configs/**'
       - 'libwrt.sh'
@@ -249,15 +249,6 @@ jobs:
         rm -rf _keep
         echo "FIRMWARE_PATH=$PWD" >> $GITHUB_ENV
 
-    - name: Merge dev to main(编译成功才合并)
-      if: steps.compile.outputs.status == 'success'
-      run: |
-        cd $GITHUB_WORKSPACE
-        git config user.name "github-actions[bot]"
-        git config user.email "actions@github.com"
-        # 编译已验证当前 HEAD (dev) 代码正确，直接让 main 指向同一 commit
-        git push origin HEAD:refs/heads/main --force
-
     - name: Upload Firmware To Release(发布固件)
       if: steps.compile.outputs.status == 'success' && env.FIRMWARE_RELEASE == 'true'
       uses: ncipollo/release-action@v1
@@ -301,7 +292,7 @@ jobs:
           - SMP IRQ 绑核: nss_queue0~3 全绑核 (CPU2 负载 -88%)
           - NAS 脏页回写 + min_free_kbytes=32768
           - zram swap + swappiness=10
-          - overcommit_memory=2 (防 OOM)
+          - overcommit_memory=1 (启发式，避免 Go 代理软件 mmap 失败)
           
           ### 默认信息
           - 默认 IP: 192.168.31.1

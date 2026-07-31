@@ -153,11 +153,30 @@ cat > files/etc/rc.local <<'RCEOF'
 modprobe tcp_bbr 2>/dev/null
 
 # 兜底：确保关键 sysctl 参数生效
+# ⚠️ 为什么在 rc.local 强制而不只依赖 sysctl.conf/sysctl.d:
+#    sysupgrade 保留设置升级时，keep.d/base-files-essential 会把旧版
+#    /etc/sysctl.conf 恢复回来(旧用户配置覆盖新固件内容)，导致固件里
+#    写进 sysctl.conf 的参数对"保留设置升级"用户永远不生效。
+#    /etc/rc.local 不在 keep.d 清单中，每次升级都会被新固件覆盖，
+#    因此这里是唯一能保证"每次升级都生效"的兜底位置(S99 最后执行)。
 sysctl -w net.core.default_qdisc=fq >/dev/null 2>&1
 sysctl -w net.ipv4.tcp_congestion_control=bbr >/dev/null 2>&1
 sysctl -w net.ipv4.tcp_mtu_probing=1 >/dev/null 2>&1
 sysctl -w net.ipv4.tcp_fastopen=3 >/dev/null 2>&1
 sysctl -w net.ipv4.tcp_slow_start_after_idle=0 >/dev/null 2>&1
+sysctl -w net.netfilter.nf_conntrack_max=163840 >/dev/null 2>&1
+sysctl -w net.netfilter.nf_conntrack_buckets=81920 >/dev/null 2>&1
+sysctl -w vm.overcommit_memory=1 >/dev/null 2>&1
+sysctl -w vm.min_free_kbytes=32768 >/dev/null 2>&1
+sysctl -w net.core.optmem_max=262144 >/dev/null 2>&1
+sysctl -w net.ipv4.tcp_fin_timeout=15 >/dev/null 2>&1
+sysctl -w net.ipv4.tcp_max_syn_backlog=8192 >/dev/null 2>&1
+
+# CPU 调度器兜底: qca-nss-pbuf init 可能把 governor 写回 performance，
+# 此处最后执行确保 schedutil 生效(降频省电)
+for cpu in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_governor; do
+    echo schedutil > "$cpu" 2>/dev/null
+done
 
 exit 0
 RCEOF
@@ -436,27 +455,38 @@ for PBUF_UCI in \
   "package/feeds/nss_packages/qca-nss-pbuf/files/pbuf.uci" \
   "target/linux/qualcommax/base-files/etc/config/pbuf"; do
   if [ -f "$PBUF_UCI" ]; then
+    # 宽松匹配: 兼容 'auto_scale' 与 auto_scale 等写法；不 break，
+    # 把所有候选模板都 patch，防止实际打包的模板路径漏网
     sed -i "s/auto_scale '1'/auto_scale 'off'/g" "$PBUF_UCI"
+    sed -i "s/auto_scale 'on'/auto_scale 'off'/g" "$PBUF_UCI"
+    sed -i "s/auto_scale 'enabled'/auto_scale 'off'/g" "$PBUF_UCI"
     sed -i "s/scaling_governor 'performance'/scaling_governor 'schedutil'/g" "$PBUF_UCI"
+    sed -i "s/scaling_governor='performance'/scaling_governor='schedutil'/g" "$PBUF_UCI"
+    sed -i "s/scaling_governor 'powersave'/scaling_governor 'schedutil'/g" "$PBUF_UCI"
     echo ">>> pbuf 已 Patch: $PBUF_UCI (auto_scale=off, schedutil)"
     PBUF_PATCHED=1
-    break
   fi
 done
 [ $PBUF_PATCHED -eq 0 ] && echo ">>> WARNING: pbuf.uci 未找到，使用 uci-defaults 兜底"
 
 # 兜底: uci-defaults 首启强制 schedutil (无论 pbuf.uci 是否 patch 成功)
+# 注意: uci-defaults(S95done) 在 qca-nss-pbuf 之前执行，uci set 可能被
+# pbuf init 覆盖，这里仅尽力而为；最终由 rc.local 最后阶段兜底保证。
 cat > package/base-files/files/etc/uci-defaults/991_set_schedutil <<'EOF'
 #!/bin/sh
+if uci get pbuf >/dev/null 2>&1; then
+    if uci get pbuf.opt >/dev/null 2>&1; then
+        SEC=opt
+    else
+        SEC=@pbuf[0]
+    fi
+    uci set pbuf.$SEC.scaling_governor='schedutil'
+    uci set pbuf.$SEC.auto_scale='off'
+    uci commit pbuf
+fi
 for cpu in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_governor; do
     [ -f "$cpu" ] && echo schedutil > "$cpu"
 done
-# 同步 pbuf UCI 配置 (如果存在)
-if uci get pbuf.@pbuf[0] >/dev/null 2>&1; then
-    uci set pbuf.@pbuf[0].scaling_governor='schedutil'
-    uci set pbuf.@pbuf[0].auto_scale='off'
-    uci commit pbuf
-fi
 exit 0
 EOF
 chmod +x package/base-files/files/etc/uci-defaults/991_set_schedutil
@@ -503,7 +533,7 @@ EOF
 # ============================================
 # 21. 文件系统 + 内存回收 (NAS 场景)
 #     1GB DDR4 设备：脏页回写保守 + min_free 防碎片
-#     ⚠️ overcommit_memory 改为 2 (不过量提交，避免 OOM)
+#     ⚠️ overcommit=1 (启发式)；2 会拒绝 Go 代理软件大块 mmap
 # ============================================
 cat >> files/etc/sysctl.d/99-optimize.conf <<EOF
 # 脏页回写 (Samba/NAS 更稳)
@@ -511,8 +541,11 @@ vm.dirty_ratio=10
 vm.dirty_background_ratio=5
 vm.dirty_expire_centisecs=1200
 vm.dirty_writeback_centisecs=1200
-# 内存过量提交策略 (2=不过量提交，防止 OOM)
-vm.overcommit_memory=2
+# 内存过量提交策略
+# ⚠️ 用 1(启发式) 而非 2: clash/sing-box/xray 等 Go 程序虚拟地址空间
+#    (clash VSZ 实测 ~1.4GB) 接近 1GB RAM + 463MB zram swap 上限，
+#    overcommit=2 会拒绝大块 mmap 导致代理软件无法启动。
+vm.overcommit_memory=1
 vm.min_free_kbytes=32768
 EOF
 
