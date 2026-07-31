@@ -101,7 +101,7 @@ jobs:
           CONFIG_PACKAGE_kmod-wireguard \
           CONFIG_PACKAGE_kmod-nf-socket \
           CONFIG_PACKAGE_kmod-nft-tproxy ; do
-            line=$(grep -E "^${sym}(=| is not set)" .config | head -1)
+            line=$(grep -E "^#? ?${sym}(=| is not set)" .config | head -1)
             if [ -z "$line" ]; then
                 echo "  [ABSENT] $sym" | tee -a $GITHUB_WORKSPACE/diagnose.txt
             else

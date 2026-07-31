@@ -54,21 +54,14 @@ rm -rf package/lucky-src
 git clone --depth=1 https://github.com/sbwml/luci-app-mosdns package/luci-app-mosdns
 
 # ============================================
-# 2b. Passwall 完整安装 (主包 + 依赖)
-#     ⚡ 修复: 之前只克隆了依赖包，主包 luci-app-passwall 缺失
-#     导致 make defconfig 静默丢弃整个 Passwall 栈
-#     来源: xiaorouji/openwrt-passwall + openwrt-passwall-packages
+# 2b. Passwall 改用 25.12 feeds 自带版本
+#     ⚡ 根因修复: 之前从 master clone passwall 主包 + 依赖包，
+#     其滚动分支依赖引用了 25.12-nss feeds 没有的符号，
+#     污染包索引导致 make defconfig 级联禁用几乎所有 feeds 包
+#     (htop/samba4/ttyd/openclash/upnp 等全被禁用)。
+#     25.12 feeds 已自带兼容的 luci-app-passwall/xray-core/sing-box
+#     及 chinadns-ng/dns2socks 等依赖，无需 clone，由 .config 直接选用。
 # ============================================
-
-# Passwall 主包 (LuCI 界面 + 核心逻辑)
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall package/luci-app-passwall
-
-# Passwall 依赖包 (chinadns-ng, dns2socks, microsocks, ipt2socks 等)
-git clone --depth=1 https://github.com/xiaorouji/openwrt-passwall-packages package/passwall-pkg-tmp
-for pkg in chinadns-ng dns2socks microsocks ipt2socks v2ray-geodata v2ray-plugin simple-obfs shadow-tls tcping geoview; do
-    [ -d "package/passwall-pkg-tmp/$pkg" ] && cp -rf "package/passwall-pkg-tmp/$pkg" package/
-done
-rm -rf package/passwall-pkg-tmp
 
 # ============================================
 # 3. 修复 Makefile 路径
