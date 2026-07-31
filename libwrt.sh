@@ -40,20 +40,18 @@ rm -rf package/emortal/luci-app-athena-led
 # 2. 添加额外插件 (feeds 中不包含的)
 # ============================================
 
-# >>> TEST: 临时禁用所有 clone，验证是否为 clone 包污染包索引导致 feeds 包被禁用 <<<
 # Argon 主题及配置
-# git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
-# git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config package/luci-app-argon-config
+git clone --depth=1 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
+git clone --depth=1 https://github.com/jerrykuku/luci-app-argon-config package/luci-app-argon-config
 
 # Lucky (DDNS/端口转发/STUN) - 不在 immortalwrt feeds 中
-# git clone --depth=1 https://github.com/sirpdboy/luci-app-lucky package/lucky-src
-# cp -rf package/lucky-src/luci-app-lucky package/luci-app-lucky
-# cp -rf package/lucky-src/lucky package/lucky
-# rm -rf package/lucky-src
+git clone --depth=1 https://github.com/sirpdboy/luci-app-lucky package/lucky-src
+cp -rf package/lucky-src/luci-app-lucky package/luci-app-lucky
+cp -rf package/lucky-src/lucky package/lucky
+rm -rf package/lucky-src
 
 # MosDNS (使用 sbwml 版本，更稳定且功能完整)
-# git clone --depth=1 https://github.com/sbwml/luci-app-mosdns package/luci-app-mosdns
-# >>> TEST END <<<
+git clone --depth=1 https://github.com/sbwml/luci-app-mosdns package/luci-app-mosdns
 
 # ============================================
 # 2b. Passwall 改用 25.12 feeds 自带版本

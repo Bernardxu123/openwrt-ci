@@ -72,7 +72,8 @@ jobs:
             fi
         done
         echo "" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
-        echo "===== make defconfig 输出 ====="
+        echo "===== make defconfig 输出 (跑两次: 第一次建索引, 第二次正确解析) ====="
+        make defconfig >/dev/null 2>&1
         make defconfig 2>&1 | tee $GITHUB_WORKSPACE/defconfig.log
         echo ""
         echo "===== defconfig 解析后的关键包状态 ====="

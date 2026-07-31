@@ -115,8 +115,13 @@ jobs:
     - name: Download DL Package(下载DL软件包)
       run: |
         cd $OPENWRT_PATH
+        # ⚡ 关键修复: 必须跑两次 defconfig
+        # 第一次 defconfig 边建包索引(tmp/.packageinfo)边处理配置，
+        # feeds 包在索引建全前被处理，会被重置成默认值(n)，导致
+        # htop/samba4/ttyd/openclash/passwall 等几乎全部 feeds 包丢失。
+        # 第二次 defconfig 基于已建好的完整索引，能正确解析保留所有包。
         make defconfig
-        # ⚡ 已删除: BBR/FQ echo (libwrt.sh 第 4b 步已正确 patch config-6.12)
+        make defconfig
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
