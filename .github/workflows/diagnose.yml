@@ -47,6 +47,31 @@ jobs:
     - name: Run defconfig + diagnose
       run: |
         cd $OPENWRT_PATH
+        echo "===== feeds 安装情况排查 =====" | tee $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "--- feeds.conf.default ---" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        cat feeds.conf.default 2>/dev/null | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "--- ./scripts/feeds 列表 (已安装的 feed) ---" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        ./scripts/feeds list -i 2>&1 | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "--- package/feeds/ 目录 (每个 feed 的包链接) ---" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        ls -la package/feeds/ 2>&1 | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "--- package/feeds/packages/ 包数量 ---" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        ls package/feeds/packages/ 2>/dev/null | wc -l | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "--- package/feeds/luci/ 包数量 ---" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        ls package/feeds/luci/ 2>/dev/null | wc -l | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        echo "--- 关键缺失包的 Makefile 是否存在于构建树 ---" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+        for p in htop samba4 ttyd luci-app-openclash miniupnpd luci-app-filemanager xray-core sing-box; do
+            found=$(find package feeds -maxdepth 4 -type d -name "$p" 2>/dev/null | head -3)
+            if [ -n "$found" ]; then
+                echo "  [FOUND] $p -> $found" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+            else
+                echo "  [MISSING] $p (构建树中无此包目录)" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
+            fi
+        done
+        echo "" | tee -a $GITHUB_WORKSPACE/feeds_inventory.txt
         echo "===== make defconfig 输出 ====="
         make defconfig 2>&1 | tee $GITHUB_WORKSPACE/defconfig.log
         echo ""
@@ -96,4 +121,5 @@ jobs:
         path: |
           ${{ github.workspace }}/diagnose.txt
           ${{ github.workspace }}/defconfig.log
+          ${{ github.workspace }}/feeds_inventory.txt
           ${{ github.workspace }}/resolved.config
