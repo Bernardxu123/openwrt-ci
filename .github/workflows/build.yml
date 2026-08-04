@@ -61,12 +61,6 @@ jobs:
         sudo -E apt-get -y clean
         sudo timedatectl set-timezone "$TZ"
 
-    - name: Combine Disks(合并磁盘)
-      uses: easimon/maximize-build-space@v1
-      with:
-        swap-size-mb: 1024
-        root-reserve-mb: 1024
-
     - name: Checkout
       uses: actions/checkout@v4
 
