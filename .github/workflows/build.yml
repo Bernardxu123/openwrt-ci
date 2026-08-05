@@ -233,8 +233,17 @@ jobs:
       run: |
         # 打包全部 ipk (含 kmod) 随 Release 发布，日后保留设置升级补装包无需重编
         cd $OPENWRT_PATH/bin
-        tar -czf targets/*/*/Packages.tar.gz packages
-        cd targets/*/*
+        echo "=== bin 目录树诊断 ==="
+        find . -maxdepth 4 -type d | head -40
+        # 定位固件目录: find 驱动, 不依赖 bin/targets 目录层级假设
+        # (历史踩坑: cd bin 后 glob targets/*/* 未展开 → "No such file or directory")
+        FW_DIR="$(dirname "$(find . -name '*squashfs-sysupgrade.bin' | head -1)")"
+        [ -z "$FW_DIR" ] && { echo "::error::未定位到固件产物目录"; exit 1; }
+        echo "FW_DIR=$FW_DIR"
+        cd "$FW_DIR"
+        tar -czf Packages.tar.gz -C "$OPENWRT_PATH/bin" packages 2>/dev/null || \
+          tar -czf Packages.tar.gz packages 2>/dev/null || \
+          echo "::warning::无 ipk 可打包"
         echo "VERSION_KERNEL=$(find -type f -name "*.manifest" -exec grep -oP '^kernel - \K.*?(?=~|-\d+-)' {} \;)" >> $GITHUB_ENV
         cp $OPENWRT_PATH/.config build.config
         # 只保留 factory + sysupgrade + sha256 + build.config + Packages.tar.gz
