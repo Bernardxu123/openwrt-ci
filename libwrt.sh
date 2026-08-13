@@ -277,31 +277,51 @@ TEMPINFO_PATH="package/emortal/autocore/files/tempinfo"
 mkdir -p "$(dirname "$TEMPINFO_PATH")"
 cat > "$TEMPINFO_PATH" <<'EOF'
 #!/bin/sh
+# CPU: cpu-thermal zone; WiFi: wcss radio zones / ieee80211 hwmon
 
 IEEE_PATH="/sys/class/ieee80211"
 THERMAL_PATH="/sys/class/thermal"
 
+wifi_temp=
+cpu_temp=
+
 if grep -Eq "ipq40xx|ipq806x" "/etc/openwrt_release"; then
-	wifi_temp="$(awk '{printf("%.1f°C ", $0 / 1000)}' "$IEEE_PATH"/phy*/device/hwmon/hwmon*/temp1_input 2>"/dev/null" | awk '$1=$1')"
-else
-	wifi_temp="$(cat "$IEEE_PATH"/phy*/hwmon*/temp1_input 2>"/dev/null" | awk '{printf("%.1f°C ", $0 / 1000)}' | awk '$1=$1')"
+	wifi_temp="$(cat "$IEEE_PATH"/phy*/device/hwmon/hwmon*/temp*_input 2>/dev/null | awk '{printf "%.1f°C ", $1 / 1000}' | tr '\n' ' ' | sed 's/ $//')"
 fi
 
 if grep -q "ipq40xx" "/etc/openwrt_release"; then
-	if [ -e "$IEEE_PATH/phy0/hwmon0/temp1_input" ]; then
-		mt76_temp="$(awk -F ': ' '{print $2}' "$IEEE_PATH/phy0/hwmon0/temp1_input" 2>/dev/null")°C"
-	fi
-	[ -z "$mt76_temp" ] || wifi_temp="${wifi_temp:+$wifi_temp }$mt76_temp"
+	[ -f "$IEEE_PATH/phy0/hwmon0/temp1_input" ] && wifi_temp="${wifi_temp:+$wifi_temp }$(awk '{printf "%.1f°C", $1 / 1000}' "$IEEE_PATH/phy0/hwmon0/temp1_input" 2>/dev/null)"
 else
-	cpu_temp="$(awk '{printf("%.1f°C", $0 / 1000)}' "$THERMAL_PATH/thermal_zone0/temp" 2>/dev/null")"
+	# CPU: 按 type=cpu-thermal 精确匹配，thermal_zone 编号顺序变化也不会读错
+	cpu_raw=
+	for z in "$THERMAL_PATH"/thermal_zone*; do
+		[ -r "$z/type" ] || continue
+		[ "$(cat "$z/type" 2>/dev/null)" = "cpu-thermal" ] || continue
+		cpu_raw=$(cat "$z/temp" 2>/dev/null)
+		break
+	done
+	# 回退: ipq60xx 惯例 zone4=cpu-thermal, zone0=nss-top
+	[ -n "$cpu_raw" ] || cpu_raw=$(cat "$THERMAL_PATH/thermal_zone4/temp" 2>/dev/null)
+	[ -n "$cpu_raw" ] || cpu_raw=$(cat "$THERMAL_PATH/thermal_zone0/temp" 2>/dev/null)
+	[ -n "$cpu_raw" ] && cpu_temp=$(echo "$cpu_raw" | awk '{printf "%.1f", $1 / 1000}')
+
+	wifi_tmp=
+	for z in 2 3; do
+		[ -r "$THERMAL_PATH/thermal_zone$z/temp" ] || continue
+		raw=$(cat "$THERMAL_PATH/thermal_zone$z/temp" 2>/dev/null)
+		[ -z "$raw" ] && continue
+		val=$(echo "$raw" | awk '{printf "%.1f", $1 / 1000}')
+		wifi_tmp="${wifi_tmp:+$wifi_tmp, }${val}°C"
+	done
+	[ -n "$wifi_tmp" ] && wifi_temp="$wifi_tmp"
 fi
 
 if [ -n "$cpu_temp" ] && [ -z "$wifi_temp" ]; then
-	echo -n "CPU: $cpu_temp"
+	echo -n "CPU: ${cpu_temp}°C"
 elif [ -z "$cpu_temp" ] && [ -n "$wifi_temp" ]; then
-	echo -n "WiFi: $wifi_temp"
+	echo -n "WiFi: ${wifi_temp}"
 elif [ -n "$cpu_temp" ] && [ -n "$wifi_temp" ]; then
-	echo -n "CPU: $cpu_temp, WiFi: $wifi_temp"
+	echo -n "CPU: ${cpu_temp}°C, WiFi: ${wifi_temp}"
 else
 	echo -n "No temperature info"
 fi
