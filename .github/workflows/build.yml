@@ -70,8 +70,6 @@ jobs:
         git clone --depth 1 -b $REPO_BRANCH $REPO_URL openwrt
         cd openwrt
         echo "OPENWRT_PATH=$PWD" >> $GITHUB_ENV
-        VERSION_INFO=$(git show -s --date=short --format="作者: %an<br/>时间: %cd<br/>内容: %s<br/>hash: %H")
-        echo "VERSION_INFO=$VERSION_INFO" >> $GITHUB_ENV
 
     - name: Generate Variables(生成变量)
       run: |
@@ -82,6 +80,8 @@ jobs:
         DEVICE_SUBTARGET=$(grep CONFIG_TARGET_SUBTARGET $CONFIG_FILE | awk -F '"' '{print $2}')
         echo "DEVICE_SUBTARGET=$DEVICE_SUBTARGET" >> $GITHUB_ENV
         echo "DATE=$(date +"%Y%m%d-%H%M")" >> $GITHUB_ENV
+        # 来源信息: 取触发本次构建的用户仓库 commit (替代 LibWrt 上游固定 commit)
+        echo "VERSION_INFO=$(git show -s --date=short --format='作者: %an<br/>时间: %cd<br/>内容: %s<br/>hash: %H')" >> $GITHUB_ENV
 
     - name: Cache Toolchain + ccache(缓存工具链)
       uses: HiGarfield/cachewrtbuild@main
