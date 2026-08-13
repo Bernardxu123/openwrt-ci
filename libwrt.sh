@@ -328,6 +328,50 @@ fi
 EOF
 
 # ============================================
+# 13.1 固件版本标注 — 路由器上可查刷的是哪个固件
+#     首次开机: /etc/openwrt_release 注入 R{日期-时间} + 生成 /etc/fw_version
+#     LuCI 系统页 Firmware Version / cat /etc/openwrt_release / cat /etc/fw_version 均可查看
+#     TAG 与 Release 名一致 (build.yml Generate Variables 注入 DATE，缺省回退当前时间)
+#     来源: 自研 (解决 LuCI 只显示 r0-{hash} 无法对应 Release tag 的问题)
+# ============================================
+FW_VERSION_PATH="package/base-files/files/etc/uci-defaults/999_fw_version"
+FW_TAG="R${DATE:-$(date +%Y%m%d-%H%M)}"
+FW_BUILT="$(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+mkdir -p "$(dirname "$FW_VERSION_PATH")"
+cat > "$FW_VERSION_PATH" <<'EOF'
+#!/bin/sh
+# 固件版本标注 (首次开机执行一次)
+TAG="__FW_TAG__"
+[ -f /etc/openwrt_release ] || exit 0
+
+# 保留原 revision (源码 commit hash)，用于 /etc/fw_version 溯源
+OLD_REV=$(sed -n "s/^DISTRIB_REVISION='\([^']*\)'/\1/p" /etc/openwrt_release | head -1)
+SRC_REV=
+case "$OLD_REV" in
+	r0-*) SRC_REV="${OLD_REV#r0-}" ;;
+	R*)   SRC_REV="" ;;
+esac
+
+# 注入可读版本号 (LuCI 系统页 Firmware Version 直接显示)
+sed -i "s/^DISTRIB_REVISION=.*/DISTRIB_REVISION='$TAG'/" /etc/openwrt_release
+sed -i "s/^DISTRIB_DESCRIPTION=.*/DISTRIB_DESCRIPTION='LibWrt 25.12-SNAPSHOT $TAG'/" /etc/openwrt_release
+
+# 生成版本标注文件: cat /etc/fw_version 一行查看
+{
+	echo "Firmware: LibWrt 25.12-SNAPSHOT $TAG"
+	echo "Built: __FW_BUILT__"
+	echo "Source commit: ${SRC_REV:-unknown}"
+	echo "Kernel: $(uname -r)"
+	echo "Board: $(cat /tmp/sysinfo/board_name 2>/dev/null)"
+} > /etc/fw_version
+
+exit 0
+EOF
+sed -i "s/__FW_TAG__/$FW_TAG/; s|__FW_BUILT__|$FW_BUILT|" "$FW_VERSION_PATH"
+chmod +x "$FW_VERSION_PATH"
+echo ">>> 固件版本标注已注入: $FW_TAG"
+
+# ============================================
 # 14. 首屏美化 — Argon 主题蓝紫配色
 #     primary=#6A89CC, transparency=0.3
 #     来源: ZqinKing/wrt_release
