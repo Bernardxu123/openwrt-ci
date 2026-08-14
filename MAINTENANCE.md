@@ -94,7 +94,8 @@ make defconfig                              # 第二次：基于完整配置定�
 
 声明目标设备、NSS、内核选项与全部软件包。关键分组：
 
-- **NSS 硬件加速**：`kmod-qca-nss-drv*`、`kmod-qca-nss-ecm`、NSS v11.4 固件、SKB Recycler、WiFi offload。
+- **NSS 硬件加速**：`kmod-qca-nss-drv*`、`kmod-qca-nss-ecm`、NSS v11.4 固件（12.5 测试轮，mesh 取舍见 §8）、SKB Recycler（含 PREALLOC）、WiFi offload。
+- **文件共享**：Samba4（userspace）+ ksmbd 内核态后端（`kmod-fs-ksmbd`/`ksmbd-tools`，LuCI 可切换）。
 - **代理**：OpenClash（Meta）、Passwall（Xray/SingBox）。Passwall 及其依赖
   （chinadns-ng、dns2socks、microsocks、ipt2socks 等）**直接用 25.12 feeds 自带版本**，
   不再从 master clone（见 §5 第 2b 节）。
@@ -162,6 +163,8 @@ make defconfig                              # 第二次：基于完整配置定�
 | 23 | WiFi 2.4G 默认 HE40 带宽 | uci-defaults `993_set_wifi_he40` |
 | 24 | 版本号可读化：DISTRIB_REVISION=R{日期}（toplevel.mk）+ LuCI 状态页时间戳（10_system.js） | `include/toplevel.mk` + feeds |
 | 25 | miniupnpd 租约 7天→1天（`scripts/upnp/999-change-default-leaseduration.patch`，构建期拷入 feeds） | `feeds/packages/net/miniupnpd/patches/` |
+| 26 | conntrack 关闭每包记账 `nf_conntrack_acct=0`（软件路径省 CPU，NSS 卸载流不受影响） | 追加 sysctl.d |
+| 27 | dnsmasq 缓存 `cachesize=2048`（默认 150；DNS 链 dnsmasq→OpenClash 7874） | uci-defaults `994_set_dnsmasq_cache` |
 
 > 注：`scripts/upnp/` 下的 patch 由 libwrt.sh §25 拷入 feeds 对应包目录，
 > **不参与** build.yml 根目录 Apply Patches 循环（路径基准不同）。
@@ -174,6 +177,7 @@ make defconfig                              # 第二次：基于完整配置定�
 - `991_set_schedutil`：CPU 调度改 schedutil（兜底，覆盖 pbuf 的 performance 默认）
 - `992_set_packet_steering`：packet_steering=0（LibWrt 官方与 NSS 冲突，跟随上游）
 - `993_set_wifi_he40`：2.4G WiFi 设 HE40（仅设 htmode，不动 SSID/密码）
+- `994_set_dnsmasq_cache`：dnsmasq cachesize=2048（保留设置升级同样生效）
 
 > 注：`files/etc/uci-defaults/991_openclash_init` 是 OpenClash 首启参数预置
 > （sniffer、tcp-concurrent、ipv6、mixed stack），与上述 991 不同路径不同名，互不冲突。
@@ -242,6 +246,8 @@ make defconfig                              # 第二次：基于完整配置定�
   由 rc.local 最后阶段（S99 之后）强制写 schedutil 保证生效。
 - **MosDNS 默认禁用**：OpenClash 的 `nameserver-policy` 已内置 DNS 分流
   （国内直连 223.5.5.5/119.29.29.29，海外走 DoH 代理），无需再叠 MosDNS。
+- **NSS 固件 12.x 不支持 802.11s mesh**：nss-firmware Makefile 明确标注；
+  家用单路由（无 mesh）可用 12.5，需要 mesh 时必须回退 11.4。
 - **构建环境依赖外部脚本**：初始化步骤用 `is.gd/depends_ubuntu_2204` 装依赖，
   该链接偶发不可用会导致"初始化环境"步骤失败，重跑即可，与代码无关。
 

@@ -117,3 +117,24 @@ foreach ($x in $refs) {
   if ($ok) { "OK  $($x.r)@$($x.t)" } else { "MISS $($x.r)@$($x.t)" }
 }
 ```
+
+---
+
+## 8. 2026-08-14 深度分析批次(本地未提交,待 review + push)
+
+来源:对运行固件(07-27 构建,已滞后)做 6 轮只读 SSH 审计 + 4 路调研(LiBwrt 上游/breeze303/ZqinKing/laipeng668/VIKINGYFY/社区)。审计结论:运行固件为 07-27 构建,8-13 已有 R20260813-1712/R20260813-1119 两个成功 Release 未刷;`/etc/rc.local` 实测在 keep.d/base-files-essential 保留清单内(与 §7 文档记载相反),保留设置升级会覆盖新固件兜底,升级前需先 `mv /etc/rc.local /root/rc.local.old`;上游 08-01 已合入 JDCloud 升级 emmc.sh 迁移(6418a73),下次升级跨新路径,建议备 factory.bin。
+
+本批次改动(全部未提交):
+
+| # | 内容 | 落点 | 说明 |
+|---|------|------|------|
+| 1 | NSS 固件 11.4→12.5(测试轮) | `configs/jdcloud_re_ss01.config` | 12.x 不支持 802.11s mesh,家用可用;如要 mesh 回退 11.4。push 前可用 diagnose.yml 验证 12_5 符号 |
+| 2 | `nf_conntrack_acct=0` | libwrt.sh §26 | LibWrt 默认 1(每包记账),软件路径省 CPU |
+| 3 | ECM `accel_delay_pkts=5` | libwrt.sh §7 rc.local | qca-nss-ecm.init 硬编码 1(QSDK 默认 5),PPPoE 短连接去抖 |
+| 4 | dnsmasq `cachesize=2048` | libwrt.sh §27 uci-defaults 994 | 默认 150;DNS 链 dnsmasq→OpenClash(7874) |
+| 5 | `CONFIG_KERNEL_SKB_RECYCLER_PREALLOC=y` | configs | SKB 池启动预分配,突发流量减少分配延迟 |
+| 6 | ksmbd 内核态 SMB | configs (`kmod-fs-ksmbd` + `ksmbd-tools`) | LuCI 可切后端,NAS 吞吐/CPU 更优(A53);需实测对比 samba4 |
+
+未采纳:周自动构建(schedule)——保持手动触发(workflow_dispatch),需要时再编译。
+
+审计中确认无问题的项(勿重复做):packet_steering=0 + RPS 实测全 0(无 set-irq-affinity 冲突)、`nf_conntrack_tcp_no_window_check=1` 生效、threaded-NAPI 已硬编码启用、BBR+FQ 生效、lan2 抖动为电视机百兆口开关机所致(正常,不禁用)。

@@ -178,6 +178,10 @@ for cpu in /sys/devices/system/cpu/cpu[0-9]*/cpufreq/scaling_governor; do
     echo schedutil > "$cpu" 2>/dev/null
 done
 
+# ECM 短连接去抖: qca-nss-ecm.init 硬编码 accel_delay_pkts=1 (QSDK 默认 5)，
+# PPPoE 下短连接反复加速/去加速空耗 CPU，抬高到 5 (debugfs 此时已挂载)
+echo 5 > /sys/kernel/debug/ecm/ecm_classifier_default/accel_delay_pkts 2>/dev/null
+
 exit 0
 RCEOF
 
@@ -693,5 +697,29 @@ if [ -d "$MINIUPNPD_DIR" ] && [ -f "$GITHUB_WORKSPACE/scripts/upnp/999-change-de
   install -Dm644 "$GITHUB_WORKSPACE/scripts/upnp/999-change-default-leaseduration.patch" "$MINIUPNPD_DIR/patches/999-change-default-leaseduration.patch"
   echo ">>> miniupnpd 租约补丁已注入 (604800→86400)"
 fi
+
+# ============================================
+# 26. conntrack 关闭每包记账 (软件路径省 CPU)
+#     LibWrt 默认 nf_conntrack_acct=1 (kmod-nf-conntrack 自带 sysctl)，
+#     每包做字节/包统计；NSS 卸载流不受影响，OpenClash/Passwall 软件路径受益
+# ============================================
+cat >> files/etc/sysctl.d/99-optimize.conf <<EOF
+# conntrack 关闭每包记账 (软件路径省 CPU，NSS 卸载流不受影响)
+net.netfilter.nf_conntrack_acct=0
+EOF
+
+# ============================================
+# 27. dnsmasq 缓存提升 (uci-defaults 首启设置)
+#     默认 cache-size=150；DNS 链为 dnsmasq → OpenClash(127.0.0.1#7874)，
+#     本地缓存命中直接提升首包延迟；保留设置升级同样生效
+# ============================================
+cat > package/base-files/files/etc/uci-defaults/994_set_dnsmasq_cache <<'EOF'
+#!/bin/sh
+uci set dhcp.@dnsmasq[0].cachesize='2048'
+uci commit dhcp
+exit 0
+EOF
+chmod +x package/base-files/files/etc/uci-defaults/994_set_dnsmasq_cache
+echo ">>> dnsmasq 缓存已提升 (cachesize=2048)"
 
 echo ">>> DIY 脚本执行完成"
