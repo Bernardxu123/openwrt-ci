@@ -21,6 +21,7 @@ env:
 
 permissions:
   contents: write
+  actions: write  # Delete Old Workflows 步骤删除历史 run 需要, 缺失时报 "Resource not accessible by integration"
 
 # 同分支重复触发时取消旧运行 (防止连续 push 白编)
 concurrency:
@@ -55,7 +56,20 @@ jobs:
         sudo rm -rf /usr/share/dotnet /etc/apt/sources.list.d /usr/local/lib/android $AGENT_TOOLSDIRECTORY
         sudo -E apt-get -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mongodb* moby* || true
         sudo -E apt-get -y update
-        sudo -E apt-get -y install $(curl -fsSL is.gd/depends_ubuntu_2204)
+        # 依赖清单内联, 不再依赖外链: is.gd/depends_ubuntu_2204 指向的 ophub 文件路径已失效 (curl 404),
+        # $(curl) 失败静默展开为空 → apt-get 空跑, 依赖全靠 runner 镜像自带, 属隐性风险
+        # 清单源: ophub/amlogic-s9xxx-openwrt make-openwrt/scripts/ubuntu2204-make-openwrt-depends (jammy 实测可用)
+        sudo -E apt-get -y install \
+          ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison btrfs-progs \
+          build-essential bzip2 ca-certificates ccache cmake coreutils cpio curl \
+          device-tree-compiler fastjar flex g++-multilib gawk gcc-multilib gettext git git-core \
+          gperf gzip haveged help2man intltool jq libc6-dev-i386 libelf-dev libfuse-dev \
+          libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev \
+          libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool libz-dev lrzsz \
+          mkisofs msmtp nano ninja-build ntpdate p7zip p7zip-full patch pigz pkgconf python2.7 \
+          python3 python3-pip python3-pyelftools python3-setuptools qemu-utils rsync scons \
+          squashfs-tools swig tar texinfo uglifyjs unzip upx upx-ucl vim wget xmlto xsltproc \
+          xxd xz-utils yasm zip zlib1g-dev zstd
         sudo -E systemctl daemon-reload
         sudo -E apt-get -y autoremove --purge
         sudo -E apt-get -y clean
