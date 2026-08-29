@@ -192,7 +192,13 @@ mkdir -p files/usr/bin
 cat > files/usr/bin/nss-status <<'NSSEOF'
 #!/bin/sh
 echo "========== NSS 驱动状态 =========="
-cat /sys/kernel/debug/qca-nss-drv/stats 2>/dev/null || echo "  NSS debugfs 不可用"
+# stats 是目录不能直接 cat; cpu_load_ubi 显示 NSS 核负载
+if [ -d /sys/kernel/debug/qca-nss-drv/stats ]; then
+  echo "  -- NSS Core 负载 --"
+  cat /sys/kernel/debug/qca-nss-drv/stats/cpu_load_ubi 2>/dev/null || echo "  (无法读取)"
+else
+  echo "  NSS debugfs 不可用 (debugfs 未挂载或模块未加载)"
+fi
 echo ""
 echo "========== ECM 前端加速状态 =========="
 [ -d /sys/kernel/debug/ecm/ecm_db ] && {
@@ -234,10 +240,9 @@ cat > package/base-files/files/etc/sysupgrade.conf <<'EOF'
 EOF
 
 # ============================================
-# 11. 定时清理 + WireGuard 看门狗
-#     每天凌晨 3:15 清理内核缓存
-#     WireGuard 接口存在时自动添加保活 cron
-#     来源: ZqinKing/wrt_release
+# 11. 定时任务清理 + WireGuard 看门狗 + sysctl 兜底
+#     custom_task 每次刷机随固件全新写入; /etc/rc.local 会被
+#     "保留设置升级"的旧文件覆盖 (实测踩坑), 关键兜底放这里才可靠
 # ============================================
 mkdir -p package/base-files/files/etc/init.d
 cat > package/base-files/files/etc/init.d/custom_task <<'EOF'
@@ -245,8 +250,8 @@ cat > package/base-files/files/etc/init.d/custom_task <<'EOF'
 START=99
 
 boot() {
-    sed -i '/drop_caches/d' /etc/crontabs/root
-    echo "15 3 * * * sync && echo 3 > /proc/sys/vm/drop_caches" >> /etc/crontabs/root
+    # 清理无用 cron: coremark 每日跑分 + drop_caches 缓存清空 (内存充裕时纯开销)
+    sed -i '/coremark/d;/drop_caches/d' /etc/crontabs/root
 
     sed -i '/wireguard_watchdog/d' /etc/crontabs/root
 
@@ -260,9 +265,42 @@ boot() {
     fi
 
     crontab /etc/crontabs/root
+
+    # sysctl 兜底: LibWrt 底包 11-nf-conntrack.conf 会开每包记账 (软件路径耗 CPU),
+    # 99-optimize.conf 在 sysctl.d 词序上后于 11 号文件可覆盖, 此处再兜一次底
+    sysctl -w vm.overcommit_memory=1 >/dev/null 2>&1
+    sysctl -w net.netfilter.nf_conntrack_acct=0 >/dev/null 2>&1
+
+    # RPS 多核软中断分发: 本设备接口名为 wan/lan1-3 (无 eth0/eth1),
+    # NSS 卸载流量不经 CPU, 此掩码覆盖软件路径流量 (代理 TUN/本地服务)
+    for rps_dev in wan lan1 lan2 lan3; do
+        for rps_q in /sys/class/net/$rps_dev/queues/rx-*/rps_cpus; do
+            [ -e "$rps_q" ] && echo f > "$rps_q" 2>/dev/null
+        done
+    done
 }
 EOF
 chmod +x package/base-files/files/etc/init.d/custom_task
+
+# ============================================
+# 11.5 uci-defaults 清理: 底包遗留的矛盾/无效配置
+#     uci-defaults 每次刷机全新写入且必执行 (保留设置升级也生效),
+#     zz- 前缀保证在底包同名配置写入之后执行
+# ============================================
+mkdir -p files/etc/uci-defaults
+cat > files/etc/uci-defaults/zz-libwrt-cleanup <<'EOF'
+#!/bin/sh
+# dnsmasq: fake-ip 模式下 cachesize=0 是正确配置 (防假 IP 残留),
+# 底包的 min_cache_ttl/use_stale_cache 在 cachesize=0 下无意义, 删除消除矛盾
+uci -q delete dhcp.@dnsmasq[0].min_cache_ttl
+uci -q delete dhcp.@dnsmasq[0].use_stale_cache
+uci -q commit dhcp
+# SQM: 底包旧配置指向不存在的 eth1 且限速值过时; 启用 NSS SQM 前保持空配置
+while uci -q delete sqm.@queue[0]; do :; done
+uci -q commit sqm
+exit 0
+EOF
+chmod +x files/etc/uci-defaults/zz-libwrt-cleanup
 
 # ============================================
 # 12. 首屏美化 — cpuusage (LuCI 状态栏)
@@ -582,11 +620,12 @@ EOF
 # 19. 网络软中断负载均衡 (RPS/RFS + 缓冲深化)
 # ============================================
 cat >> files/etc/sysctl.d/99-optimize.conf <<EOF
-# RPS/RFS 软中断多核分发
-net.core.rps_flow_limit=16384
+# 软中断缓冲深化
+# ⚠️ 不要加 net.core.rps_flow_limit / net.core.netdev_budget_usecs:
+#    本内核 (6.12 QSDK) 无这两个键, BusyBox sysctl -p 写入报 Invalid argument
+#    且中止整个文件, 其后所有参数全部失效 (实测踩坑)
 net.core.netdev_max_backlog=2500
 net.core.netdev_budget=600
-net.core.netdev_budget_usecs=8000
 # optmem 预分配
 net.core.optmem_max=262144
 EOF
