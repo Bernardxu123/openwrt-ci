@@ -97,7 +97,19 @@ if [ -f "$KERNEL_CONFIG" ]; then
   # 启用 schedutil CPU 调度策略 (LibWrt config-6.12 默认禁用，pbuf.uci 第17节会设 scaling_governor 'schedutil')
   sed -i 's/^# CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL is not set$/CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y/' "$KERNEL_CONFIG"
   sed -i 's/^# CONFIG_CPU_FREQ_GOV_SCHEDUTIL is not set$/CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y/' "$KERNEL_CONFIG"
-  echo ">>> 内核配置已 Patch: BBR + FQ + schedutil 启用 (默认拥塞控制由 sysctl 运行时设置)"
+  # dae (eBPF 代理) 运行时依赖: 内核 BTF + tc cls_bpf/clsact
+  # dae 的 CO-RE 程序加载强依赖 /sys/kernel/btf/vmlinux (CONFIG_DEBUG_INFO_BTF);
+  # tc attach 依赖 clsact(CONFIG_NET_SCH_INGRESS) 与 cls_bpf(CONFIG_NET_CLS_BPF)。
+  # 直接编进内核而非 kmod, 规避跨源 kmod vermagic 不匹配问题
+  for sym in CONFIG_DEBUG_INFO_BTF CONFIG_NET_SCH_INGRESS CONFIG_NET_CLS_BPF CONFIG_BPF_SYSCALL CONFIG_CGROUP_BPF; do
+    if grep -q "^# ${sym} is not set\$" "$KERNEL_CONFIG"; then
+      sed -i "s/^# ${sym} is not set\$/${sym}=y/" "$KERNEL_CONFIG"
+    elif ! grep -q "^${sym}=" "$KERNEL_CONFIG"; then
+      echo "${sym}=y" >> "$KERNEL_CONFIG"
+    fi
+  done
+  echo "CONFIG_KERNEL_DEBUG_INFO_BTF=y" >> .config
+  echo ">>> 内核配置已 Patch: BBR + FQ + schedutil + BTF/eBPF 启用 (BTF 供 dae 使用)"
 fi
 
 # ============================================
