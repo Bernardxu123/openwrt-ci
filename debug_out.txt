@@ -1,0 +1,66 @@
+=== 配置文件前15行 ===
+# ============================================
+# Nikki (Mihomo) 优化配置 - 上海联通 1000M 专用
+# 设备: JDCloud RE-SS-01 (IPQ6018 双核 A53 / 929MB)
+# 作者: Bernardxu123
+# 更新: 2026-07-23 (深度性能优化 + 恢复新加坡自动组)
+# ============================================
+# ⚡ 本版优化要点:
+#   1. QUIC 不再全局阻断 → 允许 HTTP/3, 不再被联通限速
+#   2. IPv6 双栈启用 → 充分利用上海联通 IPv6
+#   3. DNS 精简到 2+1 层 → 减少查询延迟和缓存污染
+#   4. 保留全部自动组(港/日/新/台/美) + 恢复新加坡自动组
+#   5. keep-alive-interval 优化 → 匹配联通 NAT 超时
+#   6. flow offloading 已开启 → NAT 硬件/软件分流
+# ============================================
+
+
+
+=== proxy-groups 名称 ===
+  - {name: 直连, type: direct}
+  - {name: 🚀 默认代理, type: select, proxies: [♻️ 香港自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 台湾自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🌐 全部节点, 直连]}
+  - {name: 📦 GitHub, <<: *pr}
+  - {name: 🤖 ChatGPT, <<: *pr}
+  - {name: ✈️ Speedtest, <<: *pr}
+  - {name: 🛡️ Adobe屏蔽, type: select, proxies: [REJECT, 直连]}
+  - {name: 🍎 Apple, type: select, proxies: [直连, 🚀 默认代理]}
+  - {name: 🏢 甲骨文 Oracle, type: select, proxies: [直连, 🚀 默认代理, ♻️ 香港自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 台湾自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🌐 全部节点]}
+  - {name: 🎯 直连, type: select, proxies: [直连, 🚀 默认代理]}
+  - {name: 🐟 漏网之鱼, <<: *pr}
+  - {name: 🇭🇰 香港节点, type: select, include-all: true, filter: "(?i)港|hk|hongkong|hong kong"}
+  - {name: 🇯🇵 日本节点, type: select, include-all: true, filter: "(?i)日|jp|japan"}
+  - {name: 🇺🇸 美国节点, type: select, include-all: true, filter: "(?i)美|us|unitedstates|united states"}
+  - {name: 🇸🇬 新加坡节点, type: select, include-all: true, filter: "(?i)新|sg|singapore|狮|獅"}
+  - {name: 🇹🇼 台湾节点, type: select, include-all: true, filter: "(?i)台|tw|taiwan"}
+  - {name: ♻️ 香港自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(港|联通|HK|(?i)Hong)", exclude-filter: "(台|日|韩|新|深|美)"}
+  - {name: ♻️ 日本自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(日|JP|(?i)Japan)", exclude-filter: "(港|台|韩|新|美)"}
+  - {name: ♻️ 新加坡自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(新|狮|獅|HKG|SG|(?i)Singapore)", exclude-filter: "(港|台|日|韩|美)"}
+  - {name: ♻️ 台湾自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(台|TW|(?i)Taiwan)", exclude-filter: "(港|日|韩|新|美)"}
+  - {name: ♻️ 美国自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(美|US|(?i)States|America)", exclude-filter: "(港|台|日|韩|新)"}
+  - {name: ♻️ 自动选择, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, exclude-filter: "直连"}
+  - {name: 🌐 全部节点, type: select, include-all: true}
+external-ui-name: metacubexd
+
+
+=== DNS 配置 ===
+dns:
+  enable: true
+  listen: 0.0.0.0:7874
+  ipv6: true
+  respect-rules: true
+  use-hosts: true
+  cache-algorithm: lru           # ⚡ 新增: LRU 缓存算法
+  cache-size: 10000              # ⚡ 新增: 1万条缓存
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+
+
+=== 手动启动 ===
+OK
+
+=== 启动后进程 ===
+无进程
+
+=== init 状态 ===
+inactive

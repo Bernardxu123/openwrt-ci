@@ -1,0 +1,73 @@
+=== 执行 openclash.sh ===
+OUT: + . /lib/functions.sh
+++ N=$'\n'
+++ _C=0
+++ NO_EXPORT=1
+++ LOAD_STATE=1
+++ LIST_SEP=' '
+++ reset_cb
+++ '[' -z '' ']'
+++ '[' -f /lib/config/uci.sh ']'
+++ . /lib/config/uci.sh
++++ CONFIG_APPEND=
++ . /usr/share/openclash/ruby.sh
++ . /usr/share/openclash/openclash_ps.sh
+++ . /usr/share/openclash/uci.sh
++++ . /lib/functions.sh
+++++ N=$'\n'
+++++ _C=0
+++++ NO_EXPORT=1
+++++ LOAD_STATE=1
+++++ LIST_SEP=' '
+++++ reset_cb
+++++ '[' -z '' ']'
+++++ '[' -f /lib/config/uci.sh ']'
+++++ . /lib/config/uci.sh
++++++ CONFIG_APPEND=
+++ JOB_COUNTER_FILE=/tmp/openclash_jobs
++ . /usr/share/openclash/log.sh
+++ START_LOG=/tmp/openclash_start.log
+++ LOG_FILE=/tmp/openclash.log
++ . /lib/functions/procd.sh
+++ . /usr/share/libubox/jshn.sh
+++ PROCD_RELOAD_DELAY=1000
+++ _PROCD_SERVICE=
+++ _procd_wrapper procd_open_service procd_close_service procd_add_instance procd_add_raw_trigger procd_add_config_trigger procd_add_interface_trigger procd_add_mount_trigger procd_add_reload_trigger procd_add_reload_data_trigger procd_add_reload_interface_trigger procd_add_action_mount_trigger procd_add_reload_mount_trigger procd_add_restart_mount_trigger procd_open_trigger procd_close_trigger procd_open_instance procd_close_instance procd_open_validate procd_close_validate procd_add_jail procd_add_jail_mount procd_add_jail_mount_rw procd_set_param procd_append_param procd_add_validation procd_set_config_changed procd_kill procd_send_signal
+++ procd_lock
++++ readlink ''
+++ local basescript=
++++ basename
+BusyBox v1.37.0 (2026-07-02 01:40:04 UTC) multi-call binary.
+
+Usage: basename FILE [SUFFIX] | -a FILE... | -s SUFFIX FILE...
+
+Strip directory path and SUFFIX from FILE
+
+	-a		All arguments are FILEs
+	-s SUFFIX	Remove SUFFIX (implies -a)
+++ local service_name=
+++ flock -n 1000
+++ '[' 1 '!=' 0 ']'
+++ exec
+
+
+=== 检查临时配置 ===
+not generated
+
+
+=== RAW_CONFIG_FILE ===
+
+
+=== config_choose 函数 ===
+
+
+=== 直接执行 start_service ===
+OUT: BusyBox v1.37.0 (2026-07-02 01:40:04 UTC) multi-call binary.
+
+Usage: basename FILE [SUFFIX] | -a FILE... | -s SUFFIX FILE...
+
+Strip directory path and SUFFIX from FILE
+
+	-a		All arguments are FILEs
+	-s SUFFIX	Remove SUFFIX (implies -a)
+

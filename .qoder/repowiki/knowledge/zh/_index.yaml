@@ -1,0 +1,35 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: zh-CN
+branch: Q0DeR-MaG1C-BrAnCh-Fo2-NoN-GiT-Or-No-C0MmIt
+nodes_managed: true
+exported_at: "2026-07-20T12:17:45Z"
+modules:
+    "":
+        dir_name: Notifuse 项目根目录
+        title: Notifuse 项目根目录
+        scope:
+            - .codegraph/
+            - .reasonix/
+            - 3xi/
+            - cc/
+            - openwrt-ci/
+            - tmp/
+            - 6-15-solo (1).yaml
+            - 6-15-solo.yaml
+            - auto_ssh.sh
+            - emailoctopus-export-consumer-list-6233bc16-3c72-11f1-aa16-bf8c4eae90ef-filter-1782281266.csv
+        source_files: []
+        children:
+            - notifuse
+        depends_on: []
+        related_to: []
+    notifuse:
+        dir_name: Notifuse 邮件营销与自动化平台（Go 后端 + React 控制台）
+        title: Notifuse 邮件营销与自动化平台（Go 后端 + React 控制台）
+        scope:
+            - notifuse/
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []

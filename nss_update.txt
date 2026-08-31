@@ -1,0 +1,44 @@
+=== opkg 搜索 nss-firmware ===
+alpine - 2.25-r3 - Alpine (Alternatively Licensed Program for Internet News and Email) is a free software email client developed at the University of Washington. It is suitable for both the inexperienced email user as well as for the most demanding power user. This package is built with OpenSSL support.
+aria2-openssl - 1.37.0-r3 - lightweight download utility (OpenSSL dependencies)
+bind-dnssec - 9.20.21-r1 - bind administration tools (dnssec-keygen, dnssec-settime and dnssec-signzone only)
+bsdtar-noopenssl - 3.7.9-r1 - tar BSD variant (without OpenSSL dependency)
+cache-domains-openssl - 2.4.0-r1 - hotplug script to dynamically configure the local DNS (dnsmasq) to redirect game content servers to a LAN cache. Definitive list dynamically obtained from https://github.com/uklans/cache-domains.
+ddns-scripts-huaweicloud - 2.8.2-r65 - Dynamic DNS Client scripts extension for huaweicloud.com API (require curl and openssl)
+dnsmasq-full - 2.90-r5 - It is intended to provide coupled DNS and DHCP service to a LAN.  This is a fully configurable variant with DHCPv4, DHCPv6, DNSSEC, Authoritative DNS and nftset, Conntrack support & NO_ID enabled by default.
+drill - 1.8.3-r1 - ldns includes the drill tool, which is much like dig from BIND. It was designed with DNSSEC in mind and should be a useful debugging/query tool for DNSSEC.
+eapol-test-openssl - 2024.09.15~5ace39b0-r2 - 802.1x auth test utility (OpenSSL full)
+exim-ldap - 4.99-r1 - Exim is a message transfer agent (MTA) developed at the University of Cambridge for use on Unix systems connected to the Internet.  This package provides Exim built with OpenSSL, OpenLDAP and Cyrus SASL.
+
+=== opkg list-installed nss ===
+jansson4 - 2.14.1-r1
+kmod-nss-ifb - 6.12.94-r1
+kmod-qca-nss-crypto - 6.12.94.12.5.2024.09.16~60e27b9-r1
+kmod-qca-nss-dp - 6.12.94.2025.11.24~19c51af0-r1
+kmod-qca-nss-drv - 6.12.94.11.4.0.5.2021.09.13~53e5863-r17
+kmod-qca-nss-drv-bridge-mgr - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-eogremgr - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-gre - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-igs - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-l2tpv2 - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+
+=== 搜索 nss-firmware ===
+kmod-qca-nss-crypto - 6.12.94.12.5.2024.09.16~60e27b9-r1
+kmod-qca-nss-dp - 6.12.94.2025.11.24~19c51af0-r1
+kmod-qca-nss-drv - 6.12.94.11.4.0.5.2021.09.13~53e5863-r17
+kmod-qca-nss-drv-bridge-mgr - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-eogremgr - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-gre - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-igs - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-l2tpv2 - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-lag-mgr - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+kmod-qca-nss-drv-map-t - 6.12.94.11.4.0.5.2021.08.17~c4049d1-r8
+
+=== /lib/firmware 中的 nss 文件 ===
+-rw-r--r--    1 root     root        862880 Jul  2 09:40 /lib/firmware/qca-nss0-retail.bin
+lrwxrwxrwx    1 root     root            33 Jul 22 23:18 /lib/firmware/qca-nss0.bin -> /lib/firmware/qca-nss0-retail.bin
+
+
+=== dmesg NSS 版本 ===
+[   29.778829] qca-nss 39000000.nss: NSS FW Version: NSS.CP.11.4.0.5-6-R
+[   29.778873] qca-nss 39000000.nss: fw of size 862880 bytes copied to addr: 40000000, nss_id: 0

@@ -1,0 +1,8 @@
+schema_version: 1
+module_path: notifuse
+title: Notifuse 邮件营销与自动化平台（Go 后端 + React 控制台）
+scope:
+    - notifuse/
+source_files: []
+depends_on: []
+related_to: []

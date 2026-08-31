@@ -1,0 +1,14 @@
+=== 启用 OpenClash ===
+OK
+
+=== 启动 OpenClash ===
+OK
+
+=== 进程 ===
+无进程
+
+=== 端口 ===
+无监听
+
+=== init 状态 ===
+inactive

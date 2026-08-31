@@ -1,0 +1,36 @@
+=== openclash 日志 ===
+
+
+=== logread openclash ===
+
+
+=== clash core log ===
+
+
+=== init 脚本状态 ===
+-rwxr-xr-x    1 root     root        189808 Jul  2 09:40 /etc/init.d/openclash
+
+
+=== 直接运行 clash 测试配置 ===
+OUT: flag provided but not defined: -check
+Usage of /etc/openclash/clash:
+  -age-secret-key string
+    	specify age secret key to decrypt configuration
+  -config string
+    	specify base64-encoded configuration string
+  -d string
+    	set configuration directory
+  -ext-ctl string
+    	override external controller address
+  -ext-ctl-pipe string
+    	override external controller pipe address
+  -ext-ctl-routing-mark int
+    	override external controller routing mark
+  -ext-ctl-tls string
+    	override external controller tls address
+  -ext-ctl-unix string
+    	override external controller unix address
+  -ext-ui string
+    	override external ui directory
+
+ERR: 

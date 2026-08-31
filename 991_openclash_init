@@ -1,0 +1,16 @@
+#!/bin/sh
+# OpenClash 初始化配置
+# 首次启动时预置 OpenClash 参数
+[ -f /etc/config/openclash ] || exit 0
+
+uci set openclash.config.disable_udp_quic='0'
+uci set openclash.config.ipv6_enable='1'
+uci set openclash.config.ipv6_dns='1'
+uci set openclash.config.enable_custom_dns='1'
+uci set openclash.config.enable_meta_sniffer='1'
+uci set openclash.config.enable_tcp_concurrent='1'
+uci set openclash.config.enable_unified_delay='1'
+uci set openclash.config.find_process_mode='always'
+uci set openclash.config.stack_type='mixed'
+uci set openclash.config.cachesize_dns='1'
+uci commit openclash

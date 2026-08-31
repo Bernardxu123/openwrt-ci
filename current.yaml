@@ -1,0 +1,286 @@
+# ============================================
+# Nikki (Mihomo) 优化配置 - 上海联通 1000M 专用
+# 设备: JDCloud RE-SS-01 (IPQ6018 双核 A53 / 929MB)
+# 作者: Bernardxu123
+# 更新: 2026-07-23 (深度性能优化 + 恢复新加坡自动组)
+# ============================================
+# ⚡ 本版优化要点:
+#   1. QUIC 不再全局阻断 → 允许 HTTP/3, 不再被联通限速
+#   2. IPv6 双栈启用 → 充分利用上海联通 IPv6
+#   3. DNS 精简到 2+1 层 → 减少查询延迟和缓存污染
+#   4. 保留全部自动组(港/日/新/台/美) + 恢复新加坡自动组
+#   5. keep-alive-interval 优化 → 匹配联通 NAT 超时
+#   6. flow offloading 已开启 → NAT 硬件/软件分流
+# ============================================
+
+# 机场订阅
+proxy-providers:
+  Airport1:
+    url: "https://4c553a36cdfb.qtt-163cdn.com/sub?target=clash&filename=YToo_SS&new_name=true&scv=true&tfo=false&clash.doh=true&emoji=true&udp=true&url=https%3A%2F%2Fapi.ytoo.xyz%2Fosubscribe.php%3Fsid%3D115581%26token%3DvSHpBIViExLdLdqlFdhJ%26sip002%3D1"
+    type: http
+    interval: 86400
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 600
+    proxy: 🚀 默认代理
+    exclude-filter: "套餐|Expire|Traffic|订阅|0.2|测试"
+  Airport2:
+    url: "https://subc.onlineglassesoutlet.com/clash_subscribe_proxy.php?token=c451f1b7-9c42-442c-a39c-f508358f6103"
+    type: http
+    interval: 86400
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 600
+    proxy: 直连
+    exclude-filter: "套餐|Expire|Traffic|订阅|0.2"
+  Airport3:
+    url: "https://119.29.57.170:38888/wuguisub?token=f9338c7e30e14181b4a60e0128ebebfd"
+    type: http
+    interval: 86400
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 600
+    proxy: 直连
+    exclude-filter: "套餐|Expire|Traffic|订阅|0.2|更新|电信|移动|剩余"
+  Airport4:
+    url: "https://xi.290490.xyz/xpw290/sub"
+    type: http
+    interval: 86400
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 600
+    proxy: 直连
+    exclude-filter: "套餐|Expire|Traffic|订阅|0.2|节点|流量|距离|官网|邮箱"
+  Airport5:
+    url: "https://dns1.yuece.ggff.net/c/4QJ8GCS"
+    type: http
+    interval: 86400
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 600
+    proxy: 直连
+    exclude-filter: "套餐|Expire|Traffic|订阅|0.2|节点|流量|距离|官网|邮箱"
+
+# 节点定义
+proxies:
+  - {name: 直连, type: direct}
+
+# 全局配置
+port: 7890
+socks-port: 7891
+redir-port: 7892
+mixed-port: 7893
+tproxy-port: 7894
+allow-lan: true
+bind-address: "*"
+ipv6: true
+unified-delay: true
+tcp-concurrent: true
+log-level: info
+find-process-mode: always
+global-client-fingerprint: random
+keep-alive-idle: 120
+keep-alive-interval: 60        # ⚡ 1800→60: 匹配上海联通 NAT 超时, 减少断流
+disable-keep-alive: false
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# ⚡ GeoX 数据库配置
+geodata-mode: true
+geodata-loader: memconservative
+geo-auto-update: true
+geo-update-interval: 168
+
+# 嗅探配置 (精简版)
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [80, 8080, 2052, 2082, 2086, 2095]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443]
+  force-domain:
+    - '+.v2ex.com'
+  skip-domain:
+    - '+.baidu.com'
+    - '+.taobao.com'
+    - '+.jd.com'
+    - '+.qq.com'
+    - '+.weixin.qq.com'
+    - 'Mijia Cloud'
+    - '+.push.apple.com'
+
+# TUN 入站
+tun:
+  enable: false
+  stack: mixed
+  device: utun
+  dns-hijack: ["any:53", "tcp://any:53"]
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+  inet4-address: [198.18.0.1/30]
+  inet6-address: [fdfe:dcba:9876::1/126]
+  gso: true
+
+# DNS 模块 (精简优化版)
+dns:
+  enable: true
+  listen: 0.0.0.0:7874
+  ipv6: true
+  respect-rules: true
+  use-hosts: true
+  cache-algorithm: lru           # ⚡ 新增: LRU 缓存算法
+  cache-size: 10000              # ⚡ 新增: 1万条缓存
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:
+    - 'geosite:connectivity-check'
+    - 'geosite:private'
+    - 'geosite:cn'
+    - 'geosite:category-ntp'
+    - 'geosite:category-cas'
+    - 'geosite:win-update'
+    - 'geosite:category-game-platforms-download'
+    - '*.wo.cn'
+    - '+.10010.com'
+    - '*unicom.cn'
+    - '+.msftconnecttest.com'
+    - '+.msftncsi.com'
+    - 'time.*.com'
+    - '+.market.xiaomi.com'
+    - '+.lan'
+    - '+.local'
+    - '*.yuece.win'
+    - 'ntp.*.com'
+    - 'byrut.org'
+    - '*.alipay.com'
+    - '*.wechat.com'
+    - '*.synology.me'
+
+  # ⚡ 精简 DNS 分流策略
+  nameserver-policy:
+    "rule-set:adobe_block": rcode://success
+    "geosite:cn,private":
+      - 223.5.5.5
+      - 119.29.29.29
+    "geosite:geolocation-!cn":
+      - "https://1.1.1.1/dns-query"
+      - "https://8.8.8.8/dns-query"
+
+  default-nameserver:
+    - 210.22.70.3
+    - 223.5.5.5
+
+  proxy-server-nameserver:
+    - 210.22.70.3
+    - 223.5.5.5
+
+  nameserver:
+    - 210.22.70.3
+    - 223.5.5.5
+
+# 分流策略锚点 (包含全部自动组)
+pr: &pr {type: select, proxies: [🚀 默认代理, ♻️ 香港自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 台湾自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🌐 全部节点, 直连]}
+
+# 策略组
+proxy-groups:
+  - {name: 🚀 默认代理, type: select, proxies: [♻️ 香港自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 台湾自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🌐 全部节点, 直连]}
+  - {name: 📦 GitHub, <<: *pr}
+  - {name: 🤖 ChatGPT, <<: *pr}
+  - {name: ✈️ Speedtest, <<: *pr}
+  - {name: 🛡️ Adobe屏蔽, type: select, proxies: [REJECT, 直连]}
+  - {name: 🍎 Apple, type: select, proxies: [直连, 🚀 默认代理]}
+  - {name: 🏢 甲骨文 Oracle, type: select, proxies: [直连, 🚀 默认代理, ♻️ 香港自动, ♻️ 日本自动, ♻️ 新加坡自动, ♻️ 台湾自动, ♻️ 美国自动, ♻️ 自动选择, 🇭🇰 香港节点, 🇯🇵 日本节点, 🇺🇲 美国节点, 🌐 全部节点]}
+  - {name: 🎯 直连, type: select, proxies: [直连, 🚀 默认代理]}
+  - {name: 🐟 漏网之鱼, <<: *pr}
+  - {name: 🇭🇰 香港节点, type: select, include-all: true, filter: "(?i)港|hk|hongkong|hong kong"}
+  - {name: 🇯🇵 日本节点, type: select, include-all: true, filter: "(?i)日|jp|japan"}
+  - {name: 🇺🇸 美国节点, type: select, include-all: true, filter: "(?i)美|us|unitedstates|united states"}
+  - {name: 🇸🇬 新加坡节点, type: select, include-all: true, filter: "(?i)新|sg|singapore|狮|獅"}
+  - {name: 🇹🇼 台湾节点, type: select, include-all: true, filter: "(?i)台|tw|taiwan"}
+  # ⚡ 5 组 url-test 全部保留
+  - {name: ♻️ 香港自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(港|联通|HK|(?i)Hong)", exclude-filter: "(台|日|韩|新|深|美)"}
+  - {name: ♻️ 日本自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(日|JP|(?i)Japan)", exclude-filter: "(港|台|韩|新|美)"}
+  - {name: ♻️ 新加坡自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(新|狮|獅|HKG|SG|(?i)Singapore)", exclude-filter: "(港|台|日|韩|美)"}
+  - {name: ♻️ 台湾自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(台|TW|(?i)Taiwan)", exclude-filter: "(港|日|韩|新|美)"}
+  - {name: ♻️ 美国自动, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, filter: "(美|US|(?i)States|America)", exclude-filter: "(港|台|日|韩|新)"}
+  - {name: ♻️ 自动选择, type: url-test, include-all: true, tolerance: 50, interval: 600, lazy: true, exclude-filter: "直连"}
+  - {name: 🌐 全部节点, type: select, include-all: true}
+
+# 规则
+rules:
+  # ⚡ 删除 QUIC 全局阻断规则 → 允许 HTTP/3, 提升 YouTube/Netflix 速度
+  - RULE-SET,zdcn,🎯 直连
+  - RULE-SET,zdgw,🚀 默认代理
+  - GEOSITE,cn,🎯 直连
+  - GEOSITE,private,🎯 直连
+  - RULE-SET,adobe_block,🛡️ Adobe屏蔽
+  - GEOSITE,category-ai-!cn,🤖 ChatGPT
+  - GEOSITE,ookla-speedtest,✈️ Speedtest
+  - RULE-SET,oracle,🏢 甲骨文 Oracle
+  - GEOSITE,github,📦 GitHub
+  - DOMAIN-SUFFIX,githubusercontent.com,📦 GitHub
+  - DOMAIN-SUFFIX,github.io,📦 GitHub
+  - DOMAIN-SUFFIX,githubapp.com,📦 GitHub
+  - GEOSITE,geolocation-!cn,🚀 默认代理
+  - GEOIP,cn,🎯 直连,no-resolve
+  - MATCH,🐟 漏网之鱼
+
+# 规则集锚点
+rule-anchor:
+  ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
+  domain: &domain {type: http, interval: 86400, behavior: domain, format: mrs}
+  class: &class {type: http, interval: 86400, behavior: classical, format: text}
+
+# 规则集
+rule-providers:
+  adobe_block:
+    type: http
+    interval: 86400
+    behavior: classical
+    format: yaml
+    url: "https://a.dove.isdumb.one/clash.yaml"
+  zdgw: { <<: *class, url: "https://raw.githubusercontent.com/Bernardxu123/xu/refs/heads/main/zdgw.list" }
+  zdcn: { <<: *class, url: "https://raw.githubusercontent.com/Bernardxu123/xu/refs/heads/main/zdcn.list" }
+  oracle: { <<: *class, url: "https://raw.githubusercontent.com/Bernardxu123/xu/refs/heads/main/oracle.list" }
+
+# GeoX 源
+geox-url:
+  geoip: "https://ghproxy.net/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.dat"
+  geosite: "https://ghproxy.net/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://ghproxy.net/https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country.mmdb"
+
+# NTP
+ntp:
+  enable: true
+  write-to-system: true
+  server: time.apple.com
+  port: 123
+  interval: 30
+
+# 运行模式
+mode: rule
+external-controller: 0.0.0.0:9090
+secret: 2oiJnKwc
+external-ui: "/usr/share/openclash/ui"
+external-ui-name: metacubexd
+external-ui-url: "https://codeload.github.com/MetaCubeX/metacubexd/zip/refs/heads/gh-pages"
+
+# 实验性功能
+experimental:
+  quic-go-disable-gso: true
+
+# 认证
+authentication:
+  - Clash:kfZqUJZ5

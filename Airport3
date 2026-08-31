@@ -1,0 +1,240 @@
+mixed-port: 7890
+allow-lan: true
+bind-address: '*'
+mode: rule
+log-level: info
+external-controller: '127.0.0.1:9090'
+unified-delay: true
+tcp-concurrent: true
+dns:
+    enable: true
+    ipv6: false
+    default-nameserver: [223.5.5.5, 119.29.29.29]
+    enhanced-mode: fake-ip
+    fake-ip-range: 198.18.0.1/16
+    use-hosts: true
+    nameserver-policy: { +.google.com: 'https://dns.cloudflare.com/dns-query', +.googleapis.com: 'https://dns.cloudflare.com/dns-query', +.googleapis.cn: 'https://dns.cloudflare.com/dns-query', +.googlevideo.com: 'https://dns.cloudflare.com/dns-query', +.gstatic.com: 'https://dns.cloudflare.com/dns-query', +.youtube.com: 'https://dns.cloudflare.com/dns-query', +.youtu.be: 'https://dns.cloudflare.com/dns-query', +.facebook.com: 'https://dns.cloudflare.com/dns-query', +.twitter.com: 'https://dns.cloudflare.com/dns-query', +.x.com: 'https://dns.cloudflare.com/dns-query', +.github.com: 'https://dns.cloudflare.com/dns-query', +.githubusercontent.com: 'https://dns.cloudflare.com/dns-query', +.openai.com: 'https://dns.cloudflare.com/dns-query', +.chatgpt.com: 'https://dns.cloudflare.com/dns-query', +.anthropic.com: 'https://dns.cloudflare.com/dns-query' }
+    nameserver: ['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query', 'tls://dot.pub:853', 'tls://dns.alidns.com:853']
+    fallback: ['https://dns.cloudflare.com/dns-query', 'https://dns.google/dns-query', 'tls://1.1.1.1:853', 'tls://8.8.8.8:853']
+    fallback-filter: { geoip: true, geoip-code: CN, ipcidr: [0.0.0.0/8, 10.0.0.0/8, 100.64.0.0/10, 127.0.0.0/8, 169.254.0.0/16, 172.16.0.0/12, 192.168.0.0/16, 224.0.0.0/4, 240.0.0.0/4], domain: [+.google.com, +.facebook.com, +.youtube.com, +.githubusercontent.com, +.googlevideo.com, +.googleapis.cn] }
+    fake-ip-filter: ['*.lan', '*.local', '*.localhost', '*.test', localhost.ptlogin2.qq.com, '+.stun.*.*', '+.stun.*.*.*', '+.stun.*.*.*.*', lens.l.google.com, '*.srv.nintendo.net', +.stun.playstation.net, 'xbox.*.*.microsoft.com', '*.*.xboxlive.com', +.msftncsi.com, +.msftconnecttest.com]
+proxies:
+    - { name: '剩余流量：1468.85 GB', server: 13.114.46.228, port: 62818, sni: www.bing.com, up: 10000, down: 10000, skip-cert-verify: true, type: hysteria2, password: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe }
+    - { name: 套餐到期：长期有效, server: 13.114.46.228, port: 62818, sni: www.bing.com, up: 10000, down: 10000, skip-cert-verify: true, type: hysteria2, password: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe }
+    - { name: '🇭🇰 香港 - Hy2', server: 13.114.46.228, port: 62818, sni: www.bing.com, up: 10000, down: 10000, skip-cert-verify: true, type: hysteria2, password: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe }
+    - { name: '🇸🇬 新加坡 - Hy2', server: 13.114.46.228, port: 45469, sni: www.bing.com, up: 10000, down: 10000, skip-cert-verify: true, type: hysteria2, password: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe }
+    - { name: '🇯🇵 日本 - Hy2', server: 13.114.46.228, port: 33266, sni: www.bing.com, up: 10000, down: 10000, skip-cert-verify: true, type: hysteria2, password: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe }
+    - { name: '🇨🇳 台湾 - Hy2', server: 13.114.46.228, port: 28210, sni: www.bing.com, up: 10000, down: 10000, skip-cert-verify: true, type: hysteria2, password: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe }
+    - { name: '🇺🇸 美国 - Hy2', server: 13.114.46.228, port: 47836, sni: www.bing.com, up: 10000, down: 10000, skip-cert-verify: true, type: hysteria2, password: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe }
+    - { name: '🇭🇰 Hong Kong 01', type: vless, server: 13.114.46.228, port: 49946, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇨🇳 Taiwan 01', type: vless, server: 13.114.46.228, port: 53516, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇸🇬 Singapore 01', type: vless, server: 13.114.46.228, port: 2407, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇯🇵 Japan 01', type: vless, server: 13.114.46.228, port: 31707, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇺🇸 USA 01', type: vless, server: 13.114.46.228, port: 64549, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇺🇸 USA 原生', type: vless, server: 13.114.46.228, port: 41232, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇰🇷 South Korea – Seoul', type: vless, server: 13.114.46.228, port: 47715, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇬🇧 United Kingdom – London', type: vless, server: 13.114.46.228, port: 58258, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇫🇷 France – Marseille', type: vless, server: 13.114.46.228, port: 28261, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇩🇪 Germany – Frankfurt', type: vless, server: 13.114.46.228, port: 34521, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇹🇭 Thailand – Bangkok', type: vless, server: 13.114.46.228, port: 55310, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇵🇭 Philippines – Manila', type: vless, server: 13.114.46.228, port: 51143, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇷🇺 Russia – Moscow', type: vless, server: 13.114.46.228, port: 29222, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇧🇷 Brazil – São Paulo', type: vless, server: 13.114.46.228, port: 35344, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇪🇬 Egypt – Cairo', type: vless, server: 13.114.46.228, port: 45442, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇲🇽 Mexico – Mexico City', type: vless, server: 13.114.46.228, port: 21894, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇹🇷 Türkiye-Istanbul', type: vless, server: 13.114.46.228, port: 12165, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇦🇺 Australia', type: vless, server: 13.114.46.228, port: 25264, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+    - { name: '🇨🇦 Canada Home broadband', type: vless, server: 13.114.46.228, port: 34439, uuid: f30ab026-5b0e-4058-bf4a-b8b79e7c21fe, alterId: 0, cipher: auto, udp: true, flow: xtls-rprx-vision, encryption: none, tls: true, skip-cert-verify: true, servername: www.tue.nl, reality-opts: { public-key: lLQgeD3kHc2HuZ_sK9u96jy8PJtIQY5YaVMroyx8EwU, short-id: 5816da460f3fc193 }, client-fingerprint: chrome, network: tcp }
+proxy-groups:
+    - { name: 乌龟加速, type: select, proxies: [自动选择, 故障转移, DIRECT, '剩余流量：1468.85 GB', 套餐到期：长期有效, '🇭🇰 香港 - Hy2', '🇸🇬 新加坡 - Hy2', '🇯🇵 日本 - Hy2', '🇨🇳 台湾 - Hy2', '🇺🇸 美国 - Hy2', '🇭🇰 Hong Kong 01', '🇨🇳 Taiwan 01', '🇸🇬 Singapore 01', '🇯🇵 Japan 01', '🇺🇸 USA 01', '🇺🇸 USA 原生', '🇰🇷 South Korea – Seoul', '🇬🇧 United Kingdom – London', '🇫🇷 France – Marseille', '🇩🇪 Germany – Frankfurt', '🇹🇭 Thailand – Bangkok', '🇵🇭 Philippines – Manila', '🇷🇺 Russia – Moscow', '🇧🇷 Brazil – São Paulo', '🇪🇬 Egypt – Cairo', '🇲🇽 Mexico – Mexico City', '🇹🇷 Türkiye-Istanbul', '🇦🇺 Australia', '🇨🇦 Canada Home broadband'] }
+    - { name: 自动选择, type: url-test, proxies: ['剩余流量：1468.85 GB', 套餐到期：长期有效, '🇭🇰 香港 - Hy2', '🇸🇬 新加坡 - Hy2', '🇯🇵 日本 - Hy2', '🇨🇳 台湾 - Hy2', '🇺🇸 美国 - Hy2', '🇭🇰 Hong Kong 01', '🇨🇳 Taiwan 01', '🇸🇬 Singapore 01', '🇯🇵 Japan 01', '🇺🇸 USA 01', '🇺🇸 USA 原生', '🇰🇷 South Korea – Seoul', '🇬🇧 United Kingdom – London', '🇫🇷 France – Marseille', '🇩🇪 Germany – Frankfurt', '🇹🇭 Thailand – Bangkok', '🇵🇭 Philippines – Manila', '🇷🇺 Russia – Moscow', '🇧🇷 Brazil – São Paulo', '🇪🇬 Egypt – Cairo', '🇲🇽 Mexico – Mexico City', '🇹🇷 Türkiye-Istanbul', '🇦🇺 Australia', '🇨🇦 Canada Home broadband'], url: 'http://www.gstatic.com/generate_204', interval: 300, tolerance: 50 }
+    - { name: 故障转移, type: fallback, proxies: ['剩余流量：1468.85 GB', 套餐到期：长期有效, '🇭🇰 香港 - Hy2', '🇸🇬 新加坡 - Hy2', '🇯🇵 日本 - Hy2', '🇨🇳 台湾 - Hy2', '🇺🇸 美国 - Hy2', '🇭🇰 Hong Kong 01', '🇨🇳 Taiwan 01', '🇸🇬 Singapore 01', '🇯🇵 Japan 01', '🇺🇸 USA 01', '🇺🇸 USA 原生', '🇰🇷 South Korea – Seoul', '🇬🇧 United Kingdom – London', '🇫🇷 France – Marseille', '🇩🇪 Germany – Frankfurt', '🇹🇭 Thailand – Bangkok', '🇵🇭 Philippines – Manila', '🇷🇺 Russia – Moscow', '🇧🇷 Brazil – São Paulo', '🇪🇬 Egypt – Cairo', '🇲🇽 Mexico – Mexico City', '🇹🇷 Türkiye-Istanbul', '🇦🇺 Australia', '🇨🇦 Canada Home broadband'], url: 'http://www.gstatic.com/generate_204', interval: 300 }
+rules:
+    - 'DOMAIN,127.0.0.1:7010,DIRECT'
+    - 'DOMAIN-KEYWORD,admarvel,REJECT'
+    - 'DOMAIN-KEYWORD,admaster,REJECT'
+    - 'DOMAIN-KEYWORD,adsage,REJECT'
+    - 'DOMAIN-KEYWORD,adsmogo,REJECT'
+    - 'DOMAIN-KEYWORD,adsrvmedia,REJECT'
+    - 'DOMAIN-KEYWORD,adwords,REJECT'
+    - 'DOMAIN-KEYWORD,adservice,REJECT'
+    - 'DOMAIN-KEYWORD,domob,REJECT'
+    - 'DOMAIN-KEYWORD,duomeng,REJECT'
+    - 'DOMAIN-KEYWORD,dwtrack,REJECT'
+    - 'DOMAIN-KEYWORD,guanggao,REJECT'
+    - 'DOMAIN-KEYWORD,lianmeng,REJECT'
+    - 'DOMAIN-KEYWORD,omgmta,REJECT'
+    - 'DOMAIN-KEYWORD,openx,REJECT'
+    - 'DOMAIN-KEYWORD,partnerad,REJECT'
+    - 'DOMAIN-KEYWORD,supersonicads,REJECT'
+    - 'DOMAIN-KEYWORD,umeng,REJECT'
+    - 'DOMAIN-KEYWORD,zjtoolbar,REJECT'
+    - 'DOMAIN-SUFFIX,appsflyer.com,REJECT'
+    - 'DOMAIN-SUFFIX,doubleclick.net,REJECT'
+    - 'DOMAIN-SUFFIX,mmstat.com,REJECT'
+    - 'DOMAIN-SUFFIX,local,DIRECT'
+    - 'DOMAIN-SUFFIX,localhost,DIRECT'
+    - 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve'
+    - 'IP-CIDR,17.0.0.0/8,DIRECT,no-resolve'
+    - 'IP-CIDR,100.64.0.0/10,DIRECT,no-resolve'
+    - 'IP-CIDR,127.0.0.0/8,DIRECT,no-resolve'
+    - 'IP-CIDR,172.16.0.0/12,DIRECT,no-resolve'
+    - 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve'
+    - 'IP-CIDR,198.18.0.0/16,DIRECT,no-resolve'
+    - 'IP-CIDR,224.0.0.0/4,DIRECT,no-resolve'
+    - 'IP-CIDR6,::1/128,DIRECT,no-resolve'
+    - 'IP-CIDR6,fc00::/7,DIRECT,no-resolve'
+    - 'IP-CIDR6,fe80::/10,DIRECT,no-resolve'
+    - 'DOMAIN-SUFFIX,apps.apple.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,itunes.apple.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,blobstore.apple.com,乌龟加速'
+    - 'DOMAIN,safebrowsing.urlsec.qq.com,DIRECT'
+    - 'DOMAIN-SUFFIX,apple.com,DIRECT'
+    - 'DOMAIN-SUFFIX,apple-cloudkit.com,DIRECT'
+    - 'DOMAIN-SUFFIX,icloud.com,DIRECT'
+    - 'DOMAIN-SUFFIX,icloud-content.com,DIRECT'
+    - 'DOMAIN-SUFFIX,mzstatic.com,DIRECT'
+    - 'DOMAIN-SUFFIX,aaplimg.com,DIRECT'
+    - 'DOMAIN-SUFFIX,cdn-apple.com,DIRECT'
+    - 'DOMAIN-SUFFIX,akadns.net,DIRECT'
+    - 'DOMAIN-KEYWORD,baidu,DIRECT'
+    - 'DOMAIN-KEYWORD,alibaba,DIRECT'
+    - 'DOMAIN-KEYWORD,alicdn,DIRECT'
+    - 'DOMAIN-KEYWORD,alipay,DIRECT'
+    - 'DOMAIN-KEYWORD,taobao,DIRECT'
+    - 'DOMAIN-KEYWORD,tencent,DIRECT'
+    - 'DOMAIN-KEYWORD,bilibili,DIRECT'
+    - 'DOMAIN-KEYWORD,weibo,DIRECT'
+    - 'DOMAIN-KEYWORD,douyin,DIRECT'
+    - 'DOMAIN-KEYWORD,bytedance,DIRECT'
+    - 'DOMAIN-KEYWORD,xiaomi,DIRECT'
+    - 'DOMAIN-KEYWORD,huawei,DIRECT'
+    - 'DOMAIN-KEYWORD,netease,DIRECT'
+    - 'DOMAIN-KEYWORD,meituan,DIRECT'
+    - 'DOMAIN-KEYWORD,pinduoduo,DIRECT'
+    - 'DOMAIN-KEYWORD,kuaishou,DIRECT'
+    - 'DOMAIN-KEYWORD,jingdong,DIRECT'
+    - 'DOMAIN-KEYWORD,officecdn,DIRECT'
+    - 'DOMAIN-SUFFIX,qq.com,DIRECT'
+    - 'DOMAIN-SUFFIX,weixin.com,DIRECT'
+    - 'DOMAIN-SUFFIX,wechat.com,DIRECT'
+    - 'DOMAIN-SUFFIX,gtimg.com,DIRECT'
+    - 'DOMAIN-SUFFIX,qcloud.com,DIRECT'
+    - 'DOMAIN-SUFFIX,myqcloud.com,DIRECT'
+    - 'DOMAIN-SUFFIX,qpic.cn,DIRECT'
+    - 'DOMAIN-SUFFIX,tenpay.com,DIRECT'
+    - 'DOMAIN-SUFFIX,tmall.com,DIRECT'
+    - 'DOMAIN-SUFFIX,jd.com,DIRECT'
+    - 'DOMAIN-SUFFIX,360buyimg.com,DIRECT'
+    - 'DOMAIN-SUFFIX,iqiyi.com,DIRECT'
+    - 'DOMAIN-SUFFIX,youku.com,DIRECT'
+    - 'DOMAIN-SUFFIX,ykimg.com,DIRECT'
+    - 'DOMAIN-SUFFIX,tudou.com,DIRECT'
+    - 'DOMAIN-SUFFIX,acfun.tv,DIRECT'
+    - 'DOMAIN-SUFFIX,hdslb.com,DIRECT'
+    - 'DOMAIN-SUFFIX,sohu.com,DIRECT'
+    - 'DOMAIN-SUFFIX,sogou.com,DIRECT'
+    - 'DOMAIN-SUFFIX,zhihu.com,DIRECT'
+    - 'DOMAIN-SUFFIX,zhimg.com,DIRECT'
+    - 'DOMAIN-SUFFIX,douban.com,DIRECT'
+    - 'DOMAIN-SUFFIX,doubanio.com,DIRECT'
+    - 'DOMAIN-SUFFIX,163.com,DIRECT'
+    - 'DOMAIN-SUFFIX,126.com,DIRECT'
+    - 'DOMAIN-SUFFIX,126.net,DIRECT'
+    - 'DOMAIN-SUFFIX,127.net,DIRECT'
+    - 'DOMAIN-SUFFIX,yeah.net,DIRECT'
+    - 'DOMAIN-SUFFIX,sina.com,DIRECT'
+    - 'DOMAIN-SUFFIX,sinaimg.cn,DIRECT'
+    - 'DOMAIN-SUFFIX,ximalaya.com,DIRECT'
+    - 'DOMAIN-SUFFIX,xmcdn.com,DIRECT'
+    - 'DOMAIN-SUFFIX,csdn.net,DIRECT'
+    - 'DOMAIN-SUFFIX,gitee.com,DIRECT'
+    - 'DOMAIN-SUFFIX,jianshu.com,DIRECT'
+    - 'DOMAIN-SUFFIX,cnblogs.com,DIRECT'
+    - 'DOMAIN-SUFFIX,oschina.net,DIRECT'
+    - 'DOMAIN-SUFFIX,ele.me,DIRECT'
+    - 'DOMAIN-SUFFIX,ctrip.com,DIRECT'
+    - 'DOMAIN-SUFFIX,suning.com,DIRECT'
+    - 'DOMAIN-SUFFIX,dianping.com,DIRECT'
+    - 'DOMAIN-SUFFIX,amap.com,DIRECT'
+    - 'DOMAIN-SUFFIX,autonavi.com,DIRECT'
+    - 'DOMAIN-SUFFIX,mi.com,DIRECT'
+    - 'DOMAIN-SUFFIX,miui.com,DIRECT'
+    - 'DOMAIN-SUFFIX,ifeng.com,DIRECT'
+    - 'DOMAIN-SUFFIX,youdao.com,DIRECT'
+    - 'DOMAIN-SUFFIX,iciba.com,DIRECT'
+    - 'DOMAIN-SUFFIX,xunlei.com,DIRECT'
+    - 'DOMAIN-SUFFIX,smzdm.com,DIRECT'
+    - 'DOMAIN-SUFFIX,sspai.com,DIRECT'
+    - 'DOMAIN-SUFFIX,36kr.com,DIRECT'
+    - 'DOMAIN-SUFFIX,speedtest.net,DIRECT'
+    - 'DOMAIN-SUFFIX,microsoft.com,DIRECT'
+    - 'DOMAIN-SUFFIX,microsoftonline.com,DIRECT'
+    - 'DOMAIN-SUFFIX,office.com,DIRECT'
+    - 'DOMAIN-SUFFIX,office365.com,DIRECT'
+    - 'DOMAIN-SUFFIX,windows.com,DIRECT'
+    - 'DOMAIN-SUFFIX,windowsupdate.com,DIRECT'
+    - 'DOMAIN-SUFFIX,live.com,DIRECT'
+    - 'DOMAIN-SUFFIX,msn.com,DIRECT'
+    - 'DOMAIN-SUFFIX,cn,DIRECT'
+    - 'DOMAIN-KEYWORD,-cn,DIRECT'
+    - 'DOMAIN-KEYWORD,google,乌龟加速'
+    - 'DOMAIN-KEYWORD,gmail,乌龟加速'
+    - 'DOMAIN-KEYWORD,youtube,乌龟加速'
+    - 'DOMAIN-KEYWORD,facebook,乌龟加速'
+    - 'DOMAIN-KEYWORD,twitter,乌龟加速'
+    - 'DOMAIN-KEYWORD,instagram,乌龟加速'
+    - 'DOMAIN-KEYWORD,whatsapp,乌龟加速'
+    - 'DOMAIN-KEYWORD,telegram,乌龟加速'
+    - 'DOMAIN-KEYWORD,github,乌龟加速'
+    - 'DOMAIN-KEYWORD,blogspot,乌龟加速'
+    - 'DOMAIN-KEYWORD,dropbox,乌龟加速'
+    - 'DOMAIN-KEYWORD,wikipedia,乌龟加速'
+    - 'DOMAIN-KEYWORD,pinterest,乌龟加速'
+    - 'DOMAIN-KEYWORD,discord,乌龟加速'
+    - 'DOMAIN-KEYWORD,openai,乌龟加速'
+    - 'DOMAIN-KEYWORD,anthropic,乌龟加速'
+    - 'DOMAIN-KEYWORD,netflix,乌龟加速'
+    - 'DOMAIN-KEYWORD,spotify,乌龟加速'
+    - 'DOMAIN-KEYWORD,amazon,乌龟加速'
+    - 'DOMAIN-SUFFIX,t.co,乌龟加速'
+    - 'DOMAIN-SUFFIX,x.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,twimg.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,fb.me,乌龟加速'
+    - 'DOMAIN-SUFFIX,fbcdn.net,乌龟加速'
+    - 'DOMAIN-SUFFIX,youtu.be,乌龟加速'
+    - 'DOMAIN-SUFFIX,ytimg.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,gstatic.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,ggpht.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,googlevideo.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,v2ex.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,medium.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,reddit.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,redd.it,乌龟加速'
+    - 'DOMAIN-SUFFIX,imgur.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,pixiv.net,乌龟加速'
+    - 'DOMAIN-SUFFIX,nytimes.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,nyt.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,bbc.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,bbc.co.uk,乌龟加速'
+    - 'DOMAIN-SUFFIX,steamcommunity.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,twitch.tv,乌龟加速'
+    - 'DOMAIN-SUFFIX,vimeo.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,tumblr.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,linkedin.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,licdn.com,乌龟加速'
+    - 'DOMAIN-SUFFIX,mega.nz,乌龟加速'
+    - 'DOMAIN-SUFFIX,archive.org,乌龟加速'
+    - 'DOMAIN-SUFFIX,wikimedia.org,乌龟加速'
+    - 'DOMAIN-SUFFIX,soundcloud.com,乌龟加速'
+    - 'IP-CIDR,91.108.4.0/22,乌龟加速,no-resolve'
+    - 'IP-CIDR,91.108.8.0/21,乌龟加速,no-resolve'
+    - 'IP-CIDR,91.108.12.0/22,乌龟加速,no-resolve'
+    - 'IP-CIDR,91.108.16.0/22,乌龟加速,no-resolve'
+    - 'IP-CIDR,91.108.56.0/22,乌龟加速,no-resolve'
+    - 'IP-CIDR,149.154.160.0/20,乌龟加速,no-resolve'
+    - 'IP-CIDR6,2001:67c:4e8::/48,乌龟加速,no-resolve'
+    - 'IP-CIDR6,2001:b28:f23d::/48,乌龟加速,no-resolve'
+    - 'IP-CIDR6,2001:b28:f23f::/48,乌龟加速,no-resolve'
+    - 'GEOIP,CN,DIRECT'
+    - 'MATCH,乌龟加速'
