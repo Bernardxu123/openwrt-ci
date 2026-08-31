@@ -108,8 +108,11 @@ if [ -f "$KERNEL_CONFIG" ]; then
   grep -q '^CONFIG_KERNEL_DEBUG_INFO=y$' .config || echo 'CONFIG_KERNEL_DEBUG_INFO=y' >> .config
   grep -q '^# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set$' .config || echo '# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set' >> .config
   grep -q '^CONFIG_KERNEL_DEBUG_INFO_BTF=y$' .config || echo 'CONFIG_KERNEL_DEBUG_INFO_BTF=y' >> .config
-  # --- 内核层: DEBUG_INFO 链 + tc 支持 ---
-  for sym in CONFIG_DEBUG_INFO CONFIG_DEBUG_INFO_BTF CONFIG_NET_SCH_INGRESS CONFIG_NET_CLS_BPF CONFIG_BPF_SYSCALL CONFIG_CGROUP_BPF; do
+  # --- 内核层: DEBUG_INFO 链 + tc 支持 + veth ---
+  # CONFIG_VETH: dae 运行依赖 (其 OpenWrt 包 Depends kmod-veth);
+  # 第三方源 24.10/6.6 内核编的 kmod 与我们 6.12 vermagic 不匹配装不上,
+  # 直接内编是唯一可靠路径
+  for sym in CONFIG_DEBUG_INFO CONFIG_DEBUG_INFO_BTF CONFIG_NET_SCH_INGRESS CONFIG_NET_CLS_BPF CONFIG_BPF_SYSCALL CONFIG_CGROUP_BPF CONFIG_VETH; do
     if grep -q "^# ${sym} is not set\$" "$KERNEL_CONFIG"; then
       sed -i "s/^# ${sym} is not set\$/${sym}=y/" "$KERNEL_CONFIG"
     elif ! grep -q "^${sym}=" "$KERNEL_CONFIG"; then
@@ -117,7 +120,7 @@ if [ -f "$KERNEL_CONFIG" ]; then
     fi
   done
   sed -i 's/^CONFIG_DEBUG_INFO_REDUCED=y$/# CONFIG_DEBUG_INFO_REDUCED is not set/' "$KERNEL_CONFIG"
-  echo ">>> 内核配置已 Patch: BBR + FQ + schedutil + DEBUG_INFO/BTF/eBPF 启用 (dae 依赖链全打通)"
+  echo ">>> 内核配置已 Patch: BBR + FQ + schedutil + DEBUG_INFO/BTF/eBPF + VETH 启用 (dae 依赖链全打通)"
 fi
 
 # ============================================
