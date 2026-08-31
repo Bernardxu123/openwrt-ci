@@ -68,7 +68,7 @@ jobs:
           libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool libz-dev lrzsz \
           mkisofs msmtp nano ninja-build ntpdate p7zip p7zip-full patch pigz pkgconf python2.7 \
           python3 python3-pip python3-pyelftools python3-setuptools qemu-utils rsync scons \
-          squashfs-tools swig tar texinfo uglifyjs unzip upx upx-ucl vim wget xmlto xsltproc \
+          squashfs-tools swig tar texinfo u-boot-tools uglifyjs unzip upx upx-ucl vim wget xmlto xsltproc \
           xxd xz-utils yasm zip zlib1g-dev zstd
         sudo -E systemctl daemon-reload
         sudo -E apt-get -y autoremove --purge
@@ -142,6 +142,37 @@ jobs:
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
 
+    - name: Kernel Cache Invalidation(内核缓存失效检测)
+      run: |
+        cd $OPENWRT_PATH
+        # ⚡ 关键修复: cachewrtbuild 会恢复 build_dir 里的内核构建产物 (含 .built 时间戳),
+        # 而内核配置变化 (CONFIG_KERNEL_* / config-6.12) 不会使其失效 →
+        # make 跳过内核重编, 旧内核原样打包发布。
+        # 实证: R20260831-0008 与 R20260831-0841 固件内的内核文件时间戳均为 8/27 11:40
+        # (与两次构建无关), BTF 配置改了也白改。
+        # 对策: 对内核相关配置取签名, 与缓存签名 (存于 dl/, 随缓存持久化) 比对,
+        # 不一致则 make target/linux/clean 强制重编内核。
+        SIG_FILE="dl/.kernel_config_sig"
+        CUR_SIG="$(mktemp)"
+        {
+          grep -E '^CONFIG_KERNEL_' .config | sort
+          if [ -f target/linux/generic/config-6.12 ]; then
+            sha256sum target/linux/generic/config-6.12 | awk '{print $1}'
+          fi
+          if [ -f target/linux/qualcommax/config-6.12 ]; then
+            sha256sum target/linux/qualcommax/config-6.12 | awk '{print $1}'
+          fi
+        } > "$CUR_SIG"
+        if [ -f "$SIG_FILE" ] && cmp -s "$CUR_SIG" "$SIG_FILE"; then
+          echo ">>> 内核配置签名一致, 沿用缓存内核"
+          rm -f "$CUR_SIG"
+        else
+          echo ">>> 内核配置变化 (或首次签名), 执行 make target/linux/clean 强制重编内核"
+          make target/linux/clean
+          mkdir -p dl
+          mv -f "$CUR_SIG" "$SIG_FILE"
+        fi
+
     - name: Diagnose defconfig(诊断包解析结果)
       run: |
         cd $OPENWRT_PATH
@@ -203,6 +234,59 @@ jobs:
             exit 1
         fi
         echo "✅ 固件镜像已产出"
+
+        # --- 内核 BTF 硬验证门 (dae 硬前提) ---
+        # 历史教训: R20260831-0008/0841 的 .config 有 BTF 开关但固件内核是缓存旧货,
+        # 刷机后 /sys/kernel/btf/vmlinux 不存在。此处双层硬拦, 无 BTF 禁止发布。
+        echo "--- 内核 BTF 验证 (第1层: vmlinux) ---"
+        VMLINUX="$(find "$OPENWRT_PATH/build_dir" -maxdepth 3 -type f -name vmlinux | head -1)"
+        if [ -z "$VMLINUX" ]; then
+            echo "::error::build_dir 未找到 vmlinux, 无法验证 BTF"
+            exit 1
+        fi
+        if readelf -S "$VMLINUX" 2>/dev/null | grep -q '\.BTF'; then
+            echo "✅ vmlinux 含 .BTF 段 ($VMLINUX)"
+        else
+            echo "::error::vmlinux 无 .BTF 段! 配置未生效或缓存旧内核被复打包, 禁止发布"
+            exit 1
+        fi
+        echo "--- 内核 BTF 验证 (第2层: 固件镜像) ---"
+        FW_BIN="$(find bin/targets -name '*sysupgrade.bin' | head -1)"
+        CHECK_DIR="$(mktemp -d)"
+        tar -xf "$FW_BIN" -C "$CHECK_DIR"
+        ITB="$(find "$CHECK_DIR" -type f -name kernel | head -1)"
+        [ -n "$ITB" ] || { echo "::error::固件包内未找到 kernel 成员"; exit 1; }
+        KIMG=""
+        # kernel 成员是 FIT 镜像 (d0 0d fe ed), 逐个位置提取找内核子映像
+        for pos in 0 1 2; do
+            dumpimage -T flat_dt -p "$pos" -o "$CHECK_DIR/sub.img" "$ITB" >/dev/null 2>&1 || continue
+            if gzip -t "$CHECK_DIR/sub.img" 2>/dev/null; then
+                gzip -dc "$CHECK_DIR/sub.img" > "$CHECK_DIR/sub.raw" 2>/dev/null || continue
+            elif xz --format=lzma -t "$CHECK_DIR/sub.img" 2>/dev/null; then
+                xz --format=lzma -dc "$CHECK_DIR/sub.img" > "$CHECK_DIR/sub.raw" 2>/dev/null || continue
+            else
+                cp "$CHECK_DIR/sub.img" "$CHECK_DIR/sub.raw"
+            fi
+            # aarch64 Image 魔数 "ARM\x64" 位于偏移 0x38
+            if [ "$(dd if="$CHECK_DIR/sub.raw" bs=1 skip=56 count=4 2>/dev/null)" = "ARMd" ]; then
+                KIMG="$CHECK_DIR/sub.raw"
+                echo "  FIT position $pos = 内核镜像 (aarch64 Image, $(wc -c < "$CHECK_DIR/sub.raw") bytes)"
+                break
+            fi
+        done
+        if [ -z "$KIMG" ]; then
+            echo "::error::未能从固件 FIT 中提取内核镜像, 无法验证"
+            hexdump -C "$ITB" | head -5
+            exit 1
+        fi
+        # BTF 头签名: magic 0xEB9F (le: 9f eb) + version 1 + flags 0 + hdr_len 24 (le)
+        if grep -qaP '\x9f\xeb\x01\x00\x18\x00\x00\x00' "$KIMG"; then
+            echo "✅ 固件镜像内核包含 BTF"
+        else
+            echo "::error::固件镜像内核未检出 BTF 头, 禁止发布!"
+            exit 1
+        fi
+        rm -rf "$CHECK_DIR"
 
         # --- 用户空间包: 以 .ipk 文件存在性判断 (警告，不阻断) ---
         echo "--- 用户空间包 (.ipk 检查) ---"
