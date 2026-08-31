@@ -98,18 +98,26 @@ if [ -f "$KERNEL_CONFIG" ]; then
   sed -i 's/^# CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL is not set$/CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y/' "$KERNEL_CONFIG"
   sed -i 's/^# CONFIG_CPU_FREQ_GOV_SCHEDUTIL is not set$/CONFIG_CPU_FREQ_GOV_SCHEDUTIL=y/' "$KERNEL_CONFIG"
   # dae (eBPF 代理) 运行时依赖: 内核 BTF + tc cls_bpf/clsact
-  # dae 的 CO-RE 程序加载强依赖 /sys/kernel/btf/vmlinux (CONFIG_DEBUG_INFO_BTF);
-  # tc attach 依赖 clsact(CONFIG_NET_SCH_INGRESS) 与 cls_bpf(CONFIG_NET_CLS_BPF)。
+  # 依赖链踩坑记录 (实测): buildroot 的 KERNEL_DEBUG_INFO_BTF 依赖
+  #   KERNEL_DEBUG_INFO=y 且 !KERNEL_DEBUG_INFO_REDUCED — LibWrt 默认开了
+  #   REDUCED 导致符号隐形, defconfig 静默丢弃追加行;
+  #   内核层 DEBUG_INFO_BTF 又依赖内核 CONFIG_DEBUG_INFO=y (LibWrt 默认全关)。
   # 直接编进内核而非 kmod, 规避跨源 kmod vermagic 不匹配问题
-  for sym in CONFIG_DEBUG_INFO_BTF CONFIG_NET_SCH_INGRESS CONFIG_NET_CLS_BPF CONFIG_BPF_SYSCALL CONFIG_CGROUP_BPF; do
+  # --- buildroot 层: 关 REDUCED + 开 DEBUG_INFO/BTF ---
+  sed -i 's/^CONFIG_KERNEL_DEBUG_INFO_REDUCED=y$/# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set/' .config
+  grep -q '^CONFIG_KERNEL_DEBUG_INFO=y$' .config || echo 'CONFIG_KERNEL_DEBUG_INFO=y' >> .config
+  grep -q '^# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set$' .config || echo '# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set' >> .config
+  grep -q '^CONFIG_KERNEL_DEBUG_INFO_BTF=y$' .config || echo 'CONFIG_KERNEL_DEBUG_INFO_BTF=y' >> .config
+  # --- 内核层: DEBUG_INFO 链 + tc 支持 ---
+  for sym in CONFIG_DEBUG_INFO CONFIG_DEBUG_INFO_BTF CONFIG_NET_SCH_INGRESS CONFIG_NET_CLS_BPF CONFIG_BPF_SYSCALL CONFIG_CGROUP_BPF; do
     if grep -q "^# ${sym} is not set\$" "$KERNEL_CONFIG"; then
       sed -i "s/^# ${sym} is not set\$/${sym}=y/" "$KERNEL_CONFIG"
     elif ! grep -q "^${sym}=" "$KERNEL_CONFIG"; then
       echo "${sym}=y" >> "$KERNEL_CONFIG"
     fi
   done
-  echo "CONFIG_KERNEL_DEBUG_INFO_BTF=y" >> .config
-  echo ">>> 内核配置已 Patch: BBR + FQ + schedutil + BTF/eBPF 启用 (BTF 供 dae 使用)"
+  sed -i 's/^CONFIG_DEBUG_INFO_REDUCED=y$/# CONFIG_DEBUG_INFO_REDUCED is not set/' "$KERNEL_CONFIG"
+  echo ">>> 内核配置已 Patch: BBR + FQ + schedutil + DEBUG_INFO/BTF/eBPF 启用 (dae 依赖链全打通)"
 fi
 
 # ============================================
