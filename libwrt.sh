@@ -108,11 +108,11 @@ if [ -f "$KERNEL_CONFIG" ]; then
   grep -q '^CONFIG_KERNEL_DEBUG_INFO=y$' .config || echo 'CONFIG_KERNEL_DEBUG_INFO=y' >> .config
   grep -q '^# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set$' .config || echo '# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set' >> .config
   grep -q '^CONFIG_KERNEL_DEBUG_INFO_BTF=y$' .config || echo 'CONFIG_KERNEL_DEBUG_INFO_BTF=y' >> .config
-  # 模块 BTF 明确关闭: Config-kernel.in 里它是 def_bool y 搭车, 会让每个 .ko
-  # 都跑一遍 pahole, 显著拖慢 CI; dae (CO-RE) 只需 vmlinux BTF, 且 OpenWrt
-  # 默认 KERNEL_MODULE_ALLOW_BTF_MISMATCH=y, 无模块 BTF 不影响任何功能
-  sed -i 's/^CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES=y$/# CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES is not set/' .config
-  grep -q 'CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES' .config || echo '# CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES is not set' >> .config
+  # 模块 BTF: 原尝试在 buildroot .config 关 CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES
+  # 经 run 33472245403 实证无效 — .config 的 is not set 不会正向传递到内核
+  # .config (只传 =y/=m)，内核侧 CONFIG_DEBUG_INFO_BTF_MODULES 回落 def_bool y
+  # TODO(dae 跑通后单轮处理): 需改 target/linux/generic/config-6.12 关此项以省 CI/内存
+  # 本轮不动内核 config-6.12，保持一次一变量
   # --- 内核层: DEBUG_INFO 链 + tc 支持 + veth ---
   # CONFIG_VETH: dae 运行依赖 (其 OpenWrt 包 Depends kmod-veth);
   # 第三方源 24.10/6.6 内核编的 kmod 与我们 6.12 vermagic 不匹配装不上,
