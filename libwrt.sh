@@ -125,11 +125,11 @@ if [ -f "$KERNEL_CONFIG" ]; then
     fi
   done
   sed -i 's/^CONFIG_DEBUG_INFO_REDUCED=y$/# CONFIG_DEBUG_INFO_REDUCED is not set/' "$KERNEL_CONFIG"
-  # --- 第五层 (疑似, 待实证): 内核 6.12 的 DEBUG_INFO_BTF 还有两条硬依赖
+  # --- 第五层 (已实证): 内核 6.12 的 DEBUG_INFO_BTF 还有两条硬依赖
   #   depends on PAHOLE_VERSION >= 116               (Kconfig 解析期 $(shell) 探测 pahole, 探不到记 0)
   #   depends on DEBUG_INFO_DWARF4 || PAHOLE_VERSION >= 121
-  # (注: run 33390082108 的"无 .BTF"来自当时查错文件的验证门, 不能当证据;
-  #  但已核实全树无机制把 staging pahole 注入内核配置解析环境, 该层仍是首要嫌疑)
+  # run 33458165668 实证: 装系统 pahole 后内核首次含 BTF (FIT 从 <6MiB 涨到
+  # 6.29MiB), 确认此前各轮均因系统 PATH 无 pahole → PAHOLE_VERSION=0 → BTF 静默丢弃。
   # 双保险: build.yml apt 加装系统 dwarves 保证 pahole 可探测;
   # 此处显式锁 DWARF4 满足第二条析取, 不赌 pahole 版本。
   # 注意: DWARF4 与 DWARF_TOOLCHAIN_DEFAULT 是 choice 互斥项, 必须先关后者
@@ -137,6 +137,16 @@ if [ -f "$KERNEL_CONFIG" ]; then
   sed -i 's/^# CONFIG_DEBUG_INFO_DWARF4 is not set$/CONFIG_DEBUG_INFO_DWARF4=y/' "$KERNEL_CONFIG"
   echo ">>> 内核配置已 Patch: BBR + FQ + schedutil + DEBUG_INFO/BTF/eBPF + VETH 启用 (dae 依赖链全打通)"
 fi
+
+# ============================================
+# 4c. KERNEL_SIZE 提到 12288k — 容纳含 BTF 的内核
+#     BTF 生效后内核 FIT 达 6.29MiB, 撞上 recipe 的 6144k check-size。
+#     设备 GPT 实测: 启动内核分区 0:HLOS = 12MiB (mmcblk0p16),
+#     6144k 只是备用槽 HLOS_1 的尺寸; sysupgrade (emmc.sh) 按分区名
+#     HLOS 整分区写入, 上限即分区物理大小。
+# ============================================
+sed -i '/^define Device\/jdcloud_re-ss-01$/,/^endef$/ s/KERNEL_SIZE := 6144k/KERNEL_SIZE := 12288k/' target/linux/qualcommax/image/ipq60xx.mk
+echo ">>> KERNEL_SIZE 已提至 12288k (HLOS 分区实测 12MiB)"
 
 # ============================================
 # 5. 预置基础 sysctl 参数 (sysctl.d 目录)
