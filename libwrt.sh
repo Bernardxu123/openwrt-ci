@@ -120,6 +120,15 @@ if [ -f "$KERNEL_CONFIG" ]; then
     fi
   done
   sed -i 's/^CONFIG_DEBUG_INFO_REDUCED=y$/# CONFIG_DEBUG_INFO_REDUCED is not set/' "$KERNEL_CONFIG"
+  # --- 第五层 (实测): 内核 6.12 的 DEBUG_INFO_BTF 还有两条硬依赖
+  #   depends on PAHOLE_VERSION >= 116               (Kconfig 解析期 $(shell) 探测 pahole, 探不到记 0)
+  #   depends on DEBUG_INFO_DWARF4 || PAHOLE_VERSION >= 121
+  # run 33390082108 完整重编内核仍无 .BTF, 即此层: 依赖不满足时 BTF 静默丢弃,
+  # 编译全程零报错。双保险: build.yml apt 加装系统 dwarves 保证 pahole 可探测;
+  # 此处显式锁 DWARF4 满足第二条析取, 不赌 pahole 版本。
+  # 注意: DWARF4 与 DWARF_TOOLCHAIN_DEFAULT 是 choice 互斥项, 必须先关后者
+  sed -i 's/^CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y$/# CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT is not set/' "$KERNEL_CONFIG"
+  sed -i 's/^# CONFIG_DEBUG_INFO_DWARF4 is not set$/CONFIG_DEBUG_INFO_DWARF4=y/' "$KERNEL_CONFIG"
   echo ">>> 内核配置已 Patch: BBR + FQ + schedutil + DEBUG_INFO/BTF/eBPF + VETH 启用 (dae 依赖链全打通)"
 fi
 

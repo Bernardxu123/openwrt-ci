@@ -62,7 +62,7 @@ jobs:
         sudo -E apt-get -y install \
           ack antlr3 aria2 asciidoc autoconf automake autopoint binutils bison btrfs-progs \
           build-essential bzip2 ca-certificates ccache cmake coreutils cpio curl \
-          device-tree-compiler fastjar flex g++-multilib gawk gcc-multilib gettext git git-core \
+          device-tree-compiler dwarves fastjar flex g++-multilib gawk gcc-multilib gettext git git-core \
           gperf gzip haveged help2man intltool jq libc6-dev-i386 libelf-dev libfuse-dev \
           libglib2.0-dev libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev \
           libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool libz-dev lrzsz \
@@ -221,6 +221,26 @@ jobs:
         make -j$(nproc) || make -j1 || make -j1 V=s
         echo "status=success" >> $GITHUB_OUTPUT
         echo "FILE_DATE=$(date +"%Y.%m.%d")" >> $GITHUB_ENV
+
+    - name: Diagnose kernel config(内核配置诊断)
+      if: steps.compile.outputs.status == 'success'
+      run: |
+        cd $OPENWRT_PATH
+        echo "=== 解析后的内核配置 (DEBUG_INFO / PAHOLE / BPF 相关) ==="
+        # 历史教训: BTF 依赖链在 Kconfig 解析期被静默丢弃 (PAHOLE_VERSION=0 等),
+        # 编译无任何报错, 只在最终 vmlinux 缺 .BTF 段。此步骤把解析结果原样落盘,
+        # 再失败时日志即可直接定位是哪条依赖断了
+        KDIR="$(find build_dir -maxdepth 2 -type d -name 'linux-*' | head -1)"
+        if [ -n "$KDIR" ] && [ -f "$KDIR/.config" ]; then
+          grep -E '^#? ?CONFIG_(DEBUG_INFO|PAHOLE|BPF_SYSCALL|CGROUP_BPF|NET_CLS_BPF|NET_SCH_INGRESS|VETH)' "$KDIR/.config" || echo "(无匹配行)"
+        else
+          echo "::warning::未找到内核 .config (KDIR=$KDIR)"
+        fi
+        echo "--- pahole 版本 (解析期依赖: PAHOLE_VERSION >= 116) ---"
+        "$OPENWRT_PATH/staging_dir/host/bin/pahole" --version 2>/dev/null || echo "(staging_dir pahole 不存在)"
+        /usr/bin/pahole --version 2>/dev/null || echo "(系统 pahole 不存在)"
+        which -a pahole 2>/dev/null || echo "(PATH 上无 pahole)"
+        echo "=== 诊断结束 ==="
 
     - name: Verify packages(校验关键包)
       if: steps.compile.outputs.status == 'success'
