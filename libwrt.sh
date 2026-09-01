@@ -108,6 +108,11 @@ if [ -f "$KERNEL_CONFIG" ]; then
   grep -q '^CONFIG_KERNEL_DEBUG_INFO=y$' .config || echo 'CONFIG_KERNEL_DEBUG_INFO=y' >> .config
   grep -q '^# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set$' .config || echo '# CONFIG_KERNEL_DEBUG_INFO_REDUCED is not set' >> .config
   grep -q '^CONFIG_KERNEL_DEBUG_INFO_BTF=y$' .config || echo 'CONFIG_KERNEL_DEBUG_INFO_BTF=y' >> .config
+  # 模块 BTF 明确关闭: Config-kernel.in 里它是 def_bool y 搭车, 会让每个 .ko
+  # 都跑一遍 pahole, 显著拖慢 CI; dae (CO-RE) 只需 vmlinux BTF, 且 OpenWrt
+  # 默认 KERNEL_MODULE_ALLOW_BTF_MISMATCH=y, 无模块 BTF 不影响任何功能
+  sed -i 's/^CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES=y$/# CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES is not set/' .config
+  grep -q 'CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES' .config || echo '# CONFIG_KERNEL_DEBUG_INFO_BTF_MODULES is not set' >> .config
   # --- 内核层: DEBUG_INFO 链 + tc 支持 + veth ---
   # CONFIG_VETH: dae 运行依赖 (其 OpenWrt 包 Depends kmod-veth);
   # 第三方源 24.10/6.6 内核编的 kmod 与我们 6.12 vermagic 不匹配装不上,
@@ -120,11 +125,12 @@ if [ -f "$KERNEL_CONFIG" ]; then
     fi
   done
   sed -i 's/^CONFIG_DEBUG_INFO_REDUCED=y$/# CONFIG_DEBUG_INFO_REDUCED is not set/' "$KERNEL_CONFIG"
-  # --- 第五层 (实测): 内核 6.12 的 DEBUG_INFO_BTF 还有两条硬依赖
+  # --- 第五层 (疑似, 待实证): 内核 6.12 的 DEBUG_INFO_BTF 还有两条硬依赖
   #   depends on PAHOLE_VERSION >= 116               (Kconfig 解析期 $(shell) 探测 pahole, 探不到记 0)
   #   depends on DEBUG_INFO_DWARF4 || PAHOLE_VERSION >= 121
-  # run 33390082108 完整重编内核仍无 .BTF, 即此层: 依赖不满足时 BTF 静默丢弃,
-  # 编译全程零报错。双保险: build.yml apt 加装系统 dwarves 保证 pahole 可探测;
+  # (注: run 33390082108 的"无 .BTF"来自当时查错文件的验证门, 不能当证据;
+  #  但已核实全树无机制把 staging pahole 注入内核配置解析环境, 该层仍是首要嫌疑)
+  # 双保险: build.yml apt 加装系统 dwarves 保证 pahole 可探测;
   # 此处显式锁 DWARF4 满足第二条析取, 不赌 pahole 版本。
   # 注意: DWARF4 与 DWARF_TOOLCHAIN_DEFAULT 是 choice 互斥项, 必须先关后者
   sed -i 's/^CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT=y$/# CONFIG_DEBUG_INFO_DWARF_TOOLCHAIN_DEFAULT is not set/' "$KERNEL_CONFIG"
