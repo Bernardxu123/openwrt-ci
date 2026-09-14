@@ -834,11 +834,11 @@ curl -fL --retry 3 --retry-delay 2 -o "$DAED_TMP/daed.ipk" "$DAED_IPK_URL" || {
 curl -fL --retry 3 --retry-delay 2 -o "$DAED_TMP/luci.ipk" "$LUCI_DAEDE_IPK_URL" || {
   echo "ERROR: download luci-app-daede ipk failed: $LUCI_DAEDE_IPK_URL" >&2; exit 1; }
 
-mkdir -p "$DAED_TMP/daed" "$DAED_TMP/luci"
+mkdir -p "$DAED_TMP/daed" "$DAED_TMP/luci" "$DAED_TMP/daed/data" "$DAED_TMP/luci/data"
 tar -xzf "$DAED_TMP/daed.ipk" -C "$DAED_TMP/daed" || { echo "ERROR: unpack daed.ipk" >&2; exit 1; }
-tar -xzf "$DAED_TMP/daed/data.tar.gz" -C "$DAED_TMP/daed" || { echo "ERROR: unpack daed data.tar.gz" >&2; exit 1; }
+tar -xzf "$DAED_TMP/daed/data.tar.gz" -C "$DAED_TMP/daed/data" || { echo "ERROR: unpack daed data.tar.gz" >&2; exit 1; }
 tar -xzf "$DAED_TMP/luci.ipk" -C "$DAED_TMP/luci" || { echo "ERROR: unpack luci.ipk" >&2; exit 1; }
-tar -xzf "$DAED_TMP/luci/data.tar.gz" -C "$DAED_TMP/luci" || { echo "ERROR: unpack luci data.tar.gz" >&2; exit 1; }
+tar -xzf "$DAED_TMP/luci/data.tar.gz" -C "$DAED_TMP/luci/data" || { echo "ERROR: unpack luci data.tar.gz" >&2; exit 1; }
 
 # 校验关键文件存在，避免静默打进残缺固件
 for f in usr/bin/daed usr/bin/daed-guard etc/init.d/daed usr/share/daed/cleanup.sh; do
