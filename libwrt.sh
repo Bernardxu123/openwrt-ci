@@ -810,3 +810,99 @@ chmod +x package/base-files/files/etc/uci-defaults/994_set_dnsmasq_cache
 echo ">>> dnsmasq 缓存已提升 (cachesize=2048)"
 
 echo ">>> DIY 脚本执行完成"
+
+# ============================================
+# 28. daed + luci-app-daede + daed-board 预置进固件
+#     解决刷机后 daed 要后装、/www/daed-board 被冲掉的痛点。
+#     不走 CONFIG_PACKAGE_daed：kmod-veth/kmod-sched-bpf 为内核内编，
+#     feed 上的 kmod 与本内核 vermagic 不匹配，opkg 依赖解析必失败。
+#     改版本只动下面两个 VER 变量。
+# ============================================
+DAED_REL_TAG="v2026.09.14"
+DAED_VER="2026.09.12-r1"
+LUCI_DAEDE_VER="1.15-r2"
+DAED_IPK_URL="https://github.com/kenzok8/openwrt-daede/releases/download/${DAED_REL_TAG}/daed_${DAED_VER}_aarch64_cortex-a53.ipk"
+LUCI_DAEDE_IPK_URL="https://github.com/kenzok8/openwrt-daede/releases/download/${DAED_REL_TAG}/luci-app-daede_${LUCI_DAEDE_VER}_all.ipk"
+DAED_BOARD_REPO="https://github.com/Bernardxu123/daed-board.git"
+
+echo ">>> [28] 预置 daed ${DAED_VER} + luci-app-daede ${LUCI_DAEDE_VER} + daed-board"
+DAED_TMP="$(mktemp -d)"
+trap 'rm -rf "$DAED_TMP"' EXIT
+
+curl -fL --retry 3 --retry-delay 2 -o "$DAED_TMP/daed.ipk" "$DAED_IPK_URL" || {
+  echo "ERROR: download daed ipk failed: $DAED_IPK_URL" >&2; exit 1; }
+curl -fL --retry 3 --retry-delay 2 -o "$DAED_TMP/luci.ipk" "$LUCI_DAEDE_IPK_URL" || {
+  echo "ERROR: download luci-app-daede ipk failed: $LUCI_DAEDE_IPK_URL" >&2; exit 1; }
+
+mkdir -p "$DAED_TMP/daed" "$DAED_TMP/luci"
+tar -xzf "$DAED_TMP/daed.ipk" -C "$DAED_TMP/daed" || { echo "ERROR: unpack daed.ipk" >&2; exit 1; }
+tar -xzf "$DAED_TMP/daed/data.tar.gz" -C "$DAED_TMP/daed" || { echo "ERROR: unpack daed data.tar.gz" >&2; exit 1; }
+tar -xzf "$DAED_TMP/luci.ipk" -C "$DAED_TMP/luci" || { echo "ERROR: unpack luci.ipk" >&2; exit 1; }
+tar -xzf "$DAED_TMP/luci/data.tar.gz" -C "$DAED_TMP/luci" || { echo "ERROR: unpack luci data.tar.gz" >&2; exit 1; }
+
+# 校验关键文件存在，避免静默打进残缺固件
+for f in usr/bin/daed usr/bin/daed-guard etc/init.d/daed usr/share/daed/cleanup.sh; do
+  [ -e "$DAED_TMP/daed/data/$f" ] || { echo "ERROR: daed ipk missing $f" >&2; exit 1; }
+done
+
+# 注入 files/（OpenWrt 构建会整树拷入 rootfs）
+mkdir -p files/etc/config files/etc/init.d files/etc/uci-defaults \
+         files/usr/bin files/usr/share/daed files/lib/upgrade/keep.d \
+         files/www/daed-board files/www/cgi-bin
+cp -a "$DAED_TMP/daed/data/." files/
+cp -a "$DAED_TMP/luci/data/." files/
+chmod 755 files/usr/bin/daed files/usr/bin/daed-guard \
+          files/etc/init.d/daed files/usr/share/daed/cleanup.sh
+
+# 默认启用（保留设置升级时用户 overlay 配置优先）
+cat > files/etc/config/daed <<'DAEDCFG'
+config daed 'config'
+	option enabled '1'
+	option listen_addr '0.0.0.0:2023'
+	option log_maxbackups '1'
+	option log_maxsize '2'
+DAEDCFG
+
+cat > files/etc/uci-defaults/995_enable_daed <<'EOF'
+#!/bin/sh
+# 首启确保 daed 服务开机自启（不覆盖用户已有 listen/凭据）
+[ -x /etc/init.d/daed ] || exit 0
+/etc/init.d/daed enable 2>/dev/null || true
+exit 0
+EOF
+chmod +x files/etc/uci-defaults/995_enable_daed
+
+# wing.db 与面板配置在保留设置升级时备份
+if ! grep -qx '/etc/daed/' package/base-files/files/etc/sysupgrade.conf 2>/dev/null; then
+  echo '/etc/daed/' >> package/base-files/files/etc/sysupgrade.conf
+fi
+if ! grep -qx '/www/daed-board/' package/base-files/files/etc/sysupgrade.conf 2>/dev/null; then
+  echo '/www/daed-board/' >> package/base-files/files/etc/sysupgrade.conf
+fi
+
+# daed-board：构建时拉 GitHub main（纯静态，零依赖）
+rm -rf "$DAED_TMP/board"
+git clone --depth 1 "$DAED_BOARD_REPO" "$DAED_TMP/board" || {
+  echo "ERROR: clone daed-board failed: $DAED_BOARD_REPO" >&2; exit 1; }
+for f in index.html app.js style.css; do
+  [ -f "$DAED_TMP/board/$f" ] || { echo "ERROR: daed-board missing $f" >&2; exit 1; }
+  cp -f "$DAED_TMP/board/$f" "files/www/daed-board/$f"
+done
+if [ -f "$DAED_TMP/board/cgi/daed-board-log" ]; then
+  cp -f "$DAED_TMP/board/cgi/daed-board-log" files/www/cgi-bin/daed-board-log
+  sed -i 's/\r$//' files/www/cgi-bin/daed-board-log
+  chmod +x files/www/cgi-bin/daed-board-log
+else
+  echo "ERROR: daed-board missing cgi/daed-board-log" >&2; exit 1
+fi
+# LuCI 菜单入口（与 deploy.py 一致）
+if [ -f "$DAED_TMP/board/luci/menu.d/luci-app-daed-board.json" ]; then
+  mkdir -p files/usr/share/luci/menu.d files/www/luci-static/resources/view
+  cp -f "$DAED_TMP/board/luci/menu.d/luci-app-daed-board.json" files/usr/share/luci/menu.d/
+  [ -f "$DAED_TMP/board/luci/view/daed-board.js" ] && \
+    cp -f "$DAED_TMP/board/luci/view/daed-board.js" files/www/luci-static/resources/view/
+fi
+
+rm -rf "$DAED_TMP"
+trap - EXIT
+echo ">>> [28] daed ${DAED_VER} + daed-board 已注入 files/（默认 enabled=1）"
