@@ -1,9 +1,9 @@
 ---
 feature: wugui-sub-auto
-status: in-progress
+status: delivered
 updated: 2026-09-22
 branch: master
-commits: # filled at delivery
+commits: 2206f1e..de1a5ac
 ---
 
 # 乌龟订阅自动解锁 + daed 更新
@@ -11,6 +11,12 @@ commits: # filled at delivery
 > Project override（相对 compose-next 默认）：本仓库既有 compose 规格均直接在本工作区 `master` 交付（见 `docs/compose/spec/{firmware-daed-bake,daed-board-ux-perf,router-optimize-20260914}.md` 的 `branch: master` / `commits: n/a`），且会话隔离禁止 `git worktree add`。故沿用项目惯例在本工作区实现，不另建 worktree。
 
 ## Report
+
+**What was built** — 路由器每日 cron 脚本 `/usr/bin/wugui-sub-update.sh`：登录乌龟 Xboard → 同步 daed 订阅链接（防 token 轮换）→ 解锁订阅开关（10 分钟窗口，不主动上锁）→ `updateSubscription`。配套 `wugui/deploy_wugui_sub.py` 部署脚本/配置/cron 并关闭 daed 乌龟内置 cron；凭据在路由器 `/etc/wugui-sub.conf`（600）与本地 `wugui/secrets.local.py`（gitignore）。daed 只监听 `192.168.31.1:2023`，鉴权用 `auth_data` 原样作 Authorization。
+
+**Verification** — `bash -n` / `py_compile` PASS；`json_escape` 回环（`p"w\d`）PASS；`sh_quote`/`build_conf` 单测 PASS；`deploy --write-conf --run-once` 两次 EXIT:0（login/subscribe_url/daed auth/unlock duration_minutes=10/updateSubscription tag=乌龟）；部署核对 conf 600 / script 755 / crontab `50 5 * * *` / `cronEnable:false` / `updatedAt` 刷新 / nodes=26 / 解锁窗口内订阅 GET 200 size=9480。独立审阅 2 轮：首轮 3 critical 已修，复审 APPROVE。
+
+**Journey log** — ①PC 打不开 wgjsq08.vip（TLS 握手超时）但路由器 200，路由器 cron 是硬需求；②daed 里旧 token `f9338c7e…` 一直 403，根因是订阅 token 轮换，必须先 `updateSubscriptionLink`；③`Authorization: Bearer <data.token>` 403，要用 `data.auth_data`；④daed 只绑 `192.168.31.1:2023` 连 `127.0.0.1` HTTP 000；⑤shell printf 拼 JSON 一律要转义，部署器侧用 `json.dumps` 落盘再 `@file`。
 
 ## [S1] Problem
 
@@ -110,7 +116,7 @@ DAED_SUB_TAG='乌龟'
 
 ## Tasks
 
-- [ ] T1: 写 `wugui/wugui-sub-update.sh`（登录→同步订阅链接→解锁→daed updateSubscription→日志） — acceptance: `bash -n` 通过，步骤与契约一致，含文件锁与配置读取 (covers: S2)
-- [ ] T2: 写 `wugui/wugui-sub.conf.example` 与 `wugui/deploy_wugui_sub.py`（部署脚本/配置/cron/关 daed 乌龟 cron） — acceptance: example 字段齐全不含真实密码；deploy 支持 `--dry` 打印将执行命令 (covers: S2)
-- [ ] T3: 部署到路由器并关闭 daed 乌龟 cron、写入真实配置与 cron — acceptance: 路由器存在 `/usr/bin/wugui-sub-update.sh` 可执行、`/etc/wugui-sub.conf` mode 600、crontab 含 05:50 行、daed 乌龟 cronEnable=false (covers: S2; depends: T1, T2)
-- [ ] T4: 联调跑通一次全链路 — acceptance: 脚本 exit 0，日志显示 login/sync-link/unlock/daed 四步成功，daed 订阅 link 已是当前 token 且 updatedAt 刷新 (covers: S2; depends: T3)
+- [x] T1: 写 `wugui/wugui-sub-update.sh`（登录→同步订阅链接→解锁→daed updateSubscription→日志） — acceptance: `bash -n` 通过，步骤与契约一致，含文件锁与配置读取 (covers: S2)
+- [x] T2: 写 `wugui/wugui-sub.conf.example` 与 `wugui/deploy_wugui_sub.py`（部署脚本/配置/cron/关 daed 乌龟 cron） — acceptance: example 字段齐全不含真实密码；deploy 支持 `--dry` 打印将执行命令 (covers: S2)
+- [x] T3: 部署到路由器并关闭 daed 乌龟 cron、写入真实配置与 cron — acceptance: 路由器存在 `/usr/bin/wugui-sub-update.sh` 可执行、`/etc/wugui-sub.conf` mode 600、crontab 含 05:50 行、daed 乌龟 cronEnable=false (covers: S2; depends: T1, T2)
+- [x] T4: 联调跑通一次全链路 — acceptance: 脚本 exit 0，日志显示 login/sync-link/unlock/daed 四步成功，daed 订阅 link 已是当前 token 且 updatedAt 刷新 (covers: S2; depends: T3)

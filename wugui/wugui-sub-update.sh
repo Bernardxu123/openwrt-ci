@@ -157,6 +157,7 @@ HTTP_CODE=$(curl -sk --connect-timeout 15 --max-time 60 \
 [ "$HTTP_CODE" = "200" ] || die "unlock HTTP $HTTP_CODE: $(head -c 200 "$TMPD/unlock.resp" 2>/dev/null)"
 LOCKED=$(json_get "$TMPD/unlock.resp" '@.data.locked')
 MINS=$(json_get "$TMPD/unlock.resp" '@.data.duration_minutes')
+[ "$LOCKED" = "false" ] || [ "$LOCKED" = "0" ] || die "unlock returned locked=$LOCKED: $(head -c 200 "$TMPD/unlock.resp")"
 log "unlock ok locked=$LOCKED duration_minutes=$MINS"
 
 sleep 1
