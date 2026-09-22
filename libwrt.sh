@@ -816,7 +816,7 @@ echo ">>> DIY 脚本执行完成"
 #     解决刷机后 daed 要后装、/www/daed-board 被冲掉的痛点。
 #     不走 CONFIG_PACKAGE_daed：kmod-veth/kmod-sched-bpf 为内核内编，
 #     feed 上的 kmod 与本内核 vermagic 不匹配，opkg 依赖解析必失败。
-#     改版本只动下面两个 VER 变量。
+#     改版本只动下面三个变量（DAED_REL_TAG / DAED_VER / LUCI_DAEDE_VER）。
 # ============================================
 DAED_REL_TAG="v2026.09.21"
 DAED_VER="2026.09.20-r4"

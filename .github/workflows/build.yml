@@ -405,13 +405,14 @@ jobs:
         done
 
         # --- daed 预置 (files/ 注入, 不进 bin/*.ipk; 警告不阻断) ---
-        echo "--- daed 预置检查 (files/) ---"
-        if [ -x "$GITHUB_WORKSPACE/files/usr/bin/daed" ]; then
+        # 注意: Load Custom Configuration 已把仓库根 files/ mv 到 $OPENWRT_PATH/files
+        echo "--- daed 预置检查 (\$OPENWRT_PATH/files/) ---"
+        if [ -x "$OPENWRT_PATH/files/usr/bin/daed" ]; then
             echo "✅ files/usr/bin/daed 已预置"
         else
             echo "::warning::files/usr/bin/daed 未预置或不可执行 (libwrt.sh §28)"
         fi
-        if [ -d "$GITHUB_WORKSPACE/files/www/daed-board" ]; then
+        if [ -d "$OPENWRT_PATH/files/www/daed-board" ]; then
             echo "✅ files/www/daed-board 已预置"
         else
             echo "::warning::files/www/daed-board 未预置"
@@ -444,7 +445,8 @@ jobs:
             echo "## ❌ 固件构建失败"
             echo ""
             echo "- run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
-            echo "- 请查看 Verify packages / compile 步骤日志；BTF 门与 kmod 硬校验会在此步拦截。"
+            echo "- 请查看本 run 各步骤日志（checkout/compile/Verify packages 等）。"
+            echo "- Verify packages 硬门：sysupgrade 产出、BTF（vmlinux+FIT）、kmod 清单（含 kmod-qca-nss-drv-qdisc）。"
         } >> "$GITHUB_STEP_SUMMARY"
 
     - name: Check Space Usage(检查空间使用情况)
