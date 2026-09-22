@@ -12,7 +12,7 @@
 | CPU | Qualcomm IPQ6010 (4x A53 @1.8GHz) |
 | 内存 | 1GB DDR4 |
 | 存储 | 128GB eMMC |
-| 内核 | 6.12 + NSS v11.4 硬件加速 |
+| 内核 | 6.12 + NSS v12.5 硬件加速（12.x 无 802.11s mesh；需 mesh 回退 11.4） |
 
 ## 预装功能
 
@@ -26,7 +26,7 @@
 
 ## NSS 硬件加速
 
-- 6.12 内核适配 NSS v11.4 固件
+- 6.12 内核适配 NSS v12.5 固件（config `CONFIG_NSS_FIRMWARE_VERSION_12_5`；12.x 不支持 802.11s mesh，需要 mesh 时回退 11.4）
 - SKB Recycler 多核回收 + ECM 前端加速
 - WiFi Offload / IPv6 / Bridge / VLAN / PPPoE 全系 NSS 驱动
 - MCS / IGS / L2TPv2 / LAG / PPTP 高级加速模块

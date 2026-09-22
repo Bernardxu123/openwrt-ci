@@ -818,8 +818,8 @@ echo ">>> DIY 脚本执行完成"
 #     feed 上的 kmod 与本内核 vermagic 不匹配，opkg 依赖解析必失败。
 #     改版本只动下面两个 VER 变量。
 # ============================================
-DAED_REL_TAG="v2026.09.14"
-DAED_VER="2026.09.12-r1"
+DAED_REL_TAG="v2026.09.21"
+DAED_VER="2026.09.20-r4"
 LUCI_DAEDE_VER="1.15-r2"
 DAED_IPK_URL="https://github.com/kenzok8/openwrt-daede/releases/download/${DAED_REL_TAG}/daed_${DAED_VER}_aarch64_cortex-a53.ipk"
 LUCI_DAEDE_IPK_URL="https://github.com/kenzok8/openwrt-daede/releases/download/${DAED_REL_TAG}/luci-app-daede_${LUCI_DAEDE_VER}_all.ipk"

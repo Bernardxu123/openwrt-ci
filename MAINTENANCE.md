@@ -15,7 +15,7 @@
 | SoC | Qualcomm IPQ6010，4× Cortex-A53 @ 1.8GHz（设备树超频，OPP 864~1800MHz） |
 | 内存 / 存储 | 1GB DDR4 / 128GB eMMC |
 | 源码 | [LiBwrt/LibWrt](https://github.com/LiBwrt/LibWrt) `25.12-nss` 分支（ImmortalWrt 25.12 基础） |
-| 内核 | 6.12 + NSS v11.4 硬件加速固件 |
+| 内核 | 6.12 + NSS v12.5 硬件加速固件（12.x 无 802.11s mesh；需 mesh 回退 11.4） |
 | 构建 | GitHub Actions（`ubuntu-22.04`），推送到 `main` 分支触发 |
 
 ### 分支约定（2026-07-31 起仅保留单分支）
@@ -94,7 +94,7 @@ make defconfig                              # 第二次：基于完整配置定�
 
 声明目标设备、NSS、内核选项与全部软件包。关键分组：
 
-- **NSS 硬件加速**：`kmod-qca-nss-drv*`、`kmod-qca-nss-ecm`、NSS v11.4 固件（12.5 测试轮，mesh 取舍见 §8）、SKB Recycler（含 PREALLOC）、WiFi offload。
+- **NSS 硬件加速**：`kmod-qca-nss-drv*`、`kmod-qca-nss-ecm`、NSS **v12.5** 固件（config `CONFIG_NSS_FIRMWARE_VERSION_12_5`；12.x 无 802.11s mesh，需 mesh 回退 11.4）、SKB Recycler（含 PREALLOC）、WiFi offload。
 - **文件共享**：Samba4（userspace）+ ksmbd 内核态后端（`kmod-fs-ksmbd`/`ksmbd-tools`，LuCI 可切换）。
 - **代理**：OpenClash（Meta）、Passwall（Xray/SingBox）。Passwall 及其依赖
   （chinadns-ng、dns2socks、microsocks、ipt2socks 等）**直接用 25.12 feeds 自带版本**，

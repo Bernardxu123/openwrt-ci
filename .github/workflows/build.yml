@@ -395,7 +395,7 @@ jobs:
         # --- 内核模块: 在 target manifest 中 (硬失败，此项检查准确) ---
         echo "--- 内核模块 (manifest 检查) ---"
         KMOD_MISSING=0
-        for kmod in kmod-nft-tproxy kmod-nf-socket kmod-wireguard kmod-qca-nss-ecm; do
+        for kmod in kmod-nft-tproxy kmod-nf-socket kmod-wireguard kmod-qca-nss-ecm kmod-qca-nss-drv-qdisc; do
             if find bin/targets -name "*.manifest" -exec grep -l "$kmod" {} \; 2>/dev/null | grep -q .; then
                 echo "✅ $kmod"
             else
@@ -404,12 +404,48 @@ jobs:
             fi
         done
 
+        # --- daed 预置 (files/ 注入, 不进 bin/*.ipk; 警告不阻断) ---
+        echo "--- daed 预置检查 (files/) ---"
+        if [ -x "$GITHUB_WORKSPACE/files/usr/bin/daed" ]; then
+            echo "✅ files/usr/bin/daed 已预置"
+        else
+            echo "::warning::files/usr/bin/daed 未预置或不可执行 (libwrt.sh §28)"
+        fi
+        if [ -d "$GITHUB_WORKSPACE/files/www/daed-board" ]; then
+            echo "✅ files/www/daed-board 已预置"
+        else
+            echo "::warning::files/www/daed-board 未预置"
+        fi
+
         if [ $KMOD_MISSING -eq 1 ]; then
             echo "::error::关键内核模块缺失，请检查 .config 与 defconfig 日志"
             exit 1
         fi
         [ $PKG_WARN -eq 1 ] && echo "=== ⚠️ 部分用户空间包未确认，但固件已产出，继续发布 ==="
         echo "=== ✅ 关键校验通过 ==="
+
+        # --- 构建摘要 (可观测性: 免翻全日志) ---
+        {
+            echo "## 固件构建摘要"
+            echo ""
+            echo "| 项 | 值 |"
+            echo "|---|---|"
+            echo "| sysupgrade | \`$(find bin/targets -name '*sysupgrade.bin' | head -1)\` |"
+            echo "| BTF | ✅ vmlinux + FIT |"
+            echo "| kmod-qca-nss-drv-qdisc | ✅ |"
+            echo "| daed pin | \`$(grep -E '^DAED_(REL_TAG|VER)=' "$GITHUB_WORKSPACE/libwrt.sh" | tr '\n' ' ')\` |"
+            echo "| NSS | \`$(grep -E 'CONFIG_NSS_FIRMWARE_VERSION_' "$GITHUB_WORKSPACE/configs/jdcloud_re_ss01.config" | grep -v 'is not set' | head -1)\` |"
+        } >> "$GITHUB_STEP_SUMMARY"
+
+    - name: Failure Summary(失败摘要)
+      if: failure()
+      run: |
+        {
+            echo "## ❌ 固件构建失败"
+            echo ""
+            echo "- run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+            echo "- 请查看 Verify packages / compile 步骤日志；BTF 门与 kmod 硬校验会在此步拦截。"
+        } >> "$GITHUB_STEP_SUMMARY"
 
     - name: Check Space Usage(检查空间使用情况)
       if: (!cancelled())
@@ -481,7 +517,7 @@ jobs:
           - IPv6 完整支持
           
           ### NSS 硬件加速
-          - NSS v11.4 固件 + ECM 前端加速
+          - NSS v12.5 固件 + ECM 前端加速
           - SKB Recycler / WiFi Offload / PPPoE NSS
           - Bridge / VLAN / IPv6 / Mesh 全系驱动
           - MCS / IGS / L2TPv2 / LAG / PPTP 高级模块
