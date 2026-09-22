@@ -1,9 +1,9 @@
 ---
 feature: net-fw-optimize-20260922
-status: in-progress
+status: delivered
 updated: 2026-09-22
 branch: master + openwrt-ci/main
-commits: # filled at delivery
+commits: openwrt-ci a4fb2a9..0218a17；主仓 docs 821e5c7..46ded98（本定稿提交在其外）
 ---
 
 # 本地网络与固件优化（2026-09-22）
@@ -12,7 +12,11 @@ commits: # filled at delivery
 
 ## Report
 
-## [S1] Problem
+**What was built** — 路由器侧一次性清理：删掉 `/tmp/daed-new.ipk`（22.7MB）并移除 OpenClash 的 4 条空 geo cron（服务已停用），保留 daed geo / daed-guard / wugui 三条有效任务。固件侧 `openwrt-ci`：`libwrt.sh` 预置 daed 从 `v2026.09.14/2026.09.12-r1` 升到 **`v2026.09.21/2026.09.20-r4`**（与路由器现役一致，luci 仍 1.15-r2）；README/MAINTENANCE/build.yml 的 NSS 现役描述从 v11.4 对齐为 **v12.5**；CI 硬校验补 `kmod-qca-nss-drv-qdisc`，软校验在 `$OPENWRT_PATH/files/`（注意 workflow 会 `mv files`）检查 daed 预置，并写 `GITHUB_STEP_SUMMARY` 成功/失败摘要。
+
+**Verification** — 路由器清理后 `/tmp` 无 `*.ipk`、crontab 无 `openclash-cron-task`、三条有效 cron 仍在；`bash -n libwrt.sh` PASS；IPK URL `curl -I` 302（GitHub release 正常）；build.yml 断言：无 `$GITHUB_WORKSPACE/files`、有 `OPENWRT_PATH/files/usr/bin/daed` 与 `kmod-qca-nss-drv-qdisc` 与 STEP_SUMMARY、无 `NSS v11.4` 现役表述。独立审阅 2 轮：首轮 2 critical（验收 200 vs 302、软校验路径）已修，复审 APPROVE。
+
+**Journey log** — ①workflow 在 Load Custom Configuration 里 `mv files $OPENWRT_PATH/files`，任何事后 `$GITHUB_WORKSPACE/files` 检查必空；②GitHub release 资产 `curl -I` 恒 302，验收勿写死 200；③OPTIMIZATION_LOG §8 的 11.4→12.5 等项其实早已进树，不必重做；④daed 预置版本要跟路由器现役对齐，否则刷机会降级。
 
 1. **路由器运行残留**：`/tmp/daed-new.ipk`（22.7MB）占用 tmpfs；OpenClash 虽已停用（主力 daed），crontab 仍有 4 条每周 geo 更新任务在空跑。
 2. **固件预置 daed 过时**：`libwrt.sh` 仍钉 `v2026.09.14` / `daed 2026.09.12-r1`，而上游 release **v2026.09.21** 已提供 `daed_2026.09.20-r4`（路由器现役即 r4）。下次刷机会把 daed 降回旧版。
@@ -77,7 +81,7 @@ IPK URL 模式不变（`releases/download/${DAED_REL_TAG}/daed_${DAED_VER}_aarch
 
 ## Tasks
 
-- [ ] T1: 路由器清理残留 ipk + 删除 OpenClash 空 cron — acceptance: `/tmp` 无 `*.ipk`；crontab 无 `openclash-cron-task`；wugui/daed-guard/geo cron 仍在 (covers: S2A)
-- [ ] T2: `libwrt.sh` daed 版本升到 v2026.09.21 / 2026.09.20-r4 — acceptance: 三变量正确；构造的 IPK URL `curl -I` 返回 **2xx/302**（GitHub release 资产 302 重定向 CDN 属正常） (covers: S2B)
-- [ ] T3: 同步 README 与 build.yml 的 NSS 版本描述 — acceptance: 用户可见文档不再写 NSS v11.4 为现役 (covers: S2C)
-- [ ] T4: CI 加 kmod-qdisc 硬校验、daed 预置软校验、STEP_SUMMARY — acceptance: build.yml 含三处改动且 YAML 结构完整 (covers: S2D; depends: T2)
+- [x] T1: 路由器清理残留 ipk + 删除 OpenClash 空 cron — acceptance: `/tmp` 无 `*.ipk`；crontab 无 `openclash-cron-task`；wugui/daed-guard/geo cron 仍在 (covers: S2A)
+- [x] T2: `libwrt.sh` daed 版本升到 v2026.09.21 / 2026.09.20-r4 — acceptance: 三变量正确；构造的 IPK URL `curl -I` 返回 **2xx/302**（GitHub release 资产 302 重定向 CDN 属正常） (covers: S2B)
+- [x] T3: 同步 README 与 build.yml 的 NSS 版本描述 — acceptance: 用户可见文档不再写 NSS v11.4 为现役 (covers: S2C)
+- [x] T4: CI 加 kmod-qdisc 硬校验、daed 预置软校验、STEP_SUMMARY — acceptance: build.yml 含三处改动且 YAML 结构完整 (covers: S2D; depends: T2)
