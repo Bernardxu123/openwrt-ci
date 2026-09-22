@@ -71,21 +71,25 @@ daed 侧（GraphQL `http://192.168.31.1:2023/graphql`）：
 ### 配置文件契约（`/etc/wugui-sub.conf`）
 
 ```
-WUGUI_EMAIL=936507840@qq.com
-WUGUI_PASSWORD=...
-WUGUI_API=https://wgjsq08.vip/wuguiapi
-DAED_URL=http://127.0.0.1:2023/graphql
-DAED_USER=root
-DAED_PASS=...
-DAED_SUB_ID=Y3Vyc29yMw
-DAED_SUB_TAG=乌龟
+WUGUI_EMAIL='...'
+WUGUI_PASSWORD='...'
+WUGUI_API='https://wgjsq08.vip/wuguiapi'
+DAED_URL='http://192.168.31.1:2023/graphql'
+DAED_USER='root'
+DAED_PASS='...'
+DAED_SUB_ID='Y3Vyc29yMw'
+DAED_SUB_TAG='乌龟'
 ```
+
+（值一律 shell 单引号包裹；部署器用 `sh_quote` 写入，可含空格/`$`/`#`。）
 
 ### 错误行为
 
-- 任一步失败：日志写明步骤与响应片段，exit 1；不吞错。
+- 任一步失败：日志写明步骤与响应片段，exit 1；不吞错（含 unlock 非 200）。
 - API 鉴权只认 `data.auth_data`；`data.token` 仅用于拼 `subscribe_url` 对照。
+- JSON 请求体对插入值做 `\`/`"`/TAB/CR 转义；部署器侧 mutation 用 Python `json.dumps` 生成，避免 shell 格式串注入。
 - 解锁后 `sleep 1` 再更新 daed（给后端一点落锁状态时间）。
+- 锁目录写入 PID；PID 已死则回收陈旧锁，避免 SIGKILL 后永久卡死。
 - updateSubscription 拉取失败（GraphQL errors）视为失败并记日志；**不**重试自动上锁。
 - 脚本幂等：可手动重跑；cron 重叠由文件锁（`/tmp/wugui-sub-update.lock`）防止。
 
