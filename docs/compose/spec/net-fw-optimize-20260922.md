@@ -78,6 +78,6 @@ IPK URL 模式不变（`releases/download/${DAED_REL_TAG}/daed_${DAED_VER}_aarch
 ## Tasks
 
 - [ ] T1: 路由器清理残留 ipk + 删除 OpenClash 空 cron — acceptance: `/tmp` 无 `*.ipk`；crontab 无 `openclash-cron-task`；wugui/daed-guard/geo cron 仍在 (covers: S2A)
-- [ ] T2: `libwrt.sh` daed 版本升到 v2026.09.21 / 2026.09.20-r4 — acceptance: 三变量正确；构造的 IPK URL curl -I 为 200 (covers: S2B)
+- [ ] T2: `libwrt.sh` daed 版本升到 v2026.09.21 / 2026.09.20-r4 — acceptance: 三变量正确；构造的 IPK URL `curl -I` 返回 **2xx/302**（GitHub release 资产 302 重定向 CDN 属正常） (covers: S2B)
 - [ ] T3: 同步 README 与 build.yml 的 NSS 版本描述 — acceptance: 用户可见文档不再写 NSS v11.4 为现役 (covers: S2C)
 - [ ] T4: CI 加 kmod-qdisc 硬校验、daed 预置软校验、STEP_SUMMARY — acceptance: build.yml 含三处改动且 YAML 结构完整 (covers: S2D; depends: T2)
