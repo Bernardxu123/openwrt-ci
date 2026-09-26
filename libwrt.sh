@@ -824,6 +824,9 @@ LUCI_DAEDE_VER="1.15-r2"
 DAED_IPK_URL="https://github.com/kenzok8/openwrt-daede/releases/download/${DAED_REL_TAG}/daed_${DAED_VER}_aarch64_cortex-a53.ipk"
 LUCI_DAEDE_IPK_URL="https://github.com/kenzok8/openwrt-daede/releases/download/${DAED_REL_TAG}/luci-app-daede_${LUCI_DAEDE_VER}_all.ipk"
 DAED_BOARD_REPO="https://github.com/Bernardxu123/daed-board.git"
+# 固定面板提交：clone main 快照会与本地工作区/部署态漂移（曾烧进旧版）。
+# 升级面板流程：改 daed-board → 本地测试 → push → 把新 SHA 填这里 → 重新构建。
+DAED_BOARD_COMMIT="fa0fca0"
 
 echo ">>> [28] 预置 daed ${DAED_VER} + luci-app-daede ${LUCI_DAEDE_VER} + daed-board"
 DAED_TMP="$(mktemp -d)"
@@ -872,18 +875,29 @@ exit 0
 EOF
 chmod +x files/etc/uci-defaults/995_enable_daed
 
-# wing.db 与面板配置在保留设置升级时备份
+# wing.db 与面板配置在保留设置升级时备份。
+# /www/daed-board/ 与 CGI 必须成对 keep：只 keep 面板文件的话，保留设置升级后
+# 是"旧 JS + 新固件 CGI"的版本错配，前端拿不到 #META 会触发退避重拉回填。
 if ! grep -qx '/etc/daed/' package/base-files/files/etc/sysupgrade.conf 2>/dev/null; then
   echo '/etc/daed/' >> package/base-files/files/etc/sysupgrade.conf
 fi
 if ! grep -qx '/www/daed-board/' package/base-files/files/etc/sysupgrade.conf 2>/dev/null; then
   echo '/www/daed-board/' >> package/base-files/files/etc/sysupgrade.conf
 fi
+# 精确到文件而非整个 /www/cgi-bin/：整目录会把 luci-app-daede 自带的
+# daede-sub / daede-graphql 也钉在旧版，妨碍它们随包升级。
+if ! grep -qx '/www/cgi-bin/daed-board-log' package/base-files/files/etc/sysupgrade.conf 2>/dev/null; then
+  echo '/www/cgi-bin/daed-board-log' >> package/base-files/files/etc/sysupgrade.conf
+fi
 
-# daed-board：构建时拉 GitHub main（纯静态，零依赖）
+# daed-board：pin 到固定提交（全量 clone，仓库小；浅克隆无法 checkout 任意 SHA）
 rm -rf "$DAED_TMP/board"
-git clone --depth 1 "$DAED_BOARD_REPO" "$DAED_TMP/board" || {
+git clone "$DAED_BOARD_REPO" "$DAED_TMP/board" || {
   echo "ERROR: clone daed-board failed: $DAED_BOARD_REPO" >&2; exit 1; }
+git -C "$DAED_TMP/board" checkout -q "$DAED_BOARD_COMMIT" || {
+  echo "ERROR: daed-board checkout failed: $DAED_BOARD_COMMIT（SHA 不在仓库里？记得先 push）" >&2; exit 1; }
+[ "$(git -C "$DAED_TMP/board" rev-parse HEAD)" = "$DAED_BOARD_COMMIT" ] || {
+  echo "ERROR: daed-board HEAD 与 pin 不一致，拒绝构建" >&2; exit 1; }
 for f in index.html app.js style.css; do
   [ -f "$DAED_TMP/board/$f" ] || { echo "ERROR: daed-board missing $f" >&2; exit 1; }
   cp -f "$DAED_TMP/board/$f" "files/www/daed-board/$f"
@@ -895,6 +909,14 @@ if [ -f "$DAED_TMP/board/cgi/daed-board-log" ]; then
 else
   echo "ERROR: daed-board missing cgi/daed-board-log" >&2; exit 1
 fi
+# 固件侧自动打缓存戳：原样拷贝会把 repo 里的手工 ?v= 烧进 ROM，全新刷机后
+# 浏览器按同一 URL 拿旧 app.js（与 deploy.py 渠道同构的坑）。用 pin 的短 SHA
+# 作戳——防缓存同时可追溯固件里的面板版本。
+BOARD_SHA="$(git -C "$DAED_TMP/board" rev-parse --short HEAD)"
+sed -i "s/\(app\.js?v=\)[^\"]*\"/\1${BOARD_SHA}\"/; s/\(style\.css?v=\)[^\"]*\"/\1${BOARD_SHA}\"/" \
+  "files/www/daed-board/index.html"
+grep -q "app\.js?v=${BOARD_SHA}" files/www/daed-board/index.html || {
+  echo "ERROR: daed-board index.html 打戳失败" >&2; exit 1; }
 # LuCI 菜单入口（与 deploy.py 一致）
 if [ -f "$DAED_TMP/board/luci/menu.d/luci-app-daed-board.json" ]; then
   mkdir -p files/usr/share/luci/menu.d files/www/luci-static/resources/view
