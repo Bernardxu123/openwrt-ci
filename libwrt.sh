@@ -909,14 +909,17 @@ if [ -f "$DAED_TMP/board/cgi/daed-board-log" ]; then
 else
   echo "ERROR: daed-board missing cgi/daed-board-log" >&2; exit 1
 fi
-# 固件侧自动打缓存戳：原样拷贝会把 repo 里的手工 ?v= 烧进 ROM，全新刷机后
-# 浏览器按同一 URL 拿旧 app.js（与 deploy.py 渠道同构的坑）。用 pin 的短 SHA
-# 作戳——防缓存同时可追溯固件里的面板版本。
+# 固件侧自动打缓存戳：原样拷贝会把 repo 里的引用烧进 ROM，全新刷机后浏览器
+# 按同一 URL 拿旧文件（与 deploy.py 渠道同构的坑）。用 pin 的短 SHA 作戳——
+# 防缓存同时可追溯固件里的面板版本。注意 repo 里 style.css 引用可能不带
+# ?v=（只有 app.js 带），所以匹配整个引用而非只替换 ?v= 后面的部分。
 BOARD_SHA="$(git -C "$DAED_TMP/board" rev-parse --short HEAD)"
-sed -i "s/\(app\.js?v=\)[^\"]*\"/\1${BOARD_SHA}\"/; s/\(style\.css?v=\)[^\"]*\"/\1${BOARD_SHA}\"/" \
+sed -i "s/app\.js[^\"]*\"/app.js?v=${BOARD_SHA}\"/; s/style\.css[^\"]*\"/style.css?v=${BOARD_SHA}\"/" \
   "files/www/daed-board/index.html"
 grep -q "app\.js?v=${BOARD_SHA}" files/www/daed-board/index.html || {
-  echo "ERROR: daed-board index.html 打戳失败" >&2; exit 1; }
+  echo "ERROR: daed-board index.html app.js 打戳失败" >&2; exit 1; }
+grep -q "style\.css?v=${BOARD_SHA}" files/www/daed-board/index.html || {
+  echo "ERROR: daed-board index.html style.css 打戳失败" >&2; exit 1; }
 # LuCI 菜单入口（与 deploy.py 一致）
 if [ -f "$DAED_TMP/board/luci/menu.d/luci-app-daed-board.json" ]; then
   mkdir -p files/usr/share/luci/menu.d files/www/luci-static/resources/view
