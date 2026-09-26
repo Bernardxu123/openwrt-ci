@@ -896,7 +896,7 @@ git clone "$DAED_BOARD_REPO" "$DAED_TMP/board" || {
   echo "ERROR: clone daed-board failed: $DAED_BOARD_REPO" >&2; exit 1; }
 git -C "$DAED_TMP/board" checkout -q "$DAED_BOARD_COMMIT" || {
   echo "ERROR: daed-board checkout failed: $DAED_BOARD_COMMIT（SHA 不在仓库里？记得先 push）" >&2; exit 1; }
-[ "$(git -C "$DAED_TMP/board" rev-parse HEAD)" = "$DAED_BOARD_COMMIT" ] || {
+[ "$(git -C "$DAED_TMP/board" rev-parse HEAD)" = "$(git -C "$DAED_TMP/board" rev-parse "$DAED_BOARD_COMMIT")" ] || {
   echo "ERROR: daed-board HEAD 与 pin 不一致，拒绝构建" >&2; exit 1; }
 for f in index.html app.js style.css; do
   [ -f "$DAED_TMP/board/$f" ] || { echo "ERROR: daed-board missing $f" >&2; exit 1; }
