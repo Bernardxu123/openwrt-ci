@@ -1,0 +1,2 @@
+# command: cat /sys/kernel/debug/ppe/config
+cat: can't open '/sys/kernel/debug/ppe/config': No such file or directory

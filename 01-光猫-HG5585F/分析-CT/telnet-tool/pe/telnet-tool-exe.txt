@@ -1,0 +1,91 @@
+# telnet-tool-exe
+path      : D:\AI\路由\光猫-CT-HG5585F\下载资料\HG5585F-CT-V2一键开Telnet\HG5585F-CT-V2一键开Telnet.exe
+size      : 9102026
+sha256    : c9180902966b3838d4b93dc63ce34cfa6190f649296826e3d5d07762c6dc5ead
+sha1      : 37af6efb022615f05137380d2e3cc2bd059e53f2
+md5       : ad352ea6fa337b388c7b4f5beaeb6857
+imphash   : 
+
+## PE 头
+machine            : 0x8664 (IMAGE_FILE_MACHINE_AMD64)
+NumberOfSections   : 7
+TimeDateStamp      : 1791697234 (1791697234)
+   -> UTC          : 2026-10-11T05:40:34Z
+Characteristics    : 0x0022
+Subsystem          : 3 (IMAGE_SUBSYSTEM_WINDOWS_CUI)
+ImageBase          : 0x140000000
+AddressOfEntryPoint: 0xdcf0
+SizeOfImage        : 0x63000
+DllCharacteristics : 0xc160  [ASLR=True DEP=True CFG=True HighEntropyVA=True]
+
+## 节表
+  .text      VA=0x00001000 VSize=0x00033490 RawPtr=0x00000400 RawSize=0x00033600 Entropy=6.490 Chars=0x60000020
+  .rdata     VA=0x00035000 VSize=0x0001478e RawPtr=0x00033a00 RawSize=0x00014800 Entropy=5.724 Chars=0x40000040
+  .data      VA=0x0004a000 VSize=0x00004af8 RawPtr=0x00048200 RawSize=0x00000e00 Entropy=1.809 Chars=0xc0000040
+  .pdata     VA=0x0004f000 VSize=0x000027e4 RawPtr=0x00049000 RawSize=0x00002800 Entropy=5.501 Chars=0x40000040
+  .fptable   VA=0x00052000 VSize=0x00000100 RawPtr=0x0004b800 RawSize=0x00000200 Entropy=0.000 Chars=0xc0000040
+  .rsrc      VA=0x00053000 VSize=0x0000ef8c RawPtr=0x0004ba00 RawSize=0x0000f000 Entropy=7.350 Chars=0x40000040
+  .reloc     VA=0x00062000 VSize=0x00000760 RawPtr=0x0005aa00 RawSize=0x00000800 Entropy=5.244 Chars=0x42000040
+
+## 导入 DLL / 函数
+  USER32.dll: GetCursorPos, ShutdownBlockReasonCreate, GetWindowThreadProcessId, SetWindowLongPtrW, GetWindowLongPtrW, MsgWaitForMultipleObjects, ShowWindow, DestroyWindow, CreateWindowExW, RegisterClassW, DefWindowProcW, PeekMessageW, DispatchMessageW, TranslateMessage, GetMessageW, GetMonitorInfoW, MonitorFromPoint, GetSystemMetrics
+  KERNEL32.dll: GetTimeZoneInformation, GetProcessHeap, FreeEnvironmentStringsW, GetEnvironmentStringsW, GetCPInfo, GetOEMCP, GetACP, IsValidCodePage, GetStringTypeW, GetFileAttributesExW, SetEnvironmentVariableW, FlushFileBuffers, GetLastError, FreeLibrary, GetProcAddress, LoadLibraryExW, FormatMessageW, CloseHandle, GetCurrentProcess, GetModuleFileNameW, SetDllDirectoryW, CreateSymbolicLinkW, SetErrorMode, GetCurrentProcessId, OpenProcess, QueryFullProcessImageNameW, CreateToolhelp32Snapshot, Process32FirstW, HeapSize, CreateDirectoryW, GetCommandLineW, GetEnvironmentVariableW, ExpandEnvironmentStringsW, DeleteFileW, FindClose, FindFirstFileW, FindNextFileW, GetDriveTypeW, RemoveDirectoryW, GetTempPathW, QueryPerformanceCounter, QueryPerformanceFrequency, WaitForSingleObject, Sleep, TerminateProcess, GetExitCodeProcess, CreateProcessW, GetStartupInfoW, LocalFree, SetConsoleCtrlHandler, GetConsoleWindow, K32EnumProcessModules, K32GetModuleFileNameExW, CreateFileW, FindFirstFileExW, GetFinalPathNameByHandleW, MultiByteToWideChar, WideCharToMultiByte, HeapReAlloc, WriteConsoleW, SetEndOfFile, Process32NextW, SetUnhandledExceptionFilter, GetCurrentThreadId, GetSystemTimeAsFileTime, InitializeSListHead, GetModuleHandleW, RtlUnwindEx, SetLastError, FlsAlloc, FlsGetValue, FlsSetValue, FlsFree, EnterCriticalSection, LeaveCriticalSection, InitializeCriticalSectionEx, DeleteCriticalSection, RtlLookupFunctionEntry, EncodePointer, RaiseException, RtlPcToFileHeader, GetFileInformationByHandle, GetFileType, PeekNamedPipe, SystemTimeToTzSpecificLocalTime, FileTimeToSystemTime, ReadFile, GetFullPathNameW, SetStdHandle, GetStdHandle, WriteFile, ExitProcess, GetModuleHandleExW, GetCommandLineA, IsProcessorFeaturePresent, HeapFree, RtlCaptureContext, RtlVirtualUnwind, IsDebuggerPresent, UnhandledExceptionFilter, GetConsoleMode, ReadConsoleW, SetFilePointerEx, GetConsoleOutputCP, GetFileSizeEx, HeapAlloc, GetCurrentDirectoryW, VirtualProtect, CompareStringW, LCMapStringW
+  ADVAPI32.dll: ConvertSidToStringSidW, GetTokenInformation, OpenProcessToken, ConvertStringSecurityDescriptorToSecurityDescriptorW
+
+## 延迟导入
+  (无)
+
+## 资源
+  /RT_ICON/1/0  RVA=0x53208 Size=3752
+  /RT_ICON/2/0  RVA=0x540b0 Size=2216
+  /RT_ICON/3/0  RVA=0x54958 Size=1384
+  /RT_ICON/4/0  RVA=0x54ec0 Size=37019
+  /RT_ICON/5/0  RVA=0x5df5c Size=9640
+  /RT_ICON/6/0  RVA=0x60504 Size=4264
+  /RT_ICON/7/0  RVA=0x615ac Size=1128
+  /RT_GROUP_ICON/1/0  RVA=0x61a14 Size=104
+  /RT_MANIFEST/1/0  RVA=0x61a7c Size=1293
+
+## 版本信息 (VS_VERSIONINFO)
+  (无版本信息)
+
+## 嵌入 manifest
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges>
+        <requestedExecutionLevel level="asInvoker" uiAccess="false"/>
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}"/>
+      <supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}"/>
+      <supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}"/>
+      <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}"/>
+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}"/>
+    </application>
+  </compatibility>
+  <application xmlns="urn:schemas-microsoft-com:asm.v3">
+    <windowsSettings>
+      <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
+    </windowsSettings>
+  </application>
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity type="win32" name="Microsoft.Windows.Common-Controls" version="6.0.0.0" processorArchitecture="*" publicKeyToken="6595b64144ccf1df" language="*"/>
+    </dependentAssembly>
+  </dependency>
+</assembly>
+
+## 签名 (Security Directory / Authenticode)
+  VirtualAddress=0x0 Size=0
+  -> 无 Authenticode 签名
+
+## 调试目录 / PDB
+  type=13
+
+## 尾部/overlay
+  最后节末尾 = 0x5b200 (373248); 文件 9102026 -> overlay 8728778 B

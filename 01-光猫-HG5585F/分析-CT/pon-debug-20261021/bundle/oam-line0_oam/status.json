@@ -1,0 +1,2 @@
+# command: /usr/bin/pondctl status --line line0
+{"protocol_version":1,"interface":"oam0","channel_available":true,"operator":"ctc","ieee_discovery_completed":true,"loid_configured":true,"rx_messages":15,"tx_messages":11,"parse_errors":4,"information_rx":15,"event_rx":0,"organization_rx":0,"last_code":0,"ctc_discovery_state":"version-offered","ctc_version":null,"authentication_status":"not-requested","authentication_failure":null,"ctc_get_requests":0,"ctc_set_requests":0,"ctc_unsupported_requests":0,"vlan_object":null,"vlan_mode":null,"vlan_ids":[],"event_sequence":6}

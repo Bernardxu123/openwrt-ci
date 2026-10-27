@@ -1,0 +1,2 @@
+# command: cat /sys/kernel/debug/ppe/bind
+cat: can't open '/sys/kernel/debug/ppe/bind': No such file or directory

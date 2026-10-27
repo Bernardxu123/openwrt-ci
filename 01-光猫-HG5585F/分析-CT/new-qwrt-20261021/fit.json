@@ -1,0 +1,143 @@
+{
+  "path": "D:\\BaiduNetdiskDownload\\QWRT-R26.10.21-airoha-an7581-fiberhome_hg5585f-ct-squashfs-sysupgrade.itb",
+  "file_size": 42201767,
+  "file_sha256": "8592e57aa9a4faef7b9c69a1a47f6b42bee9428c4bbea82dd228b4dc8a29f049",
+  "fit_header": {
+    "magic": "0xd00dfeed",
+    "totalsize": 4096,
+    "off_dt_struct": 56,
+    "off_dt_strings": 1260,
+    "off_mem_rsvmap": 40,
+    "version": 17,
+    "last_comp_version": 16,
+    "boot_cpuid_phys": 0,
+    "size_dt_strings": 142,
+    "size_dt_struct": 1204
+  },
+  "images": [
+    {
+      "node": "kernel-1",
+      "description": "ARM64 QWRT Linux-5.4.302",
+      "type": "kernel",
+      "arch": "arm64",
+      "os": "linux",
+      "compression": "gzip",
+      "data-position": 4096,
+      "data-size": 4581813,
+      "load": 2315255808,
+      "entry": 2315255808,
+      "hashes": [
+        {
+          "node": "hash-1",
+          "algo": "crc32",
+          "value_hex": "4ff87f32",
+          "computed": "4ff87f32",
+          "match": true
+        },
+        {
+          "node": "hash-2",
+          "algo": "sha1",
+          "value_hex": "e7d7dd6c967a27c11af251b2a0704960db95fee9",
+          "computed": "e7d7dd6c967a27c11af251b2a0704960db95fee9",
+          "match": true
+        }
+      ],
+      "data_position_resolved": 4096,
+      "actual_bytes": 4581813,
+      "sha256": "9e609095b7e659c001630ebef9071c2e051ea0598d31fda3fa2a3c7f3695fb33",
+      "crc32": "4ff87f32"
+    },
+    {
+      "node": "fdt-1",
+      "description": "ARM64 QWRT fiberhome_hg5585f-ct device tree blob",
+      "type": "flat_dt",
+      "arch": "arm64",
+      "os": "",
+      "compression": "none",
+      "data-position": 4587520,
+      "data-size": 14698,
+      "hashes": [
+        {
+          "node": "hash-1",
+          "algo": "crc32",
+          "value_hex": "a0ab8981",
+          "computed": "a0ab8981",
+          "match": true
+        },
+        {
+          "node": "hash-2",
+          "algo": "sha1",
+          "value_hex": "576ece700cadbfccf4a393a07883071dd9152243",
+          "computed": "576ece700cadbfccf4a393a07883071dd9152243",
+          "match": true
+        }
+      ],
+      "data_position_resolved": 4587520,
+      "actual_bytes": 14698,
+      "sha256": "b56ae8c6de206a36a132e3008f8c37bb4532206d25265c7d19e25b7247b46528",
+      "crc32": "a0ab8981"
+    },
+    {
+      "node": "rootfs-1",
+      "description": "ARM64 OpenWrt fiberhome_hg5585f-ct rootfs",
+      "type": "filesystem",
+      "arch": "arm64",
+      "os": "",
+      "compression": "none",
+      "data-position": 4603904,
+      "data-size": 37597184,
+      "hashes": [
+        {
+          "node": "hash-1",
+          "algo": "crc32",
+          "value_hex": "bd2a4b91",
+          "computed": "bd2a4b91",
+          "match": true
+        },
+        {
+          "node": "hash-2",
+          "algo": "sha1",
+          "value_hex": "bc5cea9544651f73e6b1821b56b95ec2e636a5ff",
+          "computed": "bc5cea9544651f73e6b1821b56b95ec2e636a5ff",
+          "match": true
+        }
+      ],
+      "data_position_resolved": 4603904,
+      "actual_bytes": 37597184,
+      "sha256": "4ec6482a6cadccebe6dd6dbf51eff73736db757728a9e0b72d2c84e772592c60",
+      "crc32": "bd2a4b91"
+    }
+  ],
+  "configurations": [
+    {
+      "node": "config@1",
+      "description": "OpenWrt fiberhome_hg5585f-ct",
+      "kernel": "kernel-1",
+      "fdt": "fdt-1",
+      "loadables": "rootfs-1"
+    }
+  ],
+  "sysupgrade_metadata": {
+    "metadata_version": "1.1",
+    "compat_version": "1.0",
+    "supported_devices": [
+      "fiberhome,hg5585f-ct",
+      "fiberhome,hg5585f-ct-usb-sfp"
+    ],
+    "version": {
+      "dist": "OpenWrt",
+      "version": "25.12.3",
+      "revision": "r7901-e908d04a4e",
+      "target": "airoha/an7581",
+      "board": "fiberhome_hg5585f-ct"
+    },
+    "_file_offset": 42201096,
+    "_tail_bytes": 671,
+    "_ucert": {
+      "marker": "ucert",
+      "marker_tail_offset": 187,
+      "tail_bytes_after_json": 389,
+      "tail_sha256": "ace6959ef3ef895409bbca3a83516a3e4e168a223e4688a2f59f27bfea8b9a8d"
+    }
+  }
+}

@@ -1,0 +1,180 @@
+# command: ubus call network.interface dump
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 106,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 106,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}

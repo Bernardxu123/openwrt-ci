@@ -1,0 +1,228 @@
+# command: nft list ruleset
+table inet fw4 {
+	ct helper amanda {
+		type "amanda" protocol udp
+		l3proto inet
+	}
+
+	ct helper ftp {
+		type "ftp" protocol tcp
+		l3proto inet
+	}
+
+	ct helper RAS {
+		type "RAS" protocol udp
+		l3proto inet
+	}
+
+	ct helper Q.931 {
+		type "Q.931" protocol tcp
+		l3proto inet
+	}
+
+	ct helper irc {
+		type "irc" protocol tcp
+		l3proto ip
+	}
+
+	ct helper pptp {
+		type "pptp" protocol tcp
+		l3proto ip
+	}
+
+	ct helper sip {
+		type "sip" protocol udp
+		l3proto inet
+	}
+
+	ct helper snmp {
+		type "snmp" protocol udp
+		l3proto ip
+	}
+
+	ct helper tftp {
+		type "tftp" protocol udp
+		l3proto inet
+	}
+
+	flowtable ft {
+		hook ingress priority filter
+		devices = { "lan1", "lan2", "lan3", "lan4", "pon0", "ra0" }
+		flags offload
+		counter
+	}
+
+	chain input {
+		type filter hook input priority filter; policy drop;
+		iif "lo" accept comment "!fw4: Accept traffic from loopback"
+		ct state vmap { established : accept, related : accept } comment "!fw4: Handle inbound flows"
+		tcp flags & (fin | syn | rst | ack) == syn jump syn_flood comment "!fw4: Rate limit TCP syn packets"
+		iifname "br-lan" jump input_lan comment "!fw4: Handle lan IPv4/IPv6 input traffic"
+		iifname "pon0.995" jump input_wan comment "!fw4: Handle wan IPv4/IPv6 input traffic"
+		jump handle_reject
+	}
+
+	chain forward {
+		type filter hook forward priority filter; policy drop;
+		meta l4proto { tcp, udp } flow add @ft
+		ct state vmap { established : accept, related : accept } comment "!fw4: Handle forwarded flows"
+		iifname "br-lan" jump forward_lan comment "!fw4: Handle lan IPv4/IPv6 forward traffic"
+		iifname "pon0.995" jump forward_wan comment "!fw4: Handle wan IPv4/IPv6 forward traffic"
+		jump upnp_forward comment "Hook into miniupnpd forwarding chain"
+		jump handle_reject
+	}
+
+	chain output {
+		type filter hook output priority filter; policy accept;
+		oif "lo" accept comment "!fw4: Accept traffic towards loopback"
+		ct state vmap { established : accept, related : accept } comment "!fw4: Handle outbound flows"
+		oifname "br-lan" jump output_lan comment "!fw4: Handle lan IPv4/IPv6 output traffic"
+		oifname "pon0.995" jump output_wan comment "!fw4: Handle wan IPv4/IPv6 output traffic"
+	}
+
+	chain prerouting {
+		type filter hook prerouting priority filter; policy accept;
+	}
+
+	chain handle_reject {
+		meta l4proto tcp reject with tcp reset comment "!fw4: Reject TCP traffic"
+		reject comment "!fw4: Reject any other traffic"
+	}
+
+	chain syn_flood {
+		limit rate 25/second burst 50 packets return comment "!fw4: Accept SYN packets below rate-limit"
+		drop comment "!fw4: Drop excess packets"
+	}
+
+	chain input_lan {
+		ct status dnat accept comment "!fw4: Accept port redirections"
+		jump accept_from_lan
+	}
+
+	chain output_lan {
+		jump accept_to_lan
+	}
+
+	chain forward_lan {
+		jump accept_to_wan comment "!fw4: Accept lan to wan forwarding"
+		ct status dnat accept comment "!fw4: Accept port forwards"
+		jump accept_to_lan
+	}
+
+	chain accept_from_lan {
+		iifname "br-lan" counter packets 3020 bytes 226575 accept comment "!fw4: accept lan IPv4/IPv6 traffic"
+	}
+
+	chain accept_to_lan {
+		oifname "br-lan" counter packets 173 bytes 22967 accept comment "!fw4: accept lan IPv4/IPv6 traffic"
+	}
+
+	chain input_wan {
+		meta nfproto ipv4 udp dport 68 counter packets 0 bytes 0 accept comment "!fw4: Allow-DHCP-Renew"
+		icmp type echo-request counter packets 0 bytes 0 accept comment "!fw4: Allow-Ping"
+		meta nfproto ipv4 meta l4proto igmp counter packets 0 bytes 0 accept comment "!fw4: Allow-IGMP"
+		meta nfproto ipv6 udp dport 546 counter packets 0 bytes 0 accept comment "!fw4: Allow-DHCPv6"
+		ip6 saddr fe80::/10 icmpv6 type . icmpv6 code { mld-listener-query . 0, mld-listener-report . 0, mld-listener-done . 0, mld2-listener-report . 0 } counter packets 0 bytes 0 accept comment "!fw4: Allow-MLD"
+		icmpv6 type { destination-unreachable, time-exceeded, echo-request, echo-reply, nd-router-solicit, nd-router-advert } limit rate 1000/second burst 5 packets counter packets 18 bytes 944 accept comment "!fw4: Allow-ICMPv6-Input"
+		icmpv6 type . icmpv6 code { packet-too-big . 0, parameter-problem . 0, nd-neighbor-solicit . 0, nd-neighbor-advert . 0, parameter-problem . 1 } limit rate 1000/second burst 5 packets counter packets 0 bytes 0 accept comment "!fw4: Allow-ICMPv6-Input"
+		ct status dnat accept comment "!fw4: Accept port redirections"
+		jump reject_from_wan
+	}
+
+	chain output_wan {
+		jump accept_to_wan
+	}
+
+	chain forward_wan {
+		icmpv6 type { destination-unreachable, time-exceeded, echo-request, echo-reply } limit rate 1000/second burst 5 packets counter packets 0 bytes 0 accept comment "!fw4: Allow-ICMPv6-Forward"
+		icmpv6 type . icmpv6 code { packet-too-big . 0, parameter-problem . 0, parameter-problem . 1 } limit rate 1000/second burst 5 packets counter packets 0 bytes 0 accept comment "!fw4: Allow-ICMPv6-Forward"
+		meta l4proto esp counter packets 0 bytes 0 jump accept_to_lan comment "!fw4: Allow-IPSec-ESP"
+		udp dport 500 counter packets 0 bytes 0 jump accept_to_lan comment "!fw4: Allow-ISAKMP"
+		ct status dnat accept comment "!fw4: Accept port forwards"
+		jump reject_to_wan
+	}
+
+	chain accept_to_wan {
+		meta nfproto ipv4 oifname "pon0.995" ct state invalid counter packets 0 bytes 0 drop comment "!fw4: Prevent NAT leakage"
+		oifname "pon0.995" counter packets 52 bytes 5262 accept comment "!fw4: accept wan IPv4/IPv6 traffic"
+	}
+
+	chain reject_from_wan {
+		iifname "pon0.995" counter packets 0 bytes 0 jump handle_reject comment "!fw4: reject wan IPv4/IPv6 traffic"
+	}
+
+	chain reject_to_wan {
+		oifname "pon0.995" counter packets 0 bytes 0 jump handle_reject comment "!fw4: reject wan IPv4/IPv6 traffic"
+	}
+
+	chain dstnat {
+		type nat hook prerouting priority dstnat; policy accept;
+		iifname "br-lan" jump dstnat_lan comment "!fw4: Handle lan IPv4/IPv6 dstnat traffic"
+		iifname "pon0.995" jump dstnat_wan comment "!fw4: Handle wan IPv4/IPv6 dstnat traffic"
+		jump upnp_prerouting comment "Hook into miniupnpd prerouting chain"
+	}
+
+	chain srcnat {
+		type nat hook postrouting priority srcnat; policy accept;
+		oifname "pon0.995" jump srcnat_wan comment "!fw4: Handle wan IPv4/IPv6 srcnat traffic"
+		jump upnp_postrouting comment "Hook into miniupnpd postrouting chain"
+	}
+
+	chain dstnat_lan {
+		meta nfproto ipv4 udp dport 123 counter packets 0 bytes 0 redirect to :123 comment "!fw4: Redirect-NTP"
+	}
+
+	chain dstnat_wan {
+		meta nfproto ipv4 fullcone comment "!fw4: Handle wan IPv4 fullcone NAT dstnat traffic"
+	}
+
+	chain srcnat_wan {
+		meta nfproto ipv4 fullcone comment "!fw4: Handle wan IPv4 fullcone NAT srcnat traffic"
+	}
+
+	chain raw_prerouting {
+		type filter hook prerouting priority raw; policy accept;
+		iifname "br-lan" jump notrack_lan comment "!fw4: Handle lan IPv4/IPv6 notrack traffic"
+	}
+
+	chain raw_output {
+		type filter hook output priority raw; policy accept;
+	}
+
+	chain notrack_lan {
+		ip daddr 239.255.255.250 udp dport 1900 counter packets 0 bytes 0 notrack comment "!fw4: UPnP SSDP multicast discovery"
+		ip daddr 239.255.255.250 udp dport 3702 counter packets 0 bytes 0 notrack comment "!fw4: WSD ipv4 multicast discovery"
+		ip6 daddr ff02::c udp dport 3702 counter packets 0 bytes 0 notrack comment "!fw4: WSD ipv6 multicast discovery"
+	}
+
+	chain mangle_prerouting {
+		type filter hook prerouting priority mangle; policy accept;
+	}
+
+	chain mangle_postrouting {
+		type filter hook postrouting priority mangle; policy accept;
+		oifname "pon0.995" tcp flags & (fin | syn | rst) == syn tcp option maxseg size set rt mtu comment "!fw4: Zone wan IPv4/IPv6 egress MTU fixing"
+	}
+
+	chain mangle_input {
+		type filter hook input priority mangle; policy accept;
+	}
+
+	chain mangle_output {
+		type route hook output priority mangle; policy accept;
+	}
+
+	chain mangle_forward {
+		type filter hook forward priority mangle; policy accept;
+		iifname "pon0.995" tcp flags & (fin | syn | rst) == syn tcp option maxseg size set rt mtu comment "!fw4: Zone wan IPv4/IPv6 ingress MTU fixing"
+	}
+
+	chain upnp_forward {
+	}
+
+	chain upnp_prerouting {
+	}
+
+	chain upnp_postrouting {
+	}
+}

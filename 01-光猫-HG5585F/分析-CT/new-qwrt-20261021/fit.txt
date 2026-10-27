@@ -1,0 +1,38 @@
+==============================================================================
+FILE      D:\BaiduNetdiskDownload\QWRT-R26.10.21-airoha-an7581-fiberhome_hg5585f-ct-squashfs-sysupgrade.itb
+SIZE      42201767 bytes (0x283f2a7)
+SHA256    8592e57aa9a4faef7b9c69a1a47f6b42bee9428c4bbea82dd228b4dc8a29f049
+FIT magic 0xd00dfeed  totalsize 4096 (0x1000)
+  off_dt_struct=0x38 size=0x4b4  off_dt_strings=0x4ec size=0x8e  version=17
+  NOTE: FIT totalsize covers the FIT structure block only when the
+        sub-images use absolute data-position offsets and are
+        concatenated after it (size on disk is much larger).
+
+IMAGES (3)
+  kernel-1   type=kernel     comp=gzip   pos=0x00001000 size=4581813 desc='ARM64 QWRT Linux-5.4.302'
+             load=0x8a000000 entry=0x8a000000
+             hash-1 algo=crc32  value=4ff87f32
+             hash-2 algo=sha1   value=e7d7dd6c967a27c11af251b2a0704960db95fee9
+  fdt-1      type=flat_dt    comp=none   pos=0x00460000 size=14698 desc='ARM64 QWRT fiberhome_hg5585f-ct device tree blob'
+             hash-1 algo=crc32  value=a0ab8981
+             hash-2 algo=sha1   value=576ece700cadbfccf4a393a07883071dd9152243
+  rootfs-1   type=filesystem comp=none   pos=0x00464000 size=37597184 desc='ARM64 OpenWrt fiberhome_hg5585f-ct rootfs'
+             hash-1 algo=crc32  value=bd2a4b91
+             hash-2 algo=sha1   value=bc5cea9544651f73e6b1821b56b95ec2e636a5ff
+
+CONFIGURATIONS (1)
+  config@1 kernel=kernel-1 fdt=fdt-1 loadables=rootfs-1 desc='OpenWrt fiberhome_hg5585f-ct'
+
+EXTRACT / HASH VERIFY
+
+APPENDED SYSUPGRADE METADATA SCAN
+  found JSON at file offset 0x283f008 (tail 671 bytes from end)
+  JSON parsed OK, 282 bytes
+  ucert-ish marker after JSON: ucert (+187)
+
+  metadata_version : 1.1
+  compat_version   : 1.0
+  supported_devices: ["fiberhome,hg5585f-ct", "fiberhome,hg5585f-ct-usb-sfp"]
+  version          : dist=OpenWrt ver=25.12.3 rev=r7901-e908d04a4e target=airoha/an7581 board=fiberhome_hg5585f-ct
+
+WROTE JSON D:\AI\路由\光猫-CT-HG5585F\分析\new-qwrt-20261021\fit.json

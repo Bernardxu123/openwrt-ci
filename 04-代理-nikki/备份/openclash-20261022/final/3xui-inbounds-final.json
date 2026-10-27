@@ -1,0 +1,356 @@
+{
+  "success": true,
+  "msg": "",
+  "obj": [
+    {
+      "id": 2,
+      "up": 31318243824,
+      "down": 19358925623,
+      "total": 0,
+      "remark": "新加坡2",
+      "subSortIndex": 1,
+      "excludeFromSub": false,
+      "enable": true,
+      "expiryTime": 0,
+      "trafficReset": "never",
+      "trafficResetDay": 1,
+      "lastTrafficResetTime": 1788626028043,
+      "clientStats": [
+        {
+          "id": 1,
+          "inboundId": 9,
+          "enable": true,
+          "email": "自建",
+          "uuid": "966a055e-9c52-4684-9d33-456bae4a0a73",
+          "subId": "cf55296a-29fd-4a48-ad61-70ee432d9a74",
+          "up": 35189551141,
+          "down": 33052936023,
+          "expiryTime": 0,
+          "total": 0,
+          "reset": 0,
+          "resetDay": 0,
+          "resetWeekday": 0,
+          "resetMax": 0,
+          "resetCount": 0,
+          "lastOnline": 1792641991010,
+          "lastSubFetch": 1789099801464
+        }
+      ],
+      "listen": "",
+      "port": 20894,
+      "protocol": "vless",
+      "tag": "in-20894-tcp",
+      "shareAddrStrategy": "listen",
+      "shareAddr": "",
+      "disableFlow": false,
+      "originNodeGuid": "da06b175-0d9b-40e3-b48e-9fe2b358ac95",
+      "settings": {
+        "clients": [
+          {
+            "auth": "8ae4a192ff1b4cbfaee86176dd0fc3dd",
+            "comment": "",
+            "created_at": 1782143414404,
+            "email": "自建",
+            "enable": true,
+            "expiryTime": 0,
+            "id": "966a055e-9c52-4684-9d33-456bae4a0a73",
+            "limitIp": 0,
+            "password": "D+KnT+Ml5GzYU9ZJvaY8e8wZwLsIghty5UpV86gnvwE=",
+            "reset": 0,
+            "resetDay": 0,
+            "resetMax": 0,
+            "security": "auto",
+            "subId": "cf55296a-29fd-4a48-ad61-70ee432d9a74",
+            "tgId": 0,
+            "totalGB": 0,
+            "trafficReset": "never",
+            "trafficResetDay": 1,
+            "updated_at": 1792117503000
+          }
+        ],
+        "decryption": "none",
+        "encryption": "none"
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {
+          "acceptProxyProtocol": false,
+          "header": {
+            "type": "none"
+          }
+        },
+        "security": "reality",
+        "realitySettings": {
+          "show": false,
+          "xver": 0,
+          "target": "www.cloudflare.com:443",
+          "serverNames": [
+            "www.cloudflare.com",
+            "timeline.www.cloudflare.com"
+          ],
+          "privateKey": "qD0XdipH0KqtHi851ZFTO2C9cAn99KNrimOC8C9LQkE",
+          "minClientVer": "",
+          "maxClientVer": "",
+          "maxTimediff": 0,
+          "shortIds": [
+            "1e43",
+            "73",
+            "094155",
+            "b0dd8cd1692ac1",
+            "70aa130d",
+            "8140a06c5bc9",
+            "97164afcc7",
+            "6f0bcbcf42d0a60c"
+          ],
+          "mldsa65Seed": "",
+          "settings": {
+            "publicKey": "XPtEgGQP5u0IwmXv6_sfR7DcstPbwRifiCM1ISspUzQ",
+            "fingerprint": "chrome",
+            "serverName": "",
+            "spiderX": "/FSylDQamjwgH3Vd",
+            "mldsa65Verify": ""
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": false
+      }
+    },
+    {
+      "id": 8,
+      "up": 4766480926,
+      "down": 15050745509,
+      "total": 0,
+      "remark": "新加坡-hy",
+      "subSortIndex": 1,
+      "excludeFromSub": false,
+      "enable": true,
+      "expiryTime": 0,
+      "trafficReset": "never",
+      "trafficResetDay": 1,
+      "lastTrafficResetTime": 0,
+      "clientStats": [
+        {
+          "id": 1,
+          "inboundId": 9,
+          "enable": true,
+          "email": "自建",
+          "uuid": "966a055e-9c52-4684-9d33-456bae4a0a73",
+          "subId": "cf55296a-29fd-4a48-ad61-70ee432d9a74",
+          "up": 35189551141,
+          "down": 33052936023,
+          "expiryTime": 0,
+          "total": 0,
+          "reset": 0,
+          "resetDay": 0,
+          "resetWeekday": 0,
+          "resetMax": 0,
+          "resetCount": 0,
+          "lastOnline": 1792641991010,
+          "lastSubFetch": 1789099801464
+        }
+      ],
+      "listen": "",
+      "port": 49426,
+      "protocol": "hysteria",
+      "tag": "in-49426-udp",
+      "shareAddrStrategy": "listen",
+      "shareAddr": "",
+      "disableFlow": false,
+      "originNodeGuid": "da06b175-0d9b-40e3-b48e-9fe2b358ac95",
+      "settings": {
+        "clients": [
+          {
+            "auth": "8ae4a192ff1b4cbfaee86176dd0fc3dd",
+            "comment": "",
+            "created_at": 1782143414404,
+            "email": "自建",
+            "enable": true,
+            "expiryTime": 0,
+            "id": "966a055e-9c52-4684-9d33-456bae4a0a73",
+            "limitIp": 0,
+            "password": "D+KnT+Ml5GzYU9ZJvaY8e8wZwLsIghty5UpV86gnvwE=",
+            "reset": 0,
+            "resetDay": 0,
+            "resetMax": 0,
+            "security": "auto",
+            "subId": "cf55296a-29fd-4a48-ad61-70ee432d9a74",
+            "tgId": 0,
+            "totalGB": 0,
+            "trafficReset": "never",
+            "trafficResetDay": 1,
+            "updated_at": 1792117503000
+          }
+        ],
+        "version": 2
+      },
+      "streamSettings": {
+        "network": "hysteria",
+        "hysteriaSettings": {
+          "version": 2,
+          "udpIdleTimeout": 60
+        },
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "",
+          "minVersion": "1.2",
+          "maxVersion": "1.3",
+          "cipherSuites": "",
+          "rejectUnknownSni": false,
+          "disableSystemRoot": false,
+          "enableSessionResumption": false,
+          "certificates": [
+            {
+              "certificateFile": "/root/cert/xx.290490.xyz/fullchain.pem",
+              "keyFile": "/root/cert/xx.290490.xyz/privkey.pem",
+              "ocspStapling": 0,
+              "oneTimeLoading": false,
+              "usage": "encipherment",
+              "buildChain": false
+            }
+          ],
+          "alpn": [
+            "h3",
+            "h2",
+            "http/1.1"
+          ],
+          "echServerKeys": "",
+          "settings": {
+            "echConfigList": "",
+            "pinnedPeerCertSha256": [],
+            "verifyPeerCertByName": ""
+          }
+        },
+        "finalmask": {
+          "udp": [
+            {
+              "type": "salamander",
+              "settings": {
+                "password": "1k0t8lv2qtbfyvi4"
+              }
+            }
+          ],
+          "quicParams": {
+            "congestion": "bbr",
+            "debug": false,
+            "udpHop": {
+              "ports": "47000-50000",
+              "interval": "5-10"
+            },
+            "initStreamReceiveWindow": 8388608,
+            "maxStreamReceiveWindow": 8388608,
+            "initConnectionReceiveWindow": 20971520,
+            "maxConnectionReceiveWindow": 20971520,
+            "maxIdleTimeout": 30,
+            "keepAlivePeriod": 10,
+            "disablePathMTUDiscovery": false,
+            "maxIncomingStreams": 1024
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": false
+      }
+    },
+    {
+      "id": 10,
+      "up": 11783,
+      "down": 72139,
+      "total": 0,
+      "remark": "OpenClash-TCP-TLS-8443",
+      "subSortIndex": 1,
+      "excludeFromSub": false,
+      "enable": true,
+      "expiryTime": 0,
+      "trafficReset": "never",
+      "trafficResetDay": 1,
+      "lastTrafficResetTime": 0,
+      "clientStats": [
+        {
+          "id": 15,
+          "inboundId": 10,
+          "enable": true,
+          "email": "openclash-tcp",
+          "uuid": "d01a144e-d927-408e-a72f-09c945215158",
+          "subId": "9f7342d7-a9d7-420e-a6a7-6895a90cbecd",
+          "up": 11511,
+          "down": 72125,
+          "expiryTime": 0,
+          "total": 0,
+          "reset": 0,
+          "resetDay": 0,
+          "resetWeekday": 0,
+          "resetMax": 0,
+          "resetCount": 0,
+          "lastOnline": 1792641991010,
+          "lastSubFetch": 0
+        }
+      ],
+      "listen": "",
+      "port": 8443,
+      "protocol": "vless",
+      "tag": "in-8443-tcp",
+      "shareAddrStrategy": "node",
+      "shareAddr": "",
+      "disableFlow": false,
+      "originNodeGuid": "da06b175-0d9b-40e3-b48e-9fe2b358ac95",
+      "settings": {
+        "clients": [
+          {
+            "id": "d01a144e-d927-408e-a72f-09c945215158",
+            "security": "auto",
+            "email": "openclash-tcp",
+            "limitIp": 0,
+            "totalGB": 0,
+            "expiryTime": 0,
+            "enable": true,
+            "tgId": 0,
+            "subId": "9f7342d7-a9d7-420e-a6a7-6895a90cbecd",
+            "comment": "",
+            "reset": 0,
+            "resetDay": 0,
+            "resetWeekday": 0,
+            "resetMax": 0,
+            "created_at": 1792641702000,
+            "updated_at": 1792641702000
+          }
+        ],
+        "decryption": "none",
+        "encryption": "none",
+        "fallbackId": 0
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "xx.290490.xyz",
+          "alpn": [
+            "http/1.1"
+          ],
+          "certificates": [
+            {
+              "certificateFile": "/root/cert/xx.290490.xyz/fullchain.pem",
+              "keyFile": "/root/cert/xx.290490.xyz/privkey.pem"
+            }
+          ]
+        },
+        "tcpSettings": {
+          "acceptProxyProtocol": false,
+          "header": {
+            "type": "none"
+          }
+        }
+      },
+      "sniffing": {
+        "enabled": false,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ],
+        "metadataOnly": false,
+        "routeOnly": false
+      }
+    }
+  ]
+}

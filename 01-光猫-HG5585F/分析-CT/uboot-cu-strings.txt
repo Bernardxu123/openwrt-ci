@@ -1,0 +1,43 @@
+Reset held               | Reset held: entering HTTP recovery
+Reset button             | Reset button read failed (%d)
+Button                   | Button '%s' not found (err=%d)
+bootdelay                | bootdelay
+bootdelay                | bootdelaykey
+bootdelay                | SunMonTueWedThuFriSatbootdelay=3
+bootdelay                | bootdelay=3
+Hit any key              | Hit any key to stop autoboot: %d 
+bootmenu_                | bootmenu_%d
+bootmenu_                | bootmenu_default
+bootmenu_                | bootmenu_title
+bootmenu_                | bootmenu_delay
+bootmenu_                | bootmenu_0=Boot system=run boot_ubi ; run bootmenu_confirm_return
+bootmenu_                | bootmenu_1=Web recovery=run boot_recovery ; run bootmenu_confirm_return
+bootmenu_                | bootmenu_2=Boot initramfs via TFTP=run boot_tftp ; run bootmenu_confirm_return
+bootmenu_                | bootmenu_3=Flash system via TFTP=run boot_tftp_write_production ; run bootmenu_confirm_return
+bootmenu_                | bootmenu_4=Flash U-Boot via TFTP=run boot_tftp_write_fip ; run bootmenu_confirm_return
+bootmenu_                | bootmenu_5=Flash BL2 via TFTP=run boot_tftp_write_bl2 ; run bootmenu_confirm_return
+bootmenu_                | bootmenu_6=Show storage information=mtd list ; run ubi_mount ; ubi info l ; run bootmenu_confirm_return
+bootmenu_                | bootmenu_7=Reboot=reset
+bootmenu_                | bootmenu_confirm_return=askenv - Press ENTER to return to menu ; bootmenu 60
+bootmenu_                | bootmenu_default=0
+bootmenu_                | bootmenu_delay=3
+bootmenu_                | bootmenu_title=U-Boot HG5585F CU
+httpd_ipaddr             | httpd_ipaddr
+httpd_ipaddr             | httpd_ipaddr=192.168.0.1
+httpd_dhcp               | httpd_dhcp_start
+httpd_dhcp               | httpd_dhcp_end
+bootcmd=                 | bootcmd=run boot_ubi
+boot_ubi                 | boot_ubi=run boot_production ; echo System boot failed, starting Web recovery ; run boot_recovery
+boot_production          | run boot_production
+boot_production          | boot_production=led $bootled_status on ; run ubi_read_production && bootm $loadaddr
+ubi_read_production      | ubi_read_production=run ubi_mount && ubi read $loadaddr fit && iminfo $loadaddr && run ubi_prepare_rootfs
+gpio-keys                | gpio-keys
+gpio-keys                | gpio-keys-polled
+gpio-keys                | 2gpio-keys
+button_gpio              | button_gpio
+bootled                  | boot_tftp_forever=led $bootled_status on ; while true ; do run boot_tftp ; sleep 1 ; done
+bootled                  | bootled_status=blue:power
+bootled                  | preboot=led $bootled_status on
+boot_tftp_write          | boot_tftp_write_bl2=mw.b $loadaddr 0xff 0x20000 ; setexpr loadaddr_bl2 $loadaddr + 0x800 ; tftpboot $loadaddr_bl2 $bootfile_bl2 && run mtd_w
+boot_tftp_write          | boot_tftp_write_fip=tftpboot $loadaddr $bootfile_fip && run ubi_write_fip
+boot_tftp_write          | boot_tftp_write_production=tftpboot $loadaddr $bootfile_upg && iminfo $loadaddr && run ubi_write_production

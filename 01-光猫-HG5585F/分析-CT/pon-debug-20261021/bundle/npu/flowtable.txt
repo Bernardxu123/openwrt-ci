@@ -1,0 +1,9 @@
+# command: nft list flowtable inet fw4 ft
+table inet fw4 {
+	flowtable ft {
+		hook ingress priority filter
+		devices = { "lan1", "lan2", "lan3", "lan4", "pon0", "ra0" }
+		flags offload
+		counter
+	}
+}

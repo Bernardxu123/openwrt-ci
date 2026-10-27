@@ -1,0 +1,39 @@
+# command: ip -s neighbour show
+192.168.31.102 dev br-lan lladdr d4:da:21:49:9a:1b  ref 1 used 0/46/2probes 1 DELAY 
+192.168.31.180 dev br-lan lladdr d4:f0:ea:1e:d0:91  used 99/99/56probes 4 STALE 
+192.168.31.154 dev br-lan lladdr 24:9e:7d:7b:a9:ff  used 46/46/3probes 1 STALE 
+192.168.31.219 dev br-lan lladdr 64:9e:31:dd:66:fa  ref 1 used 3/57/3probes 1 DELAY 
+192.168.31.124 dev br-lan lladdr 52:35:01:99:73:1e  used 47/47/3probes 1 STALE 
+192.168.31.103 dev br-lan lladdr 40:31:3c:e6:9f:8b  ref 1 used 0/48/3probes 1 DELAY 
+192.168.31.146 dev br-lan lladdr ac:8c:46:ed:05:e7  ref 1 used 2/46/2probes 1 DELAY 
+192.168.31.164 dev br-lan lladdr a0:82:22:2d:cb:82  used 45/45/0probes 2 STALE 
+192.168.31.138 dev br-lan lladdr a4:a9:30:81:e9:2e  ref 1 used 0/0/0probes 1 REACHABLE 
+192.168.31.112 dev br-lan lladdr e6:33:6a:a9:24:e3  ref 1 used 39/39/39probes 1 REACHABLE 
+192.168.31.199 dev br-lan lladdr ac:76:4c:f6:f8:7d  ref 1 used 23/23/23probes 1 REACHABLE 
+192.168.31.155 dev br-lan lladdr fa:a3:8b:89:7d:40  used 83/83/39probes 1 STALE 
+192.168.31.125 dev br-lan lladdr 78:df:72:43:7f:36  ref 1 used 0/0/0probes 1 REACHABLE 
+192.168.31.147 dev br-lan lladdr 4c:c6:4c:fa:4b:bf  ref 1 used 1/1/1probes 1 REACHABLE 
+192.168.31.221 dev br-lan  used 62/122/54probes 3 FAILED 
+192.168.31.182 dev br-lan lladdr 58:ea:1f:2c:40:9d  ref 1 used 30/30/30probes 1 REACHABLE 
+192.168.31.243 dev br-lan lladdr f2:8f:50:45:16:81  used 95/95/52probes 1 STALE 
+192.168.31.239 dev br-lan lladdr 54:48:e6:6a:ee:c7  ref 1 used 1/1/1probes 1 REACHABLE 
+192.168.31.148 dev br-lan lladdr d4:f0:ea:26:45:8f  ref 1 used 2/2/2probes 1 REACHABLE 
+192.168.31.170 dev br-lan lladdr 58:b6:23:d1:6e:ae  ref 1 used 39/39/39probes 1 REACHABLE 
+192.168.31.227 dev br-lan lladdr a0:82:22:00:e3:8e  ref 1 used 1/46/1probes 1 DELAY 
+192.168.31.179 dev br-lan lladdr d4:f0:ea:1e:d0:91  ref 1 used 4/4/4probes 1 REACHABLE 
+192.168.31.218 dev br-lan lladdr 80:fa:5b:90:d1:c0  ref 1 used 95/1/95probes 1 REACHABLE 
+fe80::d9b9:6dfb:cf44:5b31 dev br-lan lladdr 80:fa:5b:90:d1:c0  used 38/38/5probes 1 STALE 
+fe80::d269:ffff:fe16:3280 dev pon0.995 lladdr d0:69:ff:16:32:80  used 7/67/7probes 0 STALE 
+fd09:7498:e02f::1 dev br-lan  used 99/160/96probes 6 FAILED 
+fe80::4ec6:4cff:fefa:4bbf dev br-lan lladdr 4c:c6:4c:fa:4b:bf  ref 1 used 4/4/4probes 1 REACHABLE 
+fd09:7498:e02f::51c dev br-lan lladdr d4:da:21:49:9a:1b  ref 1 used 16/16/16probes 1 REACHABLE 
+fd09:7498:e02f:0:c03d:106e:929:4b77 dev br-lan lladdr 52:35:01:99:73:1e router  ref 1 used 6/6/6probes 1 REACHABLE 
+fd09:7498:e02f::fea dev br-lan lladdr 4c:c6:4c:fa:4b:bf  ref 1 used 12/12/12probes 1 REACHABLE 
+fd09:7498:e02f::b6c dev br-lan lladdr 58:ea:1f:2c:40:9d  ref 1 used 2/2/2probes 1 REACHABLE 
+fd09:7498:e02f:0:692c:a0c3:8a5:8618 dev br-lan lladdr 80:fa:5b:90:d1:c0  ref 1 used 14/14/14probes 1 REACHABLE 
+fe80::5aea:1fff:fe2c:409d dev br-lan lladdr 58:ea:1f:2c:40:9d  ref 1 used 32/32/32probes 1 REACHABLE 
+fd09:7498:e02f:0:5aea:1fff:fe2c:409d dev br-lan lladdr 58:ea:1f:2c:40:9d  used 83/83/50probes 4 STALE 
+fd09:7498:e02f:0:5537:1658:fc0:2c21 dev br-lan lladdr e6:33:6a:a9:24:e3  used 97/97/64probes 4 STALE 
+fe80::d6da:21ff:fe49:9a1b dev br-lan lladdr d4:da:21:49:9a:1b  ref 1 used 5/5/5probes 1 REACHABLE 
+fe80::5035:1ff:fe99:731e dev br-lan lladdr 52:35:01:99:73:1e router  used 34/34/0probes 1 STALE 
+fd09:7498:e02f:0:5035:1ff:fe99:731e dev br-lan lladdr 52:35:01:99:73:1e router  used 79/79/46probes 1 STALE 

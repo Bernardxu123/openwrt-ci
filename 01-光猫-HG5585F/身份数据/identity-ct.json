@@ -1,0 +1,144 @@
+{
+  "_comment": "HG5585F-CT（电信版）身份数据模板。现场填写；不要提交到公开仓库。字段含义见 03-身份采集与备份.md。",
+  "collected_at": null,
+  "collected_by": null,
+  "device": {
+    "model": "HG5585F-CT",
+    "model_factory_string": null,
+    "ponwrt_profile": "fiberhome_hg5585f-ct",
+    "soc": "Airoha AN7581",
+    "operator": null,
+    "operator_cn": null,
+    "area": null,
+    "hardware_version": null,
+    "software_version": null,
+    "build_time": null,
+    "build_num": null,
+    "ethernet_ports": null,
+    "port_layout": "lan1=2.5G(GPY211C) + lan2/3/4=GE",
+    "ssid_num": null,
+    "wifi_bands": [2.4, 5],
+    "usb_ports": null
+  },
+  "pon": {
+    "current_ponmode": null,
+    "default_ponmode": null,
+    "ponwrt_line_mode": "epon-10g-1g",
+    "asymmetric": null,
+    "rx_power_dbm": null,
+    "tx_power_dbm": null,
+    "optical_status": null,
+    "uptime_sec_at_collect": null
+  },
+  "factory_identity": {
+    "_layout_ref": "fiberhome-factory 1 MiB 布局；ponwrt board.d/03_pon_data → pon_data_target factory ubi 1048576",
+    "base_mac": {
+      "value": null,
+      "offset": "0x002000",
+      "size": 6,
+      "status": "待采集"
+    },
+    "pon_sn": {
+      "value": null,
+      "offset": "0x002010",
+      "size": 8,
+      "encoding": "pon-ascii12（FHTT + 8 hex）",
+      "status": "待采集"
+    },
+    "device_sn": {
+      "value": null,
+      "offset": "0x002020",
+      "size": 32,
+      "note": "Web 页 36 字符「设备标识号」= device_OUI + '-' + 本值",
+      "status": "待采集"
+    },
+    "aponcal_optical_calibration": {
+      "offset": "0x000000",
+      "size": 2048,
+      "status": "待备份并转换",
+      "verify": "1 MiB 镜像 0x0 应以 ASCII 'APONCAL' 开头"
+    },
+    "mt7916_wifi_eeprom": {
+      "offset": "0x001000",
+      "size": 4096,
+      "status": "待备份并转换",
+      "verify": "1 MiB 镜像 0x1000 前两字节应为 16 79"
+    },
+    "raw_partition": {
+      "mtd": "mtd13",
+      "name": "factory",
+      "size": "0x300000 (3 MiB)",
+      "note": "原始 3 MiB 不是裸布局；0x2000/0x2010/0x2020 处可能是 FF，必须用 fiberhome-factory 转换"
+    },
+    "converted_image": {
+      "path": null,
+      "bytes": null,
+      "sha256": null,
+      "five_checks_passed": false
+    }
+  },
+  "macs": {
+    "base": null,
+    "br0": null,
+    "onu": null,
+    "pon": null,
+    "internet": null,
+    "tr069": null,
+    "voip": null,
+    "priprotocol": null,
+    "mac_num": null
+  },
+  "hardware_ids": {
+    "device_OUI": null,
+    "vendor_id": null,
+    "transceiver_serial": null,
+    "transceiver_type": null,
+    "pcba_sn": null,
+    "ap_equip_id": null
+  },
+  "registration": {
+    "loid": null,
+    "loid_password": null,
+    "loid_password_note": "EPON 认证只用 LOID，密码留空",
+    "olt_auth": null,
+    "rms_auth": null
+  },
+  "wan_connections": [],
+  "wifi": {
+    "ssid_2g": null,
+    "ssid_5g": null,
+    "password": null
+  },
+  "access": {
+    "web_url": "http://192.168.1.1",
+    "web_user": null,
+    "web_password": null,
+    "web_superadmin": null,
+    "web_superadmin_password": null,
+    "telnet_port": 23,
+    "telnet_user": "admin",
+    "telnet_password": null,
+    "telnet_shell": null,
+    "fh_tool_api_port": null
+  },
+  "pppoe": {
+    "_note": "CT 原厂不存 PPPoE；刷 ponwrt 后按家里线路填（若接联通光纤）",
+    "username": null,
+    "password": null,
+    "vlan": null,
+    "device": "pon0.995"
+  },
+  "licensing": {
+    "进网许可": null,
+    "label_product_sn": null,
+    "label_material_code": null,
+    "label_default_web": null,
+    "label_hotline": null
+  },
+  "notes": {
+    "seller": null,
+    "purchase_date": null,
+    "has_ct_stock_firmware": null,
+    "has_ct_ubi_update_package": null
+  }
+}

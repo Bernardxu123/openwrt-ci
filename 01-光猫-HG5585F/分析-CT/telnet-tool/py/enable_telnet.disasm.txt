@@ -1,0 +1,3528 @@
+# pydisasm version 6.3.0
+# CPython Python bytecode 3.13.0 (-1)
+#   Disassembled from CPython Python 3.14.7 (tags/v3.14.7:823f032, Aug  5 2026, 10:51:32) [MSC v.1944 64 bit (AMD64)]
+# Method Name:       <module>
+# Filename:          enable_telnet.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        5
+# Flags:             0x01000000 (0x1000000)
+# First Line:        1
+# Constants:
+#    0: 'Enable Telnet on this HG5585F firmware, then persist its LAN switches.\n\nRun: python3 enable_telnet.py\nRequires Python 3.9+ and either OpenSSL (macOS/Linux) or Windows PowerShell.\n'
+#    1: 0
+#    2: ('annotations',)
+#    3: None
+#    4: 'V4.2.0'
+#    5: '24FHW45000'
+#    6: ('InternetGatewayDevice.DeviceInfo.X_CT-COM_ServiceManage.TelnetEnable', 'InternetGatewayDevice.DeviceInfo.X_CT-COM_ServiceManage.Lan.TelnetEnable')
+#    7: "\n$ErrorActionPreference = 'Stop'\n$request = [Console]::In.ReadToEnd() | ConvertFrom-Json\n$aes = [System.Security.Cryptography.Aes]::Create()\ntry {\n    $aes.Mode = [System.Security.Cryptography.CipherMode]::CBC\n    $aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7\n    $aes.Key = [Convert]::FromBase64String($request.key)\n    $aes.IV = [Convert]::FromBase64String($request.iv)\n    $data = [Convert]::FromBase64String($request.data)\n    if ($request.action -eq 'encrypt') {\n        $transform = $aes.CreateEncryptor()\n    } else {\n        $transform = $aes.CreateDecryptor()\n    }\n    try {\n        $result = $transform.TransformFinalBlock($data, 0, $data.Length)\n        [Console]::Out.Write([Convert]::ToBase64String($result))\n    } finally {\n        $transform.Dispose()\n    }\n} finally {\n    $aes.Dispose()\n}\n"
+#    8: '550097676'
+#    9: 'HG5585F CT V2版 一键开Telnet Xx'
+#   10: <Code311 code object ToolError at 0x20f0440, file enable_telnet.py>, line 63
+#   11: 'ToolError'
+#   12: <Code311 code object print_contact at 0x206aad0, file enable_telnet.py>, line 67
+#   13: <Code311 code object _enable_vt at 0x206ad50, file enable_telnet.py>, line 77
+#   14: <Code311 code object set_console_title at 0x20e08a0, file enable_telnet.py>, line 95
+#   15: <Code311 code object press_any_key at 0x20e09d0, file enable_telnet.py>, line 107
+#   16: False
+#   17: ('decrypt',)
+#   18: <Code311 code object aes_cbc at 0x1ff8ef0, file enable_telnet.py>, line 117
+#   19: ('body',)
+#   20: <Code311 code object http_bytes at 0x20a2140, file enable_telnet.py>, line 156
+#   21: <Code311 code object local_ip_for at 0x20a2030, file enable_telnet.py>, line 173
+#   22: <Code311 code object derive_key_iv at 0x20a2470, file enable_telnet.py>, line 181
+#   23: <Code311 code object tool_call at 0x20a2580, file enable_telnet.py>, line 188
+#   24: <Code311 code object TelnetSession at 0x20a2ad0, file enable_telnet.py>, line 205
+#   25: 'TelnetSession'
+#   26: <Code311 code object persist_telnet at 0x20a2be0, file enable_telnet.py>, line 264
+#   27: <Code311 code object wait_for_telnet at 0x20a2e00, file enable_telnet.py>, line 285
+#   28: <Code311 code object build_parser at 0x20a2cf0, file enable_telnet.py>, line 298
+#   29: <Code311 code object run at 0x20a2f10, file enable_telnet.py>, line 310
+#   30: <Code311 code object ask at 0x20a3020, file enable_telnet.py>, line 349
+#   31: <Code311 code object wizard at 0x20a3130, file enable_telnet.py>, line 354
+#   32: <Code311 code object main at 0x20a3240, file enable_telnet.py>, line 396
+#   33: '__main__'
+#   34: ('return', 'None')
+#   35: ('return', 'bool')
+#   36: ('title', 'str', 'return', 'None')
+#   37: ('data', 'bytes', 'key', 'bytes', 'iv', 'bytes', 'decrypt', 'bool', 'return', 'bytes')
+#   38: ('url', 'str', 'body', 'bytes | None', 'return', 'bytes')
+#   39: ('host', 'str', 'port', 'int', 'return', 'str')
+#   40: ('mac', 'str', 'return', 'tuple[bytes, bytes]')
+#   41: ('base_url', 'str', 'key', 'bytes', 'iv', 'bytes', 'func', 'str', 'params', 'str', 'return', 'dict')
+#   42: ('host', 'str', 'mac', 'str', 'username', 'str', 'password', 'str | None', 'return', 'None')
+#   43: ('host', 'str', 'return', 'None')
+#   44: ('return', 'argparse.ArgumentParser')
+#   45: ('args', 'argparse.Namespace', 'return', 'int')
+#   46: ('prompt', 'str', 'default', 'str', 'return', 'str')
+#   47: ('return', 'argparse.Namespace')
+#   48: ('return', 'int')
+# Names:
+#    0: __doc__
+#    1: __future__
+#    2: annotations
+#    3: argparse
+#    4: base64
+#    5: getpass
+#    6: hashlib
+#    7: ipaddress
+#    8: json
+#    9: os
+#   10: re
+#   11: socket
+#   12: subprocess
+#   13: sys
+#   14: time
+#   15: urllib.error
+#   16: urllib
+#   17: urllib.request
+#   18: EXPECTED_HARDWARE
+#   19: EXPECTED_SOFTWARE
+#   20: TELNET_PATHS
+#   21: POWERSHELL_AES
+#   22: CONTACT_QQ
+#   23: WINDOW_TITLE
+#   24: Exception
+#   25: ToolError
+#   26: print_contact
+#   27: _enable_vt
+#   28: set_console_title
+#   29: press_any_key
+#   30: aes_cbc
+#   31: http_bytes
+#   32: local_ip_for
+#   33: derive_key_iv
+#   34: tool_call
+#   35: TelnetSession
+#   36: persist_telnet
+#   37: wait_for_telnet
+#   38: build_parser
+#   39: run
+#   40: ask
+#   41: wizard
+#   42: main
+#   43: __name__
+#   44: SystemExit
+
+  0:           0 RESUME               0
+
+  2:           2 LOAD_CONST           ("Enable Telnet on this HG5585F firmware, then persist its LAN switches.\n\nRun: python3 enable_telnet.py\nRequires Python 3.9+ and either OpenSSL (macOS/Linux) or Windows PowerShell.\n")
+               4 STORE_NAME           (__doc__)
+
+  8:           6 LOAD_CONST           (0)
+               8 LOAD_CONST           (('annotations',))
+              10 IMPORT_NAME          (__future__)
+              12 IMPORT_FROM          (annotations)
+              14 STORE_NAME           (annotations)
+              16 POP_TOP
+
+ 10:          18 LOAD_CONST           (0)
+              20 LOAD_CONST           (None)
+              22 IMPORT_NAME          (argparse)
+              24 STORE_NAME           (argparse)
+
+ 11:          26 LOAD_CONST           (0)
+              28 LOAD_CONST           (None)
+              30 IMPORT_NAME          (base64)
+              32 STORE_NAME           (base64)
+
+ 12:          34 LOAD_CONST           (0)
+              36 LOAD_CONST           (None)
+              38 IMPORT_NAME          (getpass)
+              40 STORE_NAME           (getpass)
+
+ 13:          42 LOAD_CONST           (0)
+              44 LOAD_CONST           (None)
+              46 IMPORT_NAME          (hashlib)
+              48 STORE_NAME           (hashlib)
+
+ 14:          50 LOAD_CONST           (0)
+              52 LOAD_CONST           (None)
+              54 IMPORT_NAME          (ipaddress)
+              56 STORE_NAME           (ipaddress)
+
+ 15:          58 LOAD_CONST           (0)
+              60 LOAD_CONST           (None)
+              62 IMPORT_NAME          (json)
+              64 STORE_NAME           (json)
+
+ 16:          66 LOAD_CONST           (0)
+              68 LOAD_CONST           (None)
+              70 IMPORT_NAME          (os)
+              72 STORE_NAME           (os)
+
+ 17:          74 LOAD_CONST           (0)
+              76 LOAD_CONST           (None)
+              78 IMPORT_NAME          (re)
+              80 STORE_NAME           (re)
+
+ 18:          82 LOAD_CONST           (0)
+              84 LOAD_CONST           (None)
+              86 IMPORT_NAME          (socket)
+              88 STORE_NAME           (socket)
+
+ 19:          90 LOAD_CONST           (0)
+              92 LOAD_CONST           (None)
+              94 IMPORT_NAME          (subprocess)
+              96 STORE_NAME           (subprocess)
+
+ 20:          98 LOAD_CONST           (0)
+             100 LOAD_CONST           (None)
+             102 IMPORT_NAME          (sys)
+             104 STORE_NAME           (sys)
+
+ 21:         106 LOAD_CONST           (0)
+             108 LOAD_CONST           (None)
+             110 IMPORT_NAME          (time)
+             112 STORE_NAME           (time)
+
+ 22:         114 LOAD_CONST           (0)
+             116 LOAD_CONST           (None)
+             118 IMPORT_NAME          (urllib.error)
+             120 STORE_NAME           (urllib)
+
+ 23:         122 LOAD_CONST           (0)
+             124 LOAD_CONST           (None)
+             126 IMPORT_NAME          (urllib.request)
+             128 STORE_NAME           (urllib)
+
+ 26:         130 LOAD_CONST           ("V4.2.0")
+             132 STORE_NAME           (EXPECTED_HARDWARE)
+
+ 27:         134 LOAD_CONST           ("24FHW45000")
+             136 STORE_NAME           (EXPECTED_SOFTWARE)
+
+ 28:         138 LOAD_CONST           (('InternetGatewayDevice.DeviceInfo.X_CT-COM_ServiceManage.TelnetEnable', 'InternetGatewayDevice.DeviceInfo.X_CT-COM_ServiceManage.Lan.TelnetEnable'))
+             140 STORE_NAME           (TELNET_PATHS)
+
+ 32:         142 LOAD_CONST           ("\n$ErrorActionPreference = 'Stop'\n$request = [Console]::In.ReadToEnd() | ConvertFrom-Json\n$aes = [System.Security.Cryptography.Aes]::Create()\ntry {\n    $aes.Mode = [System.Security.Cryptography.CipherMode]::CBC\n    $aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7\n    $aes.Key = [Convert]::FromBase64String($request.key)\n    $aes.IV = [Convert]::FromBase64String($request.iv)\n    $data = [Convert]::FromBase64String($request.data)\n    if ($request.action -eq 'encrypt') {\n        $transform = $aes.CreateEncryptor()\n    } else {\n        $transform = $aes.CreateDecryptor()\n    }\n    try {\n        $result = $transform.TransformFinalBlock($data, 0, $data.Length)\n        [Console]::Out.Write([Convert]::ToBase64String($result))\n    } finally {\n        $transform.Dispose()\n    }\n} finally {\n    $aes.Dispose()\n}\n")
+             144 STORE_NAME           (POWERSHELL_AES)
+
+ 59:         146 LOAD_CONST           ("550097676")
+             148 STORE_NAME           (CONTACT_QQ)
+
+ 60:         150 LOAD_CONST           ("HG5585F CT V2版 一键开Telnet Xx")
+             152 STORE_NAME           (WINDOW_TITLE)
+
+ 63:         154 LOAD_BUILD_CLASS
+             156 PUSH_NULL
+             158 LOAD_CONST           (<Code311 code object ToolError at 0x20f0440, file enable_telnet.py>, line 63)
+             160 MAKE_FUNCTION
+             162 LOAD_CONST           ("ToolError")
+             164 LOAD_NAME            (Exception)
+             166 CALL                 (3 positional)
+             174 STORE_NAME           (ToolError)
+
+ 67:         176 LOAD_CONST           (('return', 'None'))
+             178 LOAD_CONST           (<Code311 code object print_contact at 0x206aad0, file enable_telnet.py>, line 67)
+             180 MAKE_FUNCTION
+             182 SET_FUNCTION_ATTRIBUTE 4
+             184 STORE_NAME           (print_contact)
+
+ 77:         186 LOAD_CONST           (('return', 'bool'))
+             188 LOAD_CONST           (<Code311 code object _enable_vt at 0x206ad50, file enable_telnet.py>, line 77)
+             190 MAKE_FUNCTION
+             192 SET_FUNCTION_ATTRIBUTE 4
+             194 STORE_NAME           (_enable_vt)
+
+ 95:         196 LOAD_CONST           (('title', 'str', 'return', 'None'))
+             198 LOAD_CONST           (<Code311 code object set_console_title at 0x20e08a0, file enable_telnet.py>, line 95)
+             200 MAKE_FUNCTION
+             202 SET_FUNCTION_ATTRIBUTE 4
+             204 STORE_NAME           (set_console_title)
+
+107:         206 LOAD_CONST           (('return', 'None'))
+             208 LOAD_CONST           (<Code311 code object press_any_key at 0x20e09d0, file enable_telnet.py>, line 107)
+             210 MAKE_FUNCTION
+             212 SET_FUNCTION_ATTRIBUTE 4
+             214 STORE_NAME           (press_any_key)
+
+117:         216 LOAD_CONST           (False)
+             218 LOAD_CONST           (('decrypt',))
+             220 BUILD_CONST_KEY_MAP  1
+             222 LOAD_CONST           (('data', 'bytes', 'key', 'bytes', 'iv', 'bytes', 'decrypt', 'bool', 'return', 'bytes'))
+             224 LOAD_CONST           (<Code311 code object aes_cbc at 0x1ff8ef0, file enable_telnet.py>, line 117)
+             226 MAKE_FUNCTION
+             228 SET_FUNCTION_ATTRIBUTE 4
+             230 SET_FUNCTION_ATTRIBUTE 2
+             232 STORE_NAME           (aes_cbc)
+
+156:         234 LOAD_CONST           (None)
+             236 LOAD_CONST           (('body',))
+             238 BUILD_CONST_KEY_MAP  1
+             240 LOAD_CONST           (('url', 'str', 'body', 'bytes | None', 'return', 'bytes'))
+             242 LOAD_CONST           (<Code311 code object http_bytes at 0x20a2140, file enable_telnet.py>, line 156)
+             244 MAKE_FUNCTION
+             246 SET_FUNCTION_ATTRIBUTE 4
+             248 SET_FUNCTION_ATTRIBUTE 2
+             250 STORE_NAME           (http_bytes)
+
+173:         252 LOAD_CONST           (('host', 'str', 'port', 'int', 'return', 'str'))
+             254 LOAD_CONST           (<Code311 code object local_ip_for at 0x20a2030, file enable_telnet.py>, line 173)
+             256 MAKE_FUNCTION
+             258 SET_FUNCTION_ATTRIBUTE 4
+             260 STORE_NAME           (local_ip_for)
+
+181:         262 LOAD_CONST           (('mac', 'str', 'return', 'tuple[bytes, bytes]'))
+             264 LOAD_CONST           (<Code311 code object derive_key_iv at 0x20a2470, file enable_telnet.py>, line 181)
+             266 MAKE_FUNCTION
+             268 SET_FUNCTION_ATTRIBUTE 4
+             270 STORE_NAME           (derive_key_iv)
+
+188:         272 LOAD_CONST           (('base_url', 'str', 'key', 'bytes', 'iv', 'bytes', 'func', 'str', 'params', 'str', 'return', 'dict'))
+             274 LOAD_CONST           (<Code311 code object tool_call at 0x20a2580, file enable_telnet.py>, line 188)
+             276 MAKE_FUNCTION
+             278 SET_FUNCTION_ATTRIBUTE 4
+             280 STORE_NAME           (tool_call)
+
+205:         282 LOAD_BUILD_CLASS
+             284 PUSH_NULL
+             286 LOAD_CONST           (<Code311 code object TelnetSession at 0x20a2ad0, file enable_telnet.py>, line 205)
+             288 MAKE_FUNCTION
+             290 LOAD_CONST           ("TelnetSession")
+             292 CALL                 (2 positional)
+             300 STORE_NAME           (TelnetSession)
+
+264:         302 LOAD_CONST           (('host', 'str', 'mac', 'str', 'username', 'str', 'password', 'str | None', 'return', 'None'))
+             304 LOAD_CONST           (<Code311 code object persist_telnet at 0x20a2be0, file enable_telnet.py>, line 264)
+             306 MAKE_FUNCTION
+             308 SET_FUNCTION_ATTRIBUTE 4
+             310 STORE_NAME           (persist_telnet)
+
+285:         312 LOAD_CONST           (('host', 'str', 'return', 'None'))
+             314 LOAD_CONST           (<Code311 code object wait_for_telnet at 0x20a2e00, file enable_telnet.py>, line 285)
+             316 MAKE_FUNCTION
+             318 SET_FUNCTION_ATTRIBUTE 4
+             320 STORE_NAME           (wait_for_telnet)
+
+298:         322 LOAD_CONST           (('return', 'argparse.ArgumentParser'))
+             324 LOAD_CONST           (<Code311 code object build_parser at 0x20a2cf0, file enable_telnet.py>, line 298)
+             326 MAKE_FUNCTION
+             328 SET_FUNCTION_ATTRIBUTE 4
+             330 STORE_NAME           (build_parser)
+
+310:         332 LOAD_CONST           (('args', 'argparse.Namespace', 'return', 'int'))
+             334 LOAD_CONST           (<Code311 code object run at 0x20a2f10, file enable_telnet.py>, line 310)
+             336 MAKE_FUNCTION
+             338 SET_FUNCTION_ATTRIBUTE 4
+             340 STORE_NAME           (run)
+
+349:         342 LOAD_CONST           (('prompt', 'str', 'default', 'str', 'return', 'str'))
+             344 LOAD_CONST           (<Code311 code object ask at 0x20a3020, file enable_telnet.py>, line 349)
+             346 MAKE_FUNCTION
+             348 SET_FUNCTION_ATTRIBUTE 4
+             350 STORE_NAME           (ask)
+
+354:         352 LOAD_CONST           (('return', 'argparse.Namespace'))
+             354 LOAD_CONST           (<Code311 code object wizard at 0x20a3130, file enable_telnet.py>, line 354)
+             356 MAKE_FUNCTION
+             358 SET_FUNCTION_ATTRIBUTE 4
+             360 STORE_NAME           (wizard)
+
+396:         362 LOAD_CONST           (('return', 'int'))
+             364 LOAD_CONST           (<Code311 code object main at 0x20a3240, file enable_telnet.py>, line 396)
+             366 MAKE_FUNCTION
+             368 SET_FUNCTION_ATTRIBUTE 4
+             370 STORE_NAME           (main)
+
+422:         372 LOAD_NAME            (__name__)
+             374 LOAD_CONST           ("__main__")
+             376 COMPARE_OP           (==)
+             380 POP_JUMP_IF_FALSE    (to 410)
+
+423:         384 LOAD_NAME            (SystemExit)
+             386 PUSH_NULL
+             388 LOAD_NAME            (main)
+             390 PUSH_NULL
+             392 CALL                 (0 positional)
+             400 CALL                 (1 positional)
+             408 RAISE_VARARGS        (exception instance)
+
+422:     >>  410 RETURN_CONST         (None)
+
+
+# Method Name:       ToolError
+# Filename:          enable_telnet.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        1
+# Flags:             0x01000000 (0x1000000)
+# First Line:        63
+# Constants:
+#    0: 'ToolError'
+#    1: 63
+#    2: ()
+#    3: None
+# Names:
+#    0: __name__
+#    1: __module__
+#    2: __qualname__
+#    3: __firstlineno__
+#    4: __static_attributes__
+
+ 63:           0 RESUME               0
+               2 LOAD_NAME            (__name__)
+               4 STORE_NAME           (__module__)
+               6 LOAD_CONST           ("ToolError")
+               8 STORE_NAME           (__qualname__)
+              10 LOAD_CONST           (63)
+              12 STORE_NAME           (__firstlineno__)
+
+ 64:          14 LOAD_CONST           (())
+              16 STORE_NAME           (__static_attributes__)
+              18 RETURN_CONST         (None)
+
+
+# Method Name:       print_contact
+# Filename:          enable_telnet.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  3
+# Stack size:        5
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        67
+# Constants:
+#    0: 'Print the contact once, dimmed so it stays low-key.'
+#    1: 'Xx QQ '
+#    2: False
+#    3: 'isatty'
+#    4: '\x1b[2m'
+#    5: '\x1b[0m'
+#    6: None
+# Names:
+#    0: CONTACT_QQ
+#    1: sys
+#    2: stdout
+#    3: hasattr
+#    4: isatty
+#    5: _enable_vt
+#    6: print
+# Varnames:
+#	line, stream, dim
+# Local variables:
+#    0: line
+#    1: stream
+#    2: dim
+
+ 67:           0 RESUME               0
+
+ 69:           2 LOAD_CONST           ("Xx QQ ")
+               4 LOAD_GLOBAL          (CONTACT_QQ)
+              14 FORMAT_SIMPLE
+              16 BUILD_STRING         2
+              18 STORE_FAST           (line)
+
+ 70:          20 LOAD_GLOBAL          (sys)
+              30 LOAD_ATTR            (stdout)
+              50 STORE_FAST           (stream)
+
+ 71:          52 LOAD_CONST           (False)
+              54 STORE_FAST           (dim)
+
+ 72:          56 LOAD_GLOBAL          (NULL + hasattr)
+              66 LOAD_FAST            (stream)
+              68 LOAD_CONST           ("isatty")
+              70 CALL                 (2 positional)
+              78 TO_BOOL
+              86 POP_JUMP_IF_FALSE    (to 152)
+              90 LOAD_FAST            (stream)
+              92 LOAD_ATTR            (NULL|self + isatty)
+             112 CALL                 (0 positional)
+             120 TO_BOOL
+             128 POP_JUMP_IF_FALSE    (to 152)
+
+ 73:         132 LOAD_GLOBAL          (NULL + _enable_vt)
+             142 CALL                 (0 positional)
+             150 STORE_FAST           (dim)
+
+ 74:     >>  152 LOAD_GLOBAL          (NULL + print)
+             162 LOAD_FAST            (dim)
+             164 TO_BOOL
+             172 POP_JUMP_IF_FALSE    (to 198)
+             176 LOAD_CONST           ("\x1b[2m")
+             178 LOAD_FAST            (line)
+             180 FORMAT_SIMPLE
+             182 LOAD_CONST           ("\x1b[0m")
+             184 BUILD_STRING         3
+             186 CALL                 (1 positional)
+             194 POP_TOP
+             196 RETURN_CONST         (None)
+         >>  198 LOAD_FAST            (line)
+             200 CALL                 (1 positional)
+             208 POP_TOP
+             210 RETURN_CONST         (None)
+
+
+# Method Name:       _enable_vt
+# Filename:          enable_telnet.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  4
+# Stack size:        6
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        77
+# Constants:
+#    0: 'Turn on ANSI escape support so the footer line can be dimmed.'
+#    1: 'nt'
+#    2: True
+#    3: 0
+#    4: None
+#    5: -11
+#    6: False
+#    7: 4
+# Names:
+#    0: os
+#    1: name
+#    2: ctypes
+#    3: windll
+#    4: kernel32
+#    5: GetStdHandle
+#    6: c_ulong
+#    7: GetConsoleMode
+#    8: byref
+#    9: SetConsoleMode
+#   10: value
+#   11: Exception
+# Varnames:
+#	ctypes, kernel32, handle, mode
+# Local variables:
+#    0: ctypes
+#    1: kernel32
+#    2: handle
+#    3: mode
+
+ 77:           0 RESUME               0
+
+ 79:           2 LOAD_GLOBAL          (os)
+              12 LOAD_ATTR            (name)
+              32 LOAD_CONST           ("nt")
+              34 COMPARE_OP           (!=)
+              38 POP_JUMP_IF_FALSE    (to 44)
+
+ 80:          42 RETURN_CONST         (True)
+
+ 81:     >>   44 NOP
+
+ 82:          46 LOAD_CONST           (0)
+              48 LOAD_CONST           (None)
+              50 IMPORT_NAME          (ctypes)
+              52 STORE_FAST           (ctypes)
+
+ 84:          54 LOAD_FAST            (ctypes)
+              56 LOAD_ATTR            (windll)
+              76 LOAD_ATTR            (kernel32)
+              96 STORE_FAST           (kernel32)
+
+ 85:          98 LOAD_FAST            (kernel32)
+             100 LOAD_ATTR            (NULL|self + GetStdHandle)
+             120 LOAD_CONST           (-11)
+             122 CALL                 (1 positional)
+             130 STORE_FAST           (handle)
+
+ 86:         132 LOAD_FAST            (ctypes)
+             134 LOAD_ATTR            (NULL|self + c_ulong)
+             154 CALL                 (0 positional)
+             162 STORE_FAST           (mode)
+
+ 87:         164 LOAD_FAST            (kernel32)
+             166 LOAD_ATTR            (NULL|self + GetConsoleMode)
+             186 LOAD_FAST_LOAD_FAST  (handle, ctypes)
+             188 LOAD_ATTR            (NULL|self + byref)
+             208 LOAD_FAST            (mode)
+             210 CALL                 (1 positional)
+             218 CALL                 (2 positional)
+             226 TO_BOOL
+             234 POP_JUMP_IF_TRUE     (to 240)
+
+ 88:         238 RETURN_CONST         (False)
+
+ 89:     >>  240 LOAD_FAST            (kernel32)
+             242 LOAD_ATTR            (NULL|self + SetConsoleMode)
+             262 LOAD_FAST_LOAD_FAST  (handle, mode)
+             264 LOAD_ATTR            (value)
+             284 LOAD_CONST           (4)
+             286 BINARY_OP            (|)
+             290 CALL                 (2 positional)
+             298 POP_TOP
+
+ 90:         300 RETURN_CONST         (True)
+             302 PUSH_EXC_INFO
+
+ 91:         304 LOAD_GLOBAL          (Exception)
+             314 CHECK_EXC_MATCH
+             316 POP_JUMP_IF_FALSE    (to 326)
+             320 POP_TOP
+
+ 92:         322 POP_EXCEPT
+             324 RETURN_CONST         (False)
+
+ 91:     >>  326 RERAISE              0
+             328 COPY                 3
+             330 POP_EXCEPT
+             332 RERAISE              1
+
+ExceptionTable:
+  46 to 236 -> 302 [0]
+  240 to 298 -> 302 [0]
+  302 to 320 -> 328 [1] lasti
+  326 to 326 -> 328 [1] lasti
+
+# Method Name:       set_console_title
+# Filename:          enable_telnet.py
+# Argument count:    1
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  2
+# Stack size:        4
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        95
+# Constants:
+#    0: 'Retitle the console window (Windows only, silently ignored elsewhere).'
+#    1: 'nt'
+#    2: None
+#    3: 0
+# Names:
+#    0: os
+#    1: name
+#    2: ctypes
+#    3: windll
+#    4: kernel32
+#    5: SetConsoleTitleW
+#    6: Exception
+# Varnames:
+#	title, ctypes
+# Positional arguments:
+#	title
+# Local variables:
+#    1: ctypes
+
+ 95:           0 RESUME               0
+
+ 97:           2 LOAD_GLOBAL          (os)
+              12 LOAD_ATTR            (name)
+              32 LOAD_CONST           ("nt")
+              34 COMPARE_OP           (!=)
+              38 POP_JUMP_IF_FALSE    (to 44)
+
+ 98:          42 RETURN_CONST         (None)
+
+ 99:     >>   44 NOP
+
+100:          46 LOAD_CONST           (0)
+              48 LOAD_CONST           (None)
+              50 IMPORT_NAME          (ctypes)
+              52 STORE_FAST           (ctypes)
+
+102:          54 LOAD_FAST            (ctypes)
+              56 LOAD_ATTR            (windll)
+              76 LOAD_ATTR            (kernel32)
+              96 LOAD_ATTR            (NULL|self + SetConsoleTitleW)
+             116 LOAD_FAST            (title)
+             118 CALL                 (1 positional)
+             126 POP_TOP
+             128 RETURN_CONST         (None)
+             130 PUSH_EXC_INFO
+
+103:         132 LOAD_GLOBAL          (Exception)
+             142 CHECK_EXC_MATCH
+             144 POP_JUMP_IF_FALSE    (to 154)
+             148 POP_TOP
+
+104:         150 POP_EXCEPT
+             152 RETURN_CONST         (None)
+
+103:     >>  154 RERAISE              0
+             156 COPY                 3
+             158 POP_EXCEPT
+             160 RERAISE              1
+
+ExceptionTable:
+  46 to 126 -> 130 [0]
+  130 to 148 -> 156 [1] lasti
+  154 to 154 -> 156 [1] lasti
+
+# Method Name:       press_any_key
+# Filename:          enable_telnet.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        4
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        107
+# Constants:
+#    0: 'Keep the window open after a double-click launch.'
+#    1: 'isatty'
+#    2: None
+#    3: 'nt'
+#    4: 'pause'
+#    5: '按回车键退出...'
+# Names:
+#    0: hasattr
+#    1: sys
+#    2: stdin
+#    3: isatty
+#    4: os
+#    5: name
+#    6: system
+#    7: input
+
+107:           0 RESUME               0
+
+109:           2 LOAD_GLOBAL          (NULL + hasattr)
+              12 LOAD_GLOBAL          (sys)
+              22 LOAD_ATTR            (stdin)
+              42 LOAD_CONST           ("isatty")
+              44 CALL                 (2 positional)
+              52 TO_BOOL
+              60 POP_JUMP_IF_FALSE    (to 134)
+              64 LOAD_GLOBAL          (sys)
+              74 LOAD_ATTR            (stdin)
+              94 LOAD_ATTR            (NULL|self + isatty)
+             114 CALL                 (0 positional)
+             122 TO_BOOL
+             130 POP_JUMP_IF_TRUE     (to 136)
+
+110:     >>  134 RETURN_CONST         (None)
+
+111:     >>  136 LOAD_GLOBAL          (os)
+             146 LOAD_ATTR            (name)
+             166 LOAD_CONST           ("nt")
+             168 COMPARE_OP           (==)
+             172 POP_JUMP_IF_FALSE    (to 222)
+
+112:         176 LOAD_GLOBAL          (os)
+             186 LOAD_ATTR            (system)
+             206 PUSH_NULL
+             208 LOAD_CONST           ("pause")
+             210 CALL                 (1 positional)
+             218 POP_TOP
+             220 RETURN_CONST         (None)
+
+114:     >>  222 LOAD_GLOBAL          (NULL + input)
+             232 LOAD_CONST           ("按回车键退出...")
+             234 CALL                 (1 positional)
+             242 POP_TOP
+             244 RETURN_CONST         (None)
+
+
+# Method Name:       aes_cbc
+# Filename:          enable_telnet.py
+# Argument count:    3
+# Position-only argument count: 0
+# Keyword-only arguments: 1
+# Number of locals:  7
+# Stack size:        11
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        117
+# Constants:
+#    0: None
+#    1: 'nt'
+#    2: 'decrypt'
+#    3: 'encrypt'
+#    4: 'ascii'
+#    5: ('action', 'key', 'iv', 'data')
+#    6: 'powershell.exe'
+#    7: '-NoProfile'
+#    8: '-NonInteractive'
+#    9: '-Command'
+#   10: True
+#   11: 15
+#   12: ('input', 'text', 'capture_output', 'timeout', 'check')
+#   13: ('validate',)
+#   14: 'Windows PowerShell AES 处理失败'
+#   15: 'openssl'
+#   16: 'enc'
+#   17: '-d'
+#   18: '-e'
+#   19: '-aes-128-cbc'
+#   20: '-K'
+#   21: '-iv'
+#   22: '-nosalt'
+#   23: 10
+#   24: ('input', 'capture_output', 'timeout', 'check')
+#   25: 'OpenSSL AES 处理失败；请确认系统已安装 openssl'
+# Names:
+#    0: os
+#    1: name
+#    2: json
+#    3: dumps
+#    4: base64
+#    5: b64encode
+#    6: decode
+#    7: subprocess
+#    8: run
+#    9: POWERSHELL_AES
+#   10: b64decode
+#   11: stdout
+#   12: strip
+#   13: OSError
+#   14: SubprocessError
+#   15: ValueError
+#   16: ToolError
+#   17: hex
+# Varnames:
+#	data, key, iv, decrypt, request, result, exc
+# Positional arguments:
+#	data, key, iv
+# Local variables:
+#    3: decrypt
+#    4: request
+#    5: result
+#    6: exc
+
+117:           0 RESUME               0
+
+118:           2 LOAD_GLOBAL          (os)
+              12 LOAD_ATTR            (name)
+              32 LOAD_CONST           ("nt")
+              34 COMPARE_OP           (==)
+              38 POP_JUMP_IF_FALSE    (to 484)
+
+119:          42 LOAD_GLOBAL          (json)
+              52 LOAD_ATTR            (dumps)
+              72 PUSH_NULL
+
+121:          74 LOAD_FAST            (decrypt)
+              76 TO_BOOL
+              84 POP_JUMP_IF_FALSE    (to 92)
+              88 LOAD_CONST           ("decrypt")
+              90 JUMP_FORWARD         (to 94)
+         >>   92 LOAD_CONST           ("encrypt")
+
+122:     >>   94 LOAD_GLOBAL          (base64)
+             104 LOAD_ATTR            (b64encode)
+             124 PUSH_NULL
+             126 LOAD_FAST            (key)
+             128 CALL                 (1 positional)
+             136 LOAD_ATTR            (NULL|self + decode)
+             156 LOAD_CONST           ("ascii")
+             158 CALL                 (1 positional)
+
+123:         166 LOAD_GLOBAL          (base64)
+             176 LOAD_ATTR            (b64encode)
+             196 PUSH_NULL
+             198 LOAD_FAST            (iv)
+             200 CALL                 (1 positional)
+             208 LOAD_ATTR            (NULL|self + decode)
+             228 LOAD_CONST           ("ascii")
+             230 CALL                 (1 positional)
+
+124:         238 LOAD_GLOBAL          (base64)
+             248 LOAD_ATTR            (b64encode)
+             268 PUSH_NULL
+             270 LOAD_FAST            (data)
+             272 CALL                 (1 positional)
+             280 LOAD_ATTR            (NULL|self + decode)
+             300 LOAD_CONST           ("ascii")
+             302 CALL                 (1 positional)
+
+120:         310 LOAD_CONST           (('action', 'key', 'iv', 'data'))
+             312 BUILD_CONST_KEY_MAP  4
+
+119:         314 CALL                 (1 positional)
+             322 STORE_FAST           (request)
+
+127:         324 NOP
+
+128:         326 LOAD_GLOBAL          (subprocess)
+             336 LOAD_ATTR            (run)
+             356 PUSH_NULL
+
+129:         358 LOAD_CONST           ("powershell.exe")
+             360 LOAD_CONST           ("-NoProfile")
+             362 LOAD_CONST           ("-NonInteractive")
+             364 LOAD_CONST           ("-Command")
+             366 LOAD_GLOBAL          (POWERSHELL_AES)
+             376 BUILD_LIST           5
+
+130:         378 LOAD_FAST            (request)
+
+131:         380 LOAD_CONST           (True)
+
+132:         382 LOAD_CONST           (True)
+
+133:         384 LOAD_CONST           (15)
+
+134:         386 LOAD_CONST           (True)
+
+128:         388 LOAD_CONST           (('input', 'text', 'capture_output', 'timeout', 'check'))
+             390 CALL_KW              6
+             392 STORE_FAST           (result)
+
+136:         394 LOAD_GLOBAL          (base64)
+             404 LOAD_ATTR            (b64decode)
+             424 PUSH_NULL
+             426 LOAD_FAST            (result)
+             428 LOAD_ATTR            (stdout)
+             448 LOAD_ATTR            (NULL|self + strip)
+             468 CALL                 (0 positional)
+             476 LOAD_CONST           (True)
+             478 LOAD_CONST           (('validate',))
+             480 CALL_KW              2
+             482 RETURN_VALUE
+
+140:     >>  484 NOP
+
+141:         486 LOAD_GLOBAL          (subprocess)
+             496 LOAD_ATTR            (run)
+             516 PUSH_NULL
+
+143:         518 LOAD_CONST           ("openssl")
+             520 LOAD_CONST           ("enc")
+             522 LOAD_FAST            (decrypt)
+             524 TO_BOOL
+             532 POP_JUMP_IF_FALSE    (to 540)
+             536 LOAD_CONST           ("-d")
+             538 JUMP_FORWARD         (to 542)
+         >>  540 LOAD_CONST           ("-e")
+         >>  542 LOAD_CONST           ("-aes-128-cbc")
+
+144:         544 LOAD_CONST           ("-K")
+             546 LOAD_FAST            (key)
+             548 LOAD_ATTR            (NULL|self + hex)
+             568 CALL                 (0 positional)
+             576 LOAD_CONST           ("-iv")
+             578 LOAD_FAST            (iv)
+             580 LOAD_ATTR            (NULL|self + hex)
+             600 CALL                 (0 positional)
+             608 LOAD_CONST           ("-nosalt")
+
+142:         610 BUILD_LIST           9
+
+146:         612 LOAD_FAST            (data)
+
+147:         614 LOAD_CONST           (True)
+
+148:         616 LOAD_CONST           (10)
+
+149:         618 LOAD_CONST           (True)
+
+141:         620 LOAD_CONST           (('input', 'capture_output', 'timeout', 'check'))
+             622 CALL_KW              5
+             624 STORE_FAST           (result)
+
+151:         626 LOAD_FAST            (result)
+             628 LOAD_ATTR            (stdout)
+             648 RETURN_VALUE
+             650 PUSH_EXC_INFO
+
+137:         652 LOAD_GLOBAL          (OSError)
+             662 LOAD_GLOBAL          (subprocess)
+             672 LOAD_ATTR            (SubprocessError)
+             692 LOAD_GLOBAL          (ValueError)
+             702 BUILD_TUPLE          3
+             704 CHECK_EXC_MATCH
+             706 POP_JUMP_IF_FALSE    (to 744)
+             710 STORE_FAST           (exc)
+
+138:         712 LOAD_GLOBAL          (NULL + ToolError)
+             722 LOAD_CONST           ("Windows PowerShell AES 处理失败")
+             724 CALL                 (1 positional)
+             732 LOAD_FAST            (exc)
+             734 RAISE_VARARGS        (exception instance with __cause__)
+             736 LOAD_CONST           (None)
+             738 STORE_FAST           (exc)
+             740 DELETE_FAST          (exc)
+             742 RERAISE              1
+
+137:     >>  744 RERAISE              0
+             746 COPY                 3
+             748 POP_EXCEPT
+             750 RERAISE              1
+             752 PUSH_EXC_INFO
+
+152:         754 LOAD_GLOBAL          (OSError)
+             764 LOAD_GLOBAL          (subprocess)
+             774 LOAD_ATTR            (SubprocessError)
+             794 BUILD_TUPLE          2
+             796 CHECK_EXC_MATCH
+             798 POP_JUMP_IF_FALSE    (to 836)
+             802 STORE_FAST           (exc)
+
+153:         804 LOAD_GLOBAL          (NULL + ToolError)
+             814 LOAD_CONST           ("OpenSSL AES 处理失败；请确认系统已安装 openssl")
+             816 CALL                 (1 positional)
+             824 LOAD_FAST            (exc)
+             826 RAISE_VARARGS        (exception instance with __cause__)
+             828 LOAD_CONST           (None)
+             830 STORE_FAST           (exc)
+             832 DELETE_FAST          (exc)
+             834 RERAISE              1
+
+152:     >>  836 RERAISE              0
+             838 COPY                 3
+             840 POP_EXCEPT
+             842 RERAISE              1
+
+ExceptionTable:
+  326 to 480 -> 650 [0]
+  486 to 646 -> 752 [0]
+  650 to 710 -> 746 [1] lasti
+  712 to 734 -> 736 [1] lasti
+  736 to 744 -> 746 [1] lasti
+  752 to 802 -> 838 [1] lasti
+  804 to 826 -> 828 [1] lasti
+  828 to 836 -> 838 [1] lasti
+
+# Method Name:       http_bytes
+# Filename:          enable_telnet.py
+# Argument count:    1
+# Position-only argument count: 0
+# Keyword-only arguments: 1
+# Number of locals:  6
+# Stack size:        7
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        156
+# Constants:
+#    0: None
+#    1: 'text/plain'
+#    2: 'close'
+#    3: ('Content-Type', 'Connection')
+#    4: 'POST'
+#    5: 'GET'
+#    6: ('data', 'headers', 'method')
+#    7: 6
+#    8: ('timeout',)
+#    9: '设备返回 HTTP '
+#   10: ': '
+#   11: '无法连接设备: '
+# Names:
+#    0: urllib
+#    1: request
+#    2: Request
+#    3: build_opener
+#    4: ProxyHandler
+#    5: open
+#    6: read
+#    7: error
+#    8: HTTPError
+#    9: ToolError
+#   10: code
+#   11: full_url
+#   12: URLError
+#   13: TimeoutError
+#   14: OSError
+# Varnames:
+#	url, body, request, opener, response, exc
+# Positional arguments:
+#	url
+# Local variables:
+#    1: body
+#    2: request
+#    3: opener
+#    4: response
+#    5: exc
+
+156:           0 RESUME               0
+
+157:           2 LOAD_GLOBAL          (urllib)
+              12 LOAD_ATTR            (request)
+              32 LOAD_ATTR            (NULL|self + Request)
+
+158:          52 LOAD_FAST            (url)
+
+159:          54 LOAD_FAST            (body)
+
+160:          56 LOAD_FAST            (body)
+              58 POP_JUMP_IF_NONE     (to 72)
+              62 LOAD_CONST           ("text/plain")
+              64 LOAD_CONST           ("close")
+              66 LOAD_CONST           (('Content-Type', 'Connection'))
+              68 BUILD_CONST_KEY_MAP  2
+              70 JUMP_FORWARD         (to 74)
+         >>   72 BUILD_MAP            0
+
+161:     >>   74 LOAD_FAST            (body)
+              76 POP_JUMP_IF_NONE     (to 84)
+              80 LOAD_CONST           ("POST")
+              82 JUMP_FORWARD         (to 86)
+         >>   84 LOAD_CONST           ("GET")
+
+157:     >>   86 LOAD_CONST           (('data', 'headers', 'method'))
+              88 CALL_KW              4
+              90 STORE_FAST           (request)
+
+163:          92 LOAD_GLOBAL          (urllib)
+             102 LOAD_ATTR            (request)
+             122 LOAD_ATTR            (NULL|self + build_opener)
+             142 LOAD_GLOBAL          (urllib)
+             152 LOAD_ATTR            (request)
+             172 LOAD_ATTR            (NULL|self + ProxyHandler)
+             192 BUILD_MAP            0
+             194 CALL                 (1 positional)
+             202 CALL                 (1 positional)
+             210 STORE_FAST           (opener)
+
+164:         212 NOP
+
+165:         214 LOAD_FAST            (opener)
+             216 LOAD_ATTR            (NULL|self + open)
+             236 LOAD_FAST            (request)
+             238 LOAD_CONST           (6)
+             240 LOAD_CONST           (('timeout',))
+             242 CALL_KW              2
+             244 BEFORE_WITH
+             246 STORE_FAST           (response)
+
+166:         248 LOAD_FAST            (response)
+             250 LOAD_ATTR            (NULL|self + read)
+             270 CALL                 (0 positional)
+
+165:         278 SWAP                 (TOS <-> TOS1)
+             280 LOAD_CONST           (None)
+             282 LOAD_CONST           (None)
+             284 LOAD_CONST           (None)
+             286 CALL                 (2 positional)
+             294 POP_TOP
+             296 RETURN_VALUE
+             298 PUSH_EXC_INFO
+             300 WITH_EXCEPT_START    0
+             302 TO_BOOL
+             310 POP_JUMP_IF_TRUE     (to 316)
+             314 RERAISE              2
+         >>  316 POP_TOP
+             318 POP_EXCEPT
+             320 POP_TOP
+             322 POP_TOP
+             324 RETURN_CONST         (None)
+             326 COPY                 3
+             328 POP_EXCEPT
+             330 RERAISE              1
+             332 PUSH_EXC_INFO
+
+167:         334 LOAD_GLOBAL          (urllib)
+             344 LOAD_ATTR            (error)
+             364 LOAD_ATTR            (HTTPError)
+             384 CHECK_EXC_MATCH
+             386 POP_JUMP_IF_FALSE    (to 476)
+             390 STORE_FAST           (exc)
+
+168:         392 LOAD_GLOBAL          (NULL + ToolError)
+             402 LOAD_CONST           ("设备返回 HTTP ")
+             404 LOAD_FAST            (exc)
+             406 LOAD_ATTR            (code)
+             426 FORMAT_SIMPLE
+             428 LOAD_CONST           (": ")
+             430 LOAD_FAST            (request)
+             432 LOAD_ATTR            (full_url)
+             452 FORMAT_SIMPLE
+             454 BUILD_STRING         4
+             456 CALL                 (1 positional)
+             464 LOAD_FAST            (exc)
+             466 RAISE_VARARGS        (exception instance with __cause__)
+             468 LOAD_CONST           (None)
+             470 STORE_FAST           (exc)
+             472 DELETE_FAST          (exc)
+             474 RERAISE              1
+
+169:     >>  476 LOAD_GLOBAL          (urllib)
+             486 LOAD_ATTR            (error)
+             506 LOAD_ATTR            (URLError)
+             526 LOAD_GLOBAL          (TimeoutError)
+             536 LOAD_GLOBAL          (OSError)
+             546 BUILD_TUPLE          3
+             548 CHECK_EXC_MATCH
+             550 POP_JUMP_IF_FALSE    (to 614)
+             554 STORE_FAST           (exc)
+
+170:         556 LOAD_GLOBAL          (NULL + ToolError)
+             566 LOAD_CONST           ("无法连接设备: ")
+             568 LOAD_FAST            (request)
+             570 LOAD_ATTR            (full_url)
+             590 FORMAT_SIMPLE
+             592 BUILD_STRING         2
+             594 CALL                 (1 positional)
+             602 LOAD_FAST            (exc)
+             604 RAISE_VARARGS        (exception instance with __cause__)
+             606 LOAD_CONST           (None)
+             608 STORE_FAST           (exc)
+             610 DELETE_FAST          (exc)
+             612 RERAISE              1
+
+169:     >>  614 RERAISE              0
+             616 COPY                 3
+             618 POP_EXCEPT
+             620 RERAISE              1
+
+ExceptionTable:
+  214 to 244 -> 332 [0]
+  246 to 276 -> 298 [1] lasti
+  278 to 294 -> 332 [0]
+  298 to 316 -> 326 [3] lasti
+  318 to 322 -> 332 [0]
+  326 to 330 -> 332 [0]
+  332 to 390 -> 616 [1] lasti
+  392 to 466 -> 468 [1] lasti
+  468 to 554 -> 616 [1] lasti
+  556 to 604 -> 606 [1] lasti
+  606 to 614 -> 616 [1] lasti
+
+# Method Name:       local_ip_for
+# Filename:          enable_telnet.py
+# Argument count:    2
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  4
+# Stack size:        7
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        173
+# Constants:
+#    0: None
+#    1: 3
+#    2: ('timeout',)
+#    3: 0
+#    4: '无法连接 '
+#    5: ':'
+# Names:
+#    0: socket
+#    1: create_connection
+#    2: str
+#    3: getsockname
+#    4: OSError
+#    5: ToolError
+# Varnames:
+#	host, port, sock, exc
+# Positional arguments:
+#	host, port
+# Local variables:
+#    2: sock
+#    3: exc
+
+173:           0 RESUME               0
+
+174:           2 NOP
+
+175:           4 LOAD_GLOBAL          (socket)
+              14 LOAD_ATTR            (create_connection)
+              34 PUSH_NULL
+              36 LOAD_FAST_LOAD_FAST  (host, port)
+              38 BUILD_TUPLE          2
+              40 LOAD_CONST           (3)
+              42 LOAD_CONST           (('timeout',))
+              44 CALL_KW              2
+              46 BEFORE_WITH
+              48 STORE_FAST           (sock)
+
+176:          50 LOAD_GLOBAL          (NULL + str)
+              60 LOAD_FAST            (sock)
+              62 LOAD_ATTR            (NULL|self + getsockname)
+              82 CALL                 (0 positional)
+              90 LOAD_CONST           (0)
+              92 BINARY_SUBSCR
+              96 CALL                 (1 positional)
+
+175:         104 SWAP                 (TOS <-> TOS1)
+             106 LOAD_CONST           (None)
+             108 LOAD_CONST           (None)
+             110 LOAD_CONST           (None)
+             112 CALL                 (2 positional)
+             120 POP_TOP
+             122 RETURN_VALUE
+             124 PUSH_EXC_INFO
+             126 WITH_EXCEPT_START    0
+             128 TO_BOOL
+             136 POP_JUMP_IF_TRUE     (to 142)
+             140 RERAISE              2
+         >>  142 POP_TOP
+             144 POP_EXCEPT
+             146 POP_TOP
+             148 POP_TOP
+             150 RETURN_CONST         (None)
+             152 COPY                 3
+             154 POP_EXCEPT
+             156 RERAISE              1
+             158 PUSH_EXC_INFO
+
+177:         160 LOAD_GLOBAL          (OSError)
+             170 CHECK_EXC_MATCH
+             172 POP_JUMP_IF_FALSE    (to 222)
+             176 STORE_FAST           (exc)
+
+178:         178 LOAD_GLOBAL          (NULL + ToolError)
+             188 LOAD_CONST           ("无法连接 ")
+             190 LOAD_FAST            (host)
+             192 FORMAT_SIMPLE
+             194 LOAD_CONST           (":")
+             196 LOAD_FAST            (port)
+             198 FORMAT_SIMPLE
+             200 BUILD_STRING         4
+             202 CALL                 (1 positional)
+             210 LOAD_FAST            (exc)
+             212 RAISE_VARARGS        (exception instance with __cause__)
+             214 LOAD_CONST           (None)
+             216 STORE_FAST           (exc)
+             218 DELETE_FAST          (exc)
+             220 RERAISE              1
+
+177:     >>  222 RERAISE              0
+             224 COPY                 3
+             226 POP_EXCEPT
+             228 RERAISE              1
+
+ExceptionTable:
+  4 to 46 -> 158 [0]
+  48 to 102 -> 124 [1] lasti
+  104 to 120 -> 158 [0]
+  124 to 142 -> 152 [3] lasti
+  144 to 148 -> 158 [0]
+  152 to 156 -> 158 [0]
+  158 to 176 -> 224 [1] lasti
+  178 to 212 -> 214 [1] lasti
+  214 to 222 -> 224 [1] lasti
+
+# Method Name:       derive_key_iv
+# Filename:          enable_telnet.py
+# Argument count:    1
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  3
+# Stack size:        6
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        181
+# Constants:
+#    0: None
+#    1: 'ascii'
+#    2: ''
+#    3: <Code311 code object <genexpr> at 0x20a2250, file enable_telnet.py>, line 183
+#    4: 16
+#    5: <Code311 code object <genexpr> at 0x20a2360, file enable_telnet.py>, line 184
+# Names:
+#    0: hashlib
+#    1: sha256
+#    2: encode
+#    3: hexdigest
+#    4: join
+#    5: range
+# Varnames:
+#	mac, key, iv
+# Positional arguments:
+#	mac
+# Local variables:
+#    1: key
+#    2: iv
+# Cell variables:
+#    0: digest
+               0 MAKE_CELL            (digest)
+
+181:           2 RESUME               0
+
+182:           4 LOAD_GLOBAL          (hashlib)
+              14 LOAD_ATTR            (sha256)
+              34 PUSH_NULL
+              36 LOAD_FAST            (mac)
+              38 LOAD_ATTR            (NULL|self + encode)
+              58 LOAD_CONST           ("ascii")
+              60 CALL                 (1 positional)
+              68 CALL                 (1 positional)
+              76 LOAD_ATTR            (NULL|self + hexdigest)
+              96 CALL                 (0 positional)
+             104 STORE_DEREF          (digest)
+
+183:         106 LOAD_CONST           ("")
+             108 LOAD_ATTR            (NULL|self + join)
+             128 LOAD_FAST            (digest)
+             130 BUILD_TUPLE          1
+             132 LOAD_CONST           (<Code311 code object <genexpr> at 0x20a2250, file enable_telnet.py>, line 183)
+             134 MAKE_FUNCTION
+             136 SET_FUNCTION_ATTRIBUTE 8
+             138 LOAD_GLOBAL          (NULL + range)
+             148 LOAD_CONST           (16)
+             150 CALL                 (1 positional)
+             158 GET_ITER
+             160 CALL                 (0 positional)
+             168 CALL                 (1 positional)
+             176 LOAD_ATTR            (NULL|self + encode)
+             196 LOAD_CONST           ("ascii")
+             198 CALL                 (1 positional)
+             206 STORE_FAST           (key)
+
+184:         208 LOAD_CONST           ("")
+             210 LOAD_ATTR            (NULL|self + join)
+             230 LOAD_FAST            (digest)
+             232 BUILD_TUPLE          1
+             234 LOAD_CONST           (<Code311 code object <genexpr> at 0x20a2360, file enable_telnet.py>, line 184)
+             236 MAKE_FUNCTION
+             238 SET_FUNCTION_ATTRIBUTE 8
+             240 LOAD_GLOBAL          (NULL + range)
+             250 LOAD_CONST           (16)
+             252 CALL                 (1 positional)
+             260 GET_ITER
+             262 CALL                 (0 positional)
+             270 CALL                 (1 positional)
+             278 LOAD_ATTR            (NULL|self + encode)
+             298 LOAD_CONST           ("ascii")
+             300 CALL                 (1 positional)
+             308 STORE_FAST           (iv)
+
+185:         310 LOAD_FAST_LOAD_FAST  (key, iv)
+             312 BUILD_TUPLE          2
+             314 RETURN_VALUE
+
+
+# Method Name:       tool_call
+# Filename:          enable_telnet.py
+# Argument count:    4
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  12
+# Stack size:        8
+# Flags:             0x0100000b (0x1000000 | VARKEYWORDS | NEWLOCALS | OPTIMIZED)
+# First Line:        188
+# Constants:
+#    0: None
+#    1: '1'
+#    2: ('index', 'func')
+#    3: (',', ':')
+#    4: False
+#    5: ('separators', 'ensure_ascii')
+#    6: 'utf-8'
+#    7: '/fh_tool/api'
+#    8: ('body',)
+#    9: True
+#   10: ('validate',)
+#   11: ('decrypt',)
+#   12: ' 响应无法解密或解析；设备协议可能不同'
+#   13: 'result'
+#   14: '0'
+#   15: ' 未成功，返回码 '
+#   16: '未知'
+# Names:
+#    0: json
+#    1: dumps
+#    2: encode
+#    3: aes_cbc
+#    4: http_bytes
+#    5: base64
+#    6: b64encode
+#    7: b64decode
+#    8: strip
+#    9: loads
+#   10: ValueError
+#   11: JSONDecodeError
+#   12: ToolError
+#   13: isinstance
+#   14: dict
+#   15: str
+#   16: get
+# Varnames:
+#	base_url, key, iv, func, params, payload, plaintext, ciphertext, response, decoded, result, exc
+# Positional arguments:
+#	base_url, key, iv, func
+# Local variables:
+#    4: params
+#    5: payload
+#    6: plaintext
+#    7: ciphertext
+#    8: response
+#    9: decoded
+#   10: result
+#   11: exc
+
+188:           0 RESUME               0
+
+189:           2 LOAD_CONST           ("1")
+               4 LOAD_FAST            (func)
+               6 LOAD_CONST           (('index', 'func'))
+               8 BUILD_CONST_KEY_MAP  2
+              10 LOAD_FAST            (params)
+              12 DICT_UPDATE          1
+              14 STORE_FAST           (payload)
+
+190:          16 LOAD_GLOBAL          (json)
+              26 LOAD_ATTR            (dumps)
+              46 PUSH_NULL
+              48 LOAD_FAST            (payload)
+              50 LOAD_CONST           ((',', ':'))
+              52 LOAD_CONST           (False)
+              54 LOAD_CONST           (('separators', 'ensure_ascii'))
+              56 CALL_KW              3
+              58 LOAD_ATTR            (NULL|self + encode)
+              78 LOAD_CONST           ("utf-8")
+              80 CALL                 (1 positional)
+              88 STORE_FAST           (plaintext)
+
+191:          90 LOAD_GLOBAL          (NULL + aes_cbc)
+             100 LOAD_FAST_LOAD_FAST  (plaintext, key)
+             102 LOAD_FAST            (iv)
+             104 CALL                 (3 positional)
+             112 STORE_FAST           (ciphertext)
+
+192:         114 LOAD_GLOBAL          (NULL + http_bytes)
+
+193:         124 LOAD_FAST            (base_url)
+             126 LOAD_CONST           ("/fh_tool/api")
+             128 BINARY_OP            (+)
+             132 LOAD_GLOBAL          (base64)
+             142 LOAD_ATTR            (b64encode)
+             162 PUSH_NULL
+             164 LOAD_FAST            (ciphertext)
+             166 CALL                 (1 positional)
+
+192:         174 LOAD_CONST           (('body',))
+             176 CALL_KW              2
+             178 STORE_FAST           (response)
+
+195:         180 NOP
+
+196:         182 LOAD_GLOBAL          (NULL + aes_cbc)
+             192 LOAD_GLOBAL          (base64)
+             202 LOAD_ATTR            (b64decode)
+             222 PUSH_NULL
+             224 LOAD_FAST            (response)
+             226 LOAD_ATTR            (NULL|self + strip)
+             246 CALL                 (0 positional)
+             254 LOAD_CONST           (True)
+             256 LOAD_CONST           (('validate',))
+             258 CALL_KW              2
+             260 LOAD_FAST_LOAD_FAST  (key, iv)
+             262 LOAD_CONST           (True)
+             264 LOAD_CONST           (('decrypt',))
+             266 CALL_KW              4
+             268 STORE_FAST           (decoded)
+
+197:         270 LOAD_GLOBAL          (json)
+             280 LOAD_ATTR            (loads)
+             300 PUSH_NULL
+             302 LOAD_FAST            (decoded)
+             304 CALL                 (1 positional)
+             312 STORE_FAST           (result)
+
+200:         314 LOAD_GLOBAL          (NULL + isinstance)
+             324 LOAD_FAST            (result)
+             326 LOAD_GLOBAL          (dict)
+             336 CALL                 (2 positional)
+             344 TO_BOOL
+             352 POP_JUMP_IF_FALSE    (to 416)
+             356 LOAD_GLOBAL          (NULL + str)
+             366 LOAD_FAST            (result)
+             368 LOAD_ATTR            (NULL|self + get)
+             388 LOAD_CONST           ("result")
+             390 CALL                 (1 positional)
+             398 CALL                 (1 positional)
+             406 LOAD_CONST           ("0")
+             408 COMPARE_OP           (!=)
+             412 POP_JUMP_IF_FALSE    (to 536)
+
+201:     >>  416 LOAD_GLOBAL          (NULL + ToolError)
+             426 LOAD_FAST            (func)
+             428 FORMAT_SIMPLE
+             430 LOAD_CONST           (" 未成功，返回码 ")
+             432 LOAD_GLOBAL          (NULL + isinstance)
+             442 LOAD_FAST            (result)
+             444 LOAD_GLOBAL          (dict)
+             454 CALL                 (2 positional)
+             462 TO_BOOL
+             470 POP_JUMP_IF_FALSE    (to 520)
+             474 LOAD_FAST            (result)
+             476 LOAD_ATTR            (NULL|self + get)
+             496 LOAD_CONST           ("result")
+             498 CALL                 (1 positional)
+             506 FORMAT_SIMPLE
+             508 BUILD_STRING         3
+             510 CALL                 (1 positional)
+             518 RAISE_VARARGS        (exception instance)
+         >>  520 LOAD_CONST           ("未知")
+             522 FORMAT_SIMPLE
+             524 BUILD_STRING         3
+             526 CALL                 (1 positional)
+             534 RAISE_VARARGS        (exception instance)
+
+202:     >>  536 LOAD_FAST            (result)
+             538 RETURN_VALUE
+             540 PUSH_EXC_INFO
+
+198:         542 LOAD_GLOBAL          (ValueError)
+             552 LOAD_GLOBAL          (json)
+             562 LOAD_ATTR            (JSONDecodeError)
+             582 LOAD_GLOBAL          (ToolError)
+             592 BUILD_TUPLE          3
+             594 CHECK_EXC_MATCH
+             596 POP_JUMP_IF_FALSE    (to 640)
+             600 STORE_FAST           (exc)
+
+199:         602 LOAD_GLOBAL          (NULL + ToolError)
+             612 LOAD_FAST            (func)
+             614 FORMAT_SIMPLE
+             616 LOAD_CONST           (" 响应无法解密或解析；设备协议可能不同")
+             618 BUILD_STRING         2
+             620 CALL                 (1 positional)
+             628 LOAD_FAST            (exc)
+             630 RAISE_VARARGS        (exception instance with __cause__)
+             632 LOAD_CONST           (None)
+             634 STORE_FAST           (exc)
+             636 DELETE_FAST          (exc)
+             638 RERAISE              1
+
+198:     >>  640 RERAISE              0
+             642 COPY                 3
+             644 POP_EXCEPT
+             646 RERAISE              1
+
+ExceptionTable:
+  182 to 312 -> 540 [0]
+  540 to 600 -> 642 [1] lasti
+  602 to 630 -> 632 [1] lasti
+  632 to 640 -> 642 [1] lasti
+
+# Method Name:       TelnetSession
+# Filename:          enable_telnet.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  0
+# Stack size:        3
+# Flags:             0x01000000 (0x1000000)
+# First Line:        205
+# Constants:
+#    0: 'TelnetSession'
+#    1: 205
+#    2: 'Small Telnet reader that declines optional negotiations and hides input.'
+#    3: <Code311 code object __init__ at 0x20a2690, file enable_telnet.py>, line 208
+#    4: <Code311 code object close at 0x20a27a0, file enable_telnet.py>, line 214
+#    5: <Code311 code object write_line at 0x20a28b0, file enable_telnet.py>, line 217
+#    6: <Code311 code object read_until at 0x20a29c0, file enable_telnet.py>, line 220
+#    7: ('buffer', 'command', 'sock', 'state')
+#    8: None
+#    9: (23,)
+#   10: ('host', 'str', 'port', 'int')
+#   11: ('return', 'None')
+#   12: ('line', 'str', 'return', 'None')
+#   13: (8,)
+#   14: ('marker', 'bytes', 'timeout', 'float', 'return', 'bytes')
+# Names:
+#    0: __name__
+#    1: __module__
+#    2: __qualname__
+#    3: __firstlineno__
+#    4: __doc__
+#    5: __init__
+#    6: close
+#    7: write_line
+#    8: read_until
+#    9: __static_attributes__
+
+205:           0 RESUME               0
+               2 LOAD_NAME            (__name__)
+               4 STORE_NAME           (__module__)
+               6 LOAD_CONST           ("TelnetSession")
+               8 STORE_NAME           (__qualname__)
+              10 LOAD_CONST           (205)
+              12 STORE_NAME           (__firstlineno__)
+
+206:          14 LOAD_CONST           ("Small Telnet reader that declines optional negotiations and hides input.")
+              16 STORE_NAME           (__doc__)
+
+208:          18 LOAD_CONST           ((23,))
+              20 LOAD_CONST           (('host', 'str', 'port', 'int'))
+              22 LOAD_CONST           (<Code311 code object __init__ at 0x20a2690, file enable_telnet.py>, line 208)
+              24 MAKE_FUNCTION
+              26 SET_FUNCTION_ATTRIBUTE 4
+              28 SET_FUNCTION_ATTRIBUTE 1
+              30 STORE_NAME           (__init__)
+
+214:          32 LOAD_CONST           (('return', 'None'))
+              34 LOAD_CONST           (<Code311 code object close at 0x20a27a0, file enable_telnet.py>, line 214)
+              36 MAKE_FUNCTION
+              38 SET_FUNCTION_ATTRIBUTE 4
+              40 STORE_NAME           (close)
+
+217:          42 LOAD_CONST           (('line', 'str', 'return', 'None'))
+              44 LOAD_CONST           (<Code311 code object write_line at 0x20a28b0, file enable_telnet.py>, line 217)
+              46 MAKE_FUNCTION
+              48 SET_FUNCTION_ATTRIBUTE 4
+              50 STORE_NAME           (write_line)
+
+220:          52 LOAD_CONST           ((8,))
+              54 LOAD_CONST           (('marker', 'bytes', 'timeout', 'float', 'return', 'bytes'))
+              56 LOAD_CONST           (<Code311 code object read_until at 0x20a29c0, file enable_telnet.py>, line 220)
+              58 MAKE_FUNCTION
+              60 SET_FUNCTION_ATTRIBUTE 4
+              62 SET_FUNCTION_ATTRIBUTE 1
+              64 STORE_NAME           (read_until)
+              66 LOAD_CONST           (('buffer', 'command', 'sock', 'state'))
+              68 STORE_NAME           (__static_attributes__)
+              70 RETURN_CONST         (None)
+
+
+# Method Name:       persist_telnet
+# Filename:          enable_telnet.py
+# Argument count:    4
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  6
+# Stack size:        6
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        264
+# Constants:
+#    0: None
+#    1: 'FH-nE7jA%5m'
+#    2: -6
+#    3: b'Login:'
+#    4: b'Password:'
+#    5: b'$'
+#    6: 'cfg_cmd set '
+#    7: ' 1'
+#    8: b'set success!'
+#    9: '持久化写入失败: '
+#   10: 'cfg_cmd get '
+#   11: b'value=1'
+#   12: '持久化回读失败: '
+#   13: 'exit'
+# Names:
+#    0: TelnetSession
+#    1: read_until
+#    2: write_line
+#    3: TELNET_PATHS
+#    4: ToolError
+#    5: close
+# Varnames:
+#	host, mac, username, password, session, path
+# Positional arguments:
+#	host, mac, username, password
+# Local variables:
+#    4: session
+#    5: path
+
+264:           0 RESUME               0
+
+265:           2 LOAD_FAST            (password)
+               4 COPY                 1
+               6 TO_BOOL
+              14 POP_JUMP_IF_TRUE     (to 34)
+              18 POP_TOP
+              20 LOAD_CONST           ("FH-nE7jA%5m")
+              22 LOAD_FAST            (mac)
+              24 LOAD_CONST           (-6)
+              26 LOAD_CONST           (None)
+              28 BINARY_SLICE
+              30 BINARY_OP            (+)
+         >>   34 STORE_FAST           (password)
+
+266:          36 LOAD_GLOBAL          (NULL + TelnetSession)
+              46 LOAD_FAST            (host)
+              48 CALL                 (1 positional)
+              56 STORE_FAST           (session)
+
+267:          58 NOP
+
+268:          60 LOAD_FAST            (session)
+              62 LOAD_ATTR            (NULL|self + read_until)
+              82 LOAD_CONST           (b'Login:')
+              84 CALL                 (1 positional)
+              92 POP_TOP
+
+269:          94 LOAD_FAST            (session)
+              96 LOAD_ATTR            (NULL|self + write_line)
+             116 LOAD_FAST            (username)
+             118 CALL                 (1 positional)
+             126 POP_TOP
+
+270:         128 LOAD_FAST            (session)
+             130 LOAD_ATTR            (NULL|self + read_until)
+             150 LOAD_CONST           (b'Password:')
+             152 CALL                 (1 positional)
+             160 POP_TOP
+
+271:         162 LOAD_FAST            (session)
+             164 LOAD_ATTR            (NULL|self + write_line)
+             184 LOAD_FAST            (password)
+             186 CALL                 (1 positional)
+             194 POP_TOP
+
+272:         196 LOAD_FAST            (session)
+             198 LOAD_ATTR            (NULL|self + read_until)
+             218 LOAD_CONST           (b'$')
+             220 CALL                 (1 positional)
+             228 POP_TOP
+
+273:         230 LOAD_GLOBAL          (TELNET_PATHS)
+             240 GET_ITER
+             242 FOR_ITER             (to 474)
+             246 STORE_FAST           (path)
+
+274:         248 LOAD_FAST            (session)
+             250 LOAD_ATTR            (NULL|self + write_line)
+             270 LOAD_CONST           ("cfg_cmd set ")
+             272 LOAD_FAST            (path)
+             274 FORMAT_SIMPLE
+             276 LOAD_CONST           (" 1")
+             278 BUILD_STRING         3
+             280 CALL                 (1 positional)
+             288 POP_TOP
+
+275:         290 LOAD_CONST           (b'set success!')
+             292 LOAD_FAST            (session)
+             294 LOAD_ATTR            (NULL|self + read_until)
+             314 LOAD_CONST           (b'$')
+             316 CALL                 (1 positional)
+             324 CONTAINS_OP          (not in)
+             328 POP_JUMP_IF_FALSE    (to 360)
+
+276:         332 LOAD_GLOBAL          (NULL + ToolError)
+             342 LOAD_CONST           ("持久化写入失败: ")
+             344 LOAD_FAST            (path)
+             346 FORMAT_SIMPLE
+             348 BUILD_STRING         2
+             350 CALL                 (1 positional)
+             358 RAISE_VARARGS        (exception instance)
+
+277:     >>  360 LOAD_FAST            (session)
+             362 LOAD_ATTR            (NULL|self + write_line)
+             382 LOAD_CONST           ("cfg_cmd get ")
+             384 LOAD_FAST            (path)
+             386 FORMAT_SIMPLE
+             388 BUILD_STRING         2
+             390 CALL                 (1 positional)
+             398 POP_TOP
+
+278:         400 LOAD_CONST           (b'value=1')
+             402 LOAD_FAST            (session)
+             404 LOAD_ATTR            (NULL|self + read_until)
+             424 LOAD_CONST           (b'$')
+             426 CALL                 (1 positional)
+             434 CONTAINS_OP          (not in)
+             438 POP_JUMP_IF_TRUE     (to 446)
+             442 JUMP_BACKWARD        (to 242)
+
+279:     >>  446 LOAD_GLOBAL          (NULL + ToolError)
+             456 LOAD_CONST           ("持久化回读失败: ")
+             458 LOAD_FAST            (path)
+             460 FORMAT_SIMPLE
+             462 BUILD_STRING         2
+             464 CALL                 (1 positional)
+             472 RAISE_VARARGS        (exception instance)
+
+273:     >>  474 END_FOR
+             476 POP_TOP
+
+280:         478 LOAD_FAST            (session)
+             480 LOAD_ATTR            (NULL|self + write_line)
+             500 LOAD_CONST           ("exit")
+             502 CALL                 (1 positional)
+             510 POP_TOP
+
+282:         512 LOAD_FAST            (session)
+             514 LOAD_ATTR            (NULL|self + close)
+             534 CALL                 (0 positional)
+             542 POP_TOP
+             544 RETURN_CONST         (None)
+             546 PUSH_EXC_INFO
+
+282:         548 LOAD_FAST            (session)
+             550 LOAD_ATTR            (NULL|self + close)
+             570 CALL                 (0 positional)
+             578 POP_TOP
+             580 RERAISE              0
+             582 COPY                 3
+             584 POP_EXCEPT
+             586 RERAISE              1
+
+ExceptionTable:
+  60 to 436 -> 546 [0]
+  446 to 510 -> 546 [0]
+  546 to 580 -> 582 [1] lasti
+
+# Method Name:       wait_for_telnet
+# Filename:          enable_telnet.py
+# Argument count:    1
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  3
+# Stack size:        7
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        285
+# Constants:
+#    0: None
+#    1: 12
+#    2: 23
+#    3: 2
+#    4: ('timeout',)
+#    5: 32
+#    6: 1
+#    7: '接口返回成功，但 23 端口未出现 Telnet 握手'
+# Names:
+#    0: range
+#    1: socket
+#    2: create_connection
+#    3: settimeout
+#    4: recv
+#    5: OSError
+#    6: time
+#    7: sleep
+#    8: ToolError
+# Varnames:
+#	host, _, sock
+# Positional arguments:
+#	host
+# Local variables:
+#    1: _
+#    2: sock
+
+285:           0 RESUME               0
+
+286:           2 LOAD_GLOBAL          (NULL + range)
+              12 LOAD_CONST           (12)
+              14 CALL                 (1 positional)
+              22 GET_ITER
+              24 FOR_ITER             (to 246)
+              28 STORE_FAST           (_)
+
+287:          30 NOP
+
+288:          32 LOAD_GLOBAL          (socket)
+              42 LOAD_ATTR            (create_connection)
+              62 PUSH_NULL
+              64 LOAD_FAST            (host)
+              66 LOAD_CONST           (23)
+              68 BUILD_TUPLE          2
+              70 LOAD_CONST           (2)
+              72 LOAD_CONST           (('timeout',))
+              74 CALL_KW              2
+              76 BEFORE_WITH
+              78 STORE_FAST           (sock)
+
+289:          80 LOAD_FAST            (sock)
+              82 LOAD_ATTR            (NULL|self + settimeout)
+             102 LOAD_CONST           (2)
+             104 CALL                 (1 positional)
+             112 POP_TOP
+
+290:         114 LOAD_FAST            (sock)
+             116 LOAD_ATTR            (NULL|self + recv)
+             136 LOAD_CONST           (32)
+             138 CALL                 (1 positional)
+             146 TO_BOOL
+             154 POP_JUMP_IF_FALSE    (to 180)
+
+291:         158 NOP
+
+288:         160 LOAD_CONST           (None)
+             162 LOAD_CONST           (None)
+             164 LOAD_CONST           (None)
+             166 CALL                 (2 positional)
+             174 POP_TOP
+             176 POP_TOP
+             178 RETURN_CONST         (None)
+
+290:     >>  180 NOP
+
+288:         182 LOAD_CONST           (None)
+             184 LOAD_CONST           (None)
+             186 LOAD_CONST           (None)
+             188 CALL                 (2 positional)
+             196 POP_TOP
+
+294:         198 LOAD_GLOBAL          (time)
+             208 LOAD_ATTR            (sleep)
+             228 PUSH_NULL
+             230 LOAD_CONST           (1)
+             232 CALL                 (1 positional)
+             240 POP_TOP
+             242 JUMP_BACKWARD        (to 24)
+
+286:     >>  246 END_FOR
+             248 POP_TOP
+
+295:         250 LOAD_GLOBAL          (NULL + ToolError)
+             260 LOAD_CONST           ("接口返回成功，但 23 端口未出现 Telnet 握手")
+             262 CALL                 (1 positional)
+             270 RAISE_VARARGS        (exception instance)
+
+288:         272 PUSH_EXC_INFO
+             274 WITH_EXCEPT_START    0
+             276 TO_BOOL
+             284 POP_JUMP_IF_TRUE     (to 290)
+             288 RERAISE              2
+         >>  290 POP_TOP
+             292 POP_EXCEPT
+             294 POP_TOP
+             296 POP_TOP
+             298 JUMP_BACKWARD_NO_INTERRUPT (to 198)
+             300 COPY                 3
+             302 POP_EXCEPT
+             304 RERAISE              1
+             306 PUSH_EXC_INFO
+
+292:         308 LOAD_GLOBAL          (OSError)
+             318 CHECK_EXC_MATCH
+             320 POP_JUMP_IF_FALSE    (to 330)
+             324 POP_TOP
+
+293:         326 POP_EXCEPT
+             328 JUMP_BACKWARD_NO_INTERRUPT (to 198)
+
+292:     >>  330 RERAISE              0
+             332 COPY                 3
+             334 POP_EXCEPT
+             336 RERAISE              1
+
+ExceptionTable:
+  32 to 76 -> 306 [1]
+  78 to 158 -> 272 [2] lasti
+  160 to 174 -> 306 [1]
+  182 to 196 -> 306 [1]
+  272 to 290 -> 300 [4] lasti
+  292 to 296 -> 306 [1]
+  300 to 304 -> 306 [1]
+  306 to 324 -> 332 [2] lasti
+  330 to 330 -> 332 [2] lasti
+
+# Method Name:       build_parser
+# Filename:          enable_telnet.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  1
+# Stack size:        7
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        298
+# Constants:
+#    0: None
+#    1: 'HG5585F 一键开启并持久化 Telnet'
+#    2: ('description',)
+#    3: '--host'
+#    4: '192.168.1.1'
+#    5: '光猫 LAN 地址'
+#    6: ('default', 'help')
+#    7: '--web-port'
+#    8: 8080
+#    9: '管理页端口'
+#   10: ('type', 'default', 'help')
+#   11: '--probe'
+#   12: 'store_true'
+#   13: '只读验证协议，不修改设备'
+#   14: ('action', 'help')
+#   15: '--runtime-only'
+#   16: '只开启本次运行，不登录 Telnet 写入配置'
+#   17: '--telnet-user'
+#   18: 'telnetadmin'
+#   19: ('default',)
+#   20: '--telnet-password'
+#   21: '自定义 Telnet 密码（不建议在命令行里传）'
+#   22: '--telnet-password-stdin'
+#   23: '从标准输入读取自定义 Telnet 密码'
+# Names:
+#    0: argparse
+#    1: ArgumentParser
+#    2: add_argument
+#    3: int
+# Varnames:
+#	parser
+# Local variables:
+#    0: parser
+
+298:           0 RESUME               0
+
+299:           2 LOAD_GLOBAL          (argparse)
+              12 LOAD_ATTR            (ArgumentParser)
+              32 PUSH_NULL
+              34 LOAD_CONST           ("HG5585F 一键开启并持久化 Telnet")
+              36 LOAD_CONST           (('description',))
+              38 CALL_KW              1
+              40 STORE_FAST           (parser)
+
+300:          42 LOAD_FAST            (parser)
+              44 LOAD_ATTR            (NULL|self + add_argument)
+              64 LOAD_CONST           ("--host")
+              66 LOAD_CONST           ("192.168.1.1")
+              68 LOAD_CONST           ("光猫 LAN 地址")
+              70 LOAD_CONST           (('default', 'help'))
+              72 CALL_KW              3
+              74 POP_TOP
+
+301:          76 LOAD_FAST            (parser)
+              78 LOAD_ATTR            (NULL|self + add_argument)
+              98 LOAD_CONST           ("--web-port")
+             100 LOAD_GLOBAL          (int)
+             110 LOAD_CONST           (8080)
+             112 LOAD_CONST           ("管理页端口")
+             114 LOAD_CONST           (('type', 'default', 'help'))
+             116 CALL_KW              4
+             118 POP_TOP
+
+302:         120 LOAD_FAST            (parser)
+             122 LOAD_ATTR            (NULL|self + add_argument)
+             142 LOAD_CONST           ("--probe")
+             144 LOAD_CONST           ("store_true")
+             146 LOAD_CONST           ("只读验证协议，不修改设备")
+             148 LOAD_CONST           (('action', 'help'))
+             150 CALL_KW              3
+             152 POP_TOP
+
+303:         154 LOAD_FAST            (parser)
+             156 LOAD_ATTR            (NULL|self + add_argument)
+             176 LOAD_CONST           ("--runtime-only")
+             178 LOAD_CONST           ("store_true")
+             180 LOAD_CONST           ("只开启本次运行，不登录 Telnet 写入配置")
+             182 LOAD_CONST           (('action', 'help'))
+             184 CALL_KW              3
+             186 POP_TOP
+
+304:         188 LOAD_FAST            (parser)
+             190 LOAD_ATTR            (NULL|self + add_argument)
+             210 LOAD_CONST           ("--telnet-user")
+             212 LOAD_CONST           ("telnetadmin")
+             214 LOAD_CONST           (('default',))
+             216 CALL_KW              2
+             218 POP_TOP
+
+305:         220 LOAD_FAST            (parser)
+             222 LOAD_ATTR            (NULL|self + add_argument)
+             242 LOAD_CONST           ("--telnet-password")
+             244 LOAD_CONST           (None)
+             246 LOAD_CONST           ("自定义 Telnet 密码（不建议在命令行里传）")
+             248 LOAD_CONST           (('default', 'help'))
+             250 CALL_KW              3
+             252 POP_TOP
+
+306:         254 LOAD_FAST            (parser)
+             256 LOAD_ATTR            (NULL|self + add_argument)
+             276 LOAD_CONST           ("--telnet-password-stdin")
+             278 LOAD_CONST           ("store_true")
+             280 LOAD_CONST           ("从标准输入读取自定义 Telnet 密码")
+             282 LOAD_CONST           (('action', 'help'))
+             284 CALL_KW              3
+             286 POP_TOP
+
+307:         288 LOAD_FAST            (parser)
+             290 RETURN_VALUE
+
+
+# Method Name:       run
+# Filename:          enable_telnet.py
+# Argument count:    1
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  13
+# Stack size:        8
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        310
+# Constants:
+#    0: None
+#    1: 1
+#    2: 65535
+#    3: '管理端口超出范围'
+#    4: '/24'
+#    5: False
+#    6: ('strict',)
+#    7: '目标不在当前直连 LAN；本机源地址为 '
+#    8: 'http://'
+#    9: ':'
+#   10: '/cgi-bin/ajax?ajaxmethod=web_get_brmad'
+#   11: 'brmad'
+#   12: ''
+#   13: '[0-9A-F]{12}'
+#   14: '无法读取有效的设备 MAC'
+#   15: 'GetDevInfo'
+#   16: 'hardwareversion'
+#   17: 'softwareversion'
+#   18: '设备版本与已验证目标不符：硬件 '
+#   19: '，软件 '
+#   20: '设备验证通过：硬件 '
+#   21: '只读探测完成，未修改设备。'
+#   22: 0
+#   23: 'TelnetEnable'
+#   24: '1'
+#   25: ('telnet',)
+#   26: 'Telnet 已开启，23 端口握手正常。'
+#   27: '当前为运行时开启；重启后需要再次运行。'
+#   28: '\r\n'
+#   29: '总开关和 LAN 开关已写入并回读为 1；此固件已验证重启后自动开启。'
+#   30: '失败：'
+#   31: ('file',)
+# Names:
+#    0: str
+#    1: ipaddress
+#    2: ip_address
+#    3: host
+#    4: web_port
+#    5: ToolError
+#    6: local_ip_for
+#    7: ip_network
+#    8: json
+#    9: loads
+#   10: http_bytes
+#   11: get
+#   12: re
+#   13: fullmatch
+#   14: derive_key_iv
+#   15: tool_call
+#   16: EXPECTED_HARDWARE
+#   17: EXPECTED_SOFTWARE
+#   18: print
+#   19: probe
+#   20: wait_for_telnet
+#   21: runtime_only
+#   22: telnet_password_stdin
+#   23: sys
+#   24: stdin
+#   25: readline
+#   26: rstrip
+#   27: telnet_password
+#   28: persist_telnet
+#   29: telnet_user
+#   30: ValueError
+#   31: JSONDecodeError
+#   32: stderr
+# Varnames:
+#	args, host, source, base, info, mac, key, iv, device, hw, sw, custom_password, exc
+# Positional arguments:
+#	args
+# Local variables:
+#    1: host
+#    2: source
+#    3: base
+#    4: info
+#    5: mac
+#    6: key
+#    7: iv
+#    8: device
+#    9: hw
+#   10: sw
+#   11: custom_password
+#   12: exc
+
+310:           0 RESUME               0
+
+311:           2 NOP
+
+312:           4 LOAD_GLOBAL          (NULL + str)
+              14 LOAD_GLOBAL          (ipaddress)
+              24 LOAD_ATTR            (ip_address)
+              44 PUSH_NULL
+              46 LOAD_FAST            (args)
+              48 LOAD_ATTR            (host)
+              68 CALL                 (1 positional)
+              76 CALL                 (1 positional)
+              84 STORE_FAST           (host)
+
+313:          86 LOAD_CONST           (1)
+              88 LOAD_FAST            (args)
+              90 LOAD_ATTR            (web_port)
+             110 SWAP                 (TOS <-> TOS1)
+             112 COPY                 2
+             114 COMPARE_OP           (<=)
+             118 POP_JUMP_IF_FALSE    (to 134)
+             122 LOAD_CONST           (65535)
+             124 COMPARE_OP           (<=)
+             128 POP_JUMP_IF_TRUE     (to 158)
+             132 JUMP_FORWARD         (to 136)
+         >>  134 POP_TOP
+
+314:     >>  136 LOAD_GLOBAL          (NULL + ToolError)
+             146 LOAD_CONST           ("管理端口超出范围")
+             148 CALL                 (1 positional)
+             156 RAISE_VARARGS        (exception instance)
+
+315:     >>  158 LOAD_GLOBAL          (NULL + local_ip_for)
+             168 LOAD_FAST_LOAD_FAST  (host, args)
+             170 LOAD_ATTR            (web_port)
+             190 CALL                 (2 positional)
+             198 STORE_FAST           (source)
+
+316:         200 LOAD_GLOBAL          (ipaddress)
+             210 LOAD_ATTR            (ip_address)
+             230 PUSH_NULL
+             232 LOAD_FAST            (source)
+             234 CALL                 (1 positional)
+             242 LOAD_GLOBAL          (ipaddress)
+             252 LOAD_ATTR            (ip_network)
+             272 PUSH_NULL
+             274 LOAD_FAST            (host)
+             276 FORMAT_SIMPLE
+             278 LOAD_CONST           ("/24")
+             280 BUILD_STRING         2
+             282 LOAD_CONST           (False)
+             284 LOAD_CONST           (('strict',))
+             286 CALL_KW              2
+             288 CONTAINS_OP          (not in)
+             292 POP_JUMP_IF_FALSE    (to 324)
+
+317:         296 LOAD_GLOBAL          (NULL + ToolError)
+             306 LOAD_CONST           ("目标不在当前直连 LAN；本机源地址为 ")
+             308 LOAD_FAST            (source)
+             310 FORMAT_SIMPLE
+             312 BUILD_STRING         2
+             314 CALL                 (1 positional)
+             322 RAISE_VARARGS        (exception instance)
+
+318:     >>  324 LOAD_CONST           ("http://")
+             326 LOAD_FAST            (host)
+             328 FORMAT_SIMPLE
+             330 LOAD_CONST           (":")
+             332 LOAD_FAST            (args)
+             334 LOAD_ATTR            (web_port)
+             354 FORMAT_SIMPLE
+             356 BUILD_STRING         4
+             358 STORE_FAST           (base)
+
+319:         360 LOAD_GLOBAL          (json)
+             370 LOAD_ATTR            (loads)
+             390 PUSH_NULL
+             392 LOAD_GLOBAL          (NULL + http_bytes)
+             402 LOAD_FAST            (base)
+             404 LOAD_CONST           ("/cgi-bin/ajax?ajaxmethod=web_get_brmad")
+             406 BINARY_OP            (+)
+             410 CALL                 (1 positional)
+             418 CALL                 (1 positional)
+             426 STORE_FAST           (info)
+
+320:         428 LOAD_FAST            (info)
+             430 LOAD_ATTR            (NULL|self + get)
+             450 LOAD_CONST           ("brmad")
+             452 LOAD_CONST           ("")
+             454 CALL                 (2 positional)
+             462 STORE_FAST           (mac)
+
+321:         464 LOAD_GLOBAL          (re)
+             474 LOAD_ATTR            (fullmatch)
+             494 PUSH_NULL
+             496 LOAD_CONST           ("[0-9A-F]{12}")
+             498 LOAD_FAST            (mac)
+             500 CALL                 (2 positional)
+             508 TO_BOOL
+             516 POP_JUMP_IF_TRUE     (to 542)
+
+322:         520 LOAD_GLOBAL          (NULL + ToolError)
+             530 LOAD_CONST           ("无法读取有效的设备 MAC")
+             532 CALL                 (1 positional)
+             540 RAISE_VARARGS        (exception instance)
+
+323:     >>  542 LOAD_GLOBAL          (NULL + derive_key_iv)
+             552 LOAD_FAST            (mac)
+             554 CALL                 (1 positional)
+             562 UNPACK_SEQUENCE      2
+             566 STORE_FAST_STORE_FAST (key, iv)
+
+324:         568 LOAD_GLOBAL          (NULL + tool_call)
+             578 LOAD_FAST_LOAD_FAST  (base, key)
+             580 LOAD_FAST            (iv)
+             582 LOAD_CONST           ("GetDevInfo")
+             584 CALL                 (4 positional)
+             592 STORE_FAST           (device)
+
+325:         594 LOAD_FAST            (device)
+             596 LOAD_ATTR            (NULL|self + get)
+             616 LOAD_CONST           ("hardwareversion")
+             618 CALL                 (1 positional)
+             626 LOAD_FAST            (device)
+             628 LOAD_ATTR            (NULL|self + get)
+             648 LOAD_CONST           ("softwareversion")
+             650 CALL                 (1 positional)
+             658 STORE_FAST_STORE_FAST (sw, hw)
+
+326:         660 LOAD_FAST_LOAD_FAST  (hw, sw)
+             662 BUILD_TUPLE          2
+             664 LOAD_GLOBAL          (EXPECTED_HARDWARE)
+             674 LOAD_GLOBAL          (EXPECTED_SOFTWARE)
+             684 BUILD_TUPLE          2
+             686 COMPARE_OP           (!=)
+             690 POP_JUMP_IF_FALSE    (to 728)
+
+327:         694 LOAD_GLOBAL          (NULL + ToolError)
+             704 LOAD_CONST           ("设备版本与已验证目标不符：硬件 ")
+             706 LOAD_FAST            (hw)
+             708 FORMAT_SIMPLE
+             710 LOAD_CONST           ("，软件 ")
+             712 LOAD_FAST            (sw)
+             714 FORMAT_SIMPLE
+             716 BUILD_STRING         4
+             718 CALL                 (1 positional)
+             726 RAISE_VARARGS        (exception instance)
+
+328:     >>  728 LOAD_GLOBAL          (NULL + print)
+             738 LOAD_CONST           ("设备验证通过：硬件 ")
+             740 LOAD_FAST            (hw)
+             742 FORMAT_SIMPLE
+             744 LOAD_CONST           ("，软件 ")
+             746 LOAD_FAST            (sw)
+             748 FORMAT_SIMPLE
+             750 BUILD_STRING         4
+             752 CALL                 (1 positional)
+             760 POP_TOP
+
+329:         762 LOAD_FAST            (args)
+             764 LOAD_ATTR            (probe)
+             784 TO_BOOL
+             792 POP_JUMP_IF_FALSE    (to 820)
+
+330:         796 LOAD_GLOBAL          (NULL + print)
+             806 LOAD_CONST           ("只读探测完成，未修改设备。")
+             808 CALL                 (1 positional)
+             816 POP_TOP
+
+331:         818 RETURN_CONST         (0)
+
+332:     >>  820 LOAD_GLOBAL          (NULL + tool_call)
+             830 LOAD_FAST_LOAD_FAST  (base, key)
+             832 LOAD_FAST            (iv)
+             834 LOAD_CONST           ("TelnetEnable")
+             836 LOAD_CONST           ("1")
+             838 LOAD_CONST           (('telnet',))
+             840 CALL_KW              5
+             842 POP_TOP
+
+333:         844 LOAD_GLOBAL          (NULL + wait_for_telnet)
+             854 LOAD_FAST            (host)
+             856 CALL                 (1 positional)
+             864 POP_TOP
+
+334:         866 LOAD_GLOBAL          (NULL + print)
+             876 LOAD_CONST           ("Telnet 已开启，23 端口握手正常。")
+             878 CALL                 (1 positional)
+             886 POP_TOP
+
+335:         888 LOAD_FAST            (args)
+             890 LOAD_ATTR            (runtime_only)
+             910 TO_BOOL
+             918 POP_JUMP_IF_FALSE    (to 946)
+
+336:         922 LOAD_GLOBAL          (NULL + print)
+             932 LOAD_CONST           ("当前为运行时开启；重启后需要再次运行。")
+             934 CALL                 (1 positional)
+             942 POP_TOP
+
+337:         944 RETURN_CONST         (0)
+
+339:     >>  946 LOAD_FAST            (args)
+             948 LOAD_ATTR            (telnet_password_stdin)
+             968 TO_BOOL
+             976 POP_JUMP_IF_FALSE    (to 1070)
+             980 LOAD_GLOBAL          (sys)
+             990 LOAD_ATTR            (stdin)
+            1010 LOAD_ATTR            (NULL|self + readline)
+            1030 CALL                 (0 positional)
+            1038 LOAD_ATTR            (NULL|self + rstrip)
+            1058 LOAD_CONST           ("\r\n")
+            1060 CALL                 (1 positional)
+            1068 JUMP_FORWARD         (to 1092)
+         >> 1070 LOAD_FAST            (args)
+            1072 LOAD_ATTR            (telnet_password)
+
+338:     >> 1092 STORE_FAST           (custom_password)
+
+341:        1094 LOAD_GLOBAL          (NULL + persist_telnet)
+            1104 LOAD_FAST_LOAD_FAST  (host, mac)
+            1106 LOAD_FAST            (args)
+            1108 LOAD_ATTR            (telnet_user)
+            1128 LOAD_FAST            (custom_password)
+            1130 CALL                 (4 positional)
+            1138 POP_TOP
+
+342:        1140 LOAD_GLOBAL          (NULL + print)
+            1150 LOAD_CONST           ("总开关和 LAN 开关已写入并回读为 1；此固件已验证重启后自动开启。")
+            1152 CALL                 (1 positional)
+            1160 POP_TOP
+
+343:        1162 RETURN_CONST         (0)
+            1164 PUSH_EXC_INFO
+
+344:        1166 LOAD_GLOBAL          (ToolError)
+            1176 LOAD_GLOBAL          (ValueError)
+            1186 LOAD_GLOBAL          (json)
+            1196 LOAD_ATTR            (JSONDecodeError)
+            1216 BUILD_TUPLE          3
+            1218 CHECK_EXC_MATCH
+            1220 POP_JUMP_IF_FALSE    (to 1298)
+            1224 STORE_FAST           (exc)
+
+345:        1226 LOAD_GLOBAL          (NULL + print)
+            1236 LOAD_CONST           ("失败：")
+            1238 LOAD_FAST            (exc)
+            1240 FORMAT_SIMPLE
+            1242 BUILD_STRING         2
+            1244 LOAD_GLOBAL          (sys)
+            1254 LOAD_ATTR            (stderr)
+            1274 LOAD_CONST           (('file',))
+            1276 CALL_KW              2
+            1278 POP_TOP
+
+346:        1280 POP_EXCEPT
+            1282 LOAD_CONST           (None)
+            1284 STORE_FAST           (exc)
+            1286 DELETE_FAST          (exc)
+            1288 RETURN_CONST         (1)
+            1290 LOAD_CONST           (None)
+            1292 STORE_FAST           (exc)
+            1294 DELETE_FAST          (exc)
+            1296 RERAISE              1
+
+344:     >> 1298 RERAISE              0
+            1300 COPY                 3
+            1302 POP_EXCEPT
+            1304 RERAISE              1
+
+ExceptionTable:
+  4 to 816 -> 1164 [0]
+  820 to 942 -> 1164 [0]
+  946 to 1160 -> 1164 [0]
+  1164 to 1224 -> 1300 [1] lasti
+  1226 to 1278 -> 1290 [1] lasti
+  1290 to 1298 -> 1300 [1] lasti
+
+# Method Name:       ask
+# Filename:          enable_telnet.py
+# Argument count:    2
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  3
+# Stack size:        6
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        349
+# Constants:
+#    0: None
+#    1: ' [默认 '
+#    2: ']：'
+# Names:
+#    0: input
+#    1: strip
+# Varnames:
+#	prompt, default, answer
+# Positional arguments:
+#	prompt, default
+# Local variables:
+#    2: answer
+
+349:           0 RESUME               0
+
+350:           2 LOAD_GLOBAL          (NULL + input)
+              12 LOAD_FAST            (prompt)
+              14 FORMAT_SIMPLE
+              16 LOAD_CONST           (" [默认 ")
+              18 LOAD_FAST            (default)
+              20 FORMAT_SIMPLE
+              22 LOAD_CONST           ("]：")
+              24 BUILD_STRING         4
+              26 CALL                 (1 positional)
+              34 LOAD_ATTR            (NULL|self + strip)
+              54 CALL                 (0 positional)
+              62 STORE_FAST           (answer)
+
+351:          64 LOAD_FAST            (answer)
+              66 COPY                 1
+              68 TO_BOOL
+              76 POP_JUMP_IF_TRUE     (to 84)
+              80 POP_TOP
+              82 LOAD_FAST            (default)
+         >>   84 RETURN_VALUE
+
+
+# Method Name:       wizard
+# Filename:          enable_telnet.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  4
+# Stack size:        6
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        354
+# Constants:
+#    0: 'Guide a double-click user through the few options that matter.'
+#    1: '===================================================='
+#    2: ' HG5585F CT V2版 · 一键开启 Telnet'
+#    3: ' 适用版本：硬件 '
+#    4: ' / 软件 '
+#    5: '请先确认：电脑已用网线直连光猫 LAN 口，且能打开管理页面。'
+#    6: '光猫 LAN 地址'
+#    7: 'http://'
+#    8: ''
+#    9: '/'
+#   10: '  地址格式不对，请输入形如 192.168.1.1 的 IP。'
+#   11: '管理页端口'
+#   12: 1
+#   13: 65535
+#   14: '  端口需在 1~65535 之间。'
+#   15: '执行方式（1=只读探测 / 2=仅本次生效 / 3=持久化）'
+#   16: '3'
+#   17: '1'
+#   18: '2'
+#   19: 'Telnet 用户名 [默认 '
+#   20: ']：'
+#   21: '是否使用自定义 Telnet 密码？[y/N]：'
+#   22: 'y'
+#   23: '密码（输入不回显）：'
+# Names:
+#    0: build_parser
+#    1: parse_args
+#    2: print
+#    3: EXPECTED_HARDWARE
+#    4: EXPECTED_SOFTWARE
+#    5: ask
+#    6: host
+#    7: replace
+#    8: rstrip
+#    9: ipaddress
+#   10: ip_address
+#   11: ValueError
+#   12: str
+#   13: web_port
+#   14: int
+#   15: probe
+#   16: runtime_only
+#   17: input
+#   18: telnet_user
+#   19: strip
+#   20: lower
+#   21: getpass
+#   22: telnet_password
+# Varnames:
+#	args, port, mode, user
+# Local variables:
+#    0: args
+#    1: port
+#    2: mode
+#    3: user
+
+354:           0 RESUME               0
+
+356:           2 LOAD_GLOBAL          (NULL + build_parser)
+              12 CALL                 (0 positional)
+              20 LOAD_ATTR            (NULL|self + parse_args)
+              40 BUILD_LIST           0
+              42 CALL                 (1 positional)
+              50 STORE_FAST           (args)
+
+357:          52 LOAD_GLOBAL          (NULL + print)
+              62 LOAD_CONST           ("====================================================")
+              64 CALL                 (1 positional)
+              72 POP_TOP
+
+358:          74 LOAD_GLOBAL          (NULL + print)
+              84 LOAD_CONST           (" HG5585F CT V2版 · 一键开启 Telnet")
+              86 CALL                 (1 positional)
+              94 POP_TOP
+
+359:          96 LOAD_GLOBAL          (NULL + print)
+             106 LOAD_CONST           (" 适用版本：硬件 ")
+             108 LOAD_GLOBAL          (EXPECTED_HARDWARE)
+             118 FORMAT_SIMPLE
+             120 LOAD_CONST           (" / 软件 ")
+             122 LOAD_GLOBAL          (EXPECTED_SOFTWARE)
+             132 FORMAT_SIMPLE
+             134 BUILD_STRING         4
+             136 CALL                 (1 positional)
+             144 POP_TOP
+
+360:         146 LOAD_GLOBAL          (NULL + print)
+             156 LOAD_CONST           ("====================================================")
+             158 CALL                 (1 positional)
+             166 POP_TOP
+
+361:         168 LOAD_GLOBAL          (NULL + print)
+             178 LOAD_CONST           ("请先确认：电脑已用网线直连光猫 LAN 口，且能打开管理页面。")
+             180 CALL                 (1 positional)
+             188 POP_TOP
+
+362:         190 LOAD_GLOBAL          (NULL + print)
+             200 CALL                 (0 positional)
+             208 POP_TOP
+
+364:         210 NOP
+
+365:         212 LOAD_GLOBAL          (NULL + ask)
+             222 LOAD_CONST           ("光猫 LAN 地址")
+             224 LOAD_FAST            (args)
+             226 LOAD_ATTR            (host)
+             246 CALL                 (2 positional)
+             254 LOAD_FAST            (args)
+             256 STORE_ATTR           (host)
+
+366:         266 LOAD_FAST            (args)
+             268 LOAD_ATTR            (host)
+             288 LOAD_ATTR            (NULL|self + replace)
+             308 LOAD_CONST           ("http://")
+             310 LOAD_CONST           ("")
+             312 CALL                 (2 positional)
+             320 LOAD_ATTR            (NULL|self + rstrip)
+             340 LOAD_CONST           ("/")
+             342 CALL                 (1 positional)
+             350 LOAD_FAST            (args)
+             352 STORE_ATTR           (host)
+
+367:         362 NOP
+
+368:         364 LOAD_GLOBAL          (ipaddress)
+             374 LOAD_ATTR            (ip_address)
+             394 PUSH_NULL
+             396 LOAD_FAST            (args)
+             398 LOAD_ATTR            (host)
+             418 CALL                 (1 positional)
+             426 POP_TOP
+
+369:         428 NOP
+
+373:         430 NOP
+
+374:         432 LOAD_GLOBAL          (NULL + ask)
+             442 LOAD_CONST           ("管理页端口")
+             444 LOAD_GLOBAL          (NULL + str)
+             454 LOAD_FAST            (args)
+             456 LOAD_ATTR            (web_port)
+             476 CALL                 (1 positional)
+             484 CALL                 (2 positional)
+             492 STORE_FAST           (port)
+
+375:         494 NOP
+
+376:         496 LOAD_GLOBAL          (NULL + int)
+             506 LOAD_FAST            (port)
+             508 CALL                 (1 positional)
+             516 LOAD_FAST            (args)
+             518 STORE_ATTR           (web_port)
+
+377:         528 LOAD_CONST           (1)
+             530 LOAD_FAST            (args)
+             532 LOAD_ATTR            (web_port)
+             552 SWAP                 (TOS <-> TOS1)
+             554 COPY                 2
+             556 COMPARE_OP           (<=)
+             560 POP_JUMP_IF_FALSE    (to 576)
+             564 LOAD_CONST           (65535)
+             566 COMPARE_OP           (<=)
+             570 POP_JUMP_IF_FALSE    (to 582)
+             574 JUMP_FORWARD         (to 580)
+         >>  576 POP_TOP
+             578 JUMP_FORWARD         (to 584)
+
+378:     >>  580 JUMP_FORWARD         (to 610)
+
+377:     >>  582 NOP
+
+381:     >>  584 LOAD_GLOBAL          (NULL + print)
+             594 LOAD_CONST           ("  端口需在 1~65535 之间。")
+             596 CALL                 (1 positional)
+             604 POP_TOP
+
+373:         606 JUMP_BACKWARD        (to 432)
+
+383:     >>  610 LOAD_GLOBAL          (NULL + ask)
+             620 LOAD_CONST           ("执行方式（1=只读探测 / 2=仅本次生效 / 3=持久化）")
+             622 LOAD_CONST           ("3")
+             624 CALL                 (2 positional)
+             632 STORE_FAST           (mode)
+
+384:         634 LOAD_FAST            (mode)
+             636 LOAD_CONST           ("1")
+             638 COMPARE_OP           (==)
+             642 LOAD_FAST            (args)
+             644 STORE_ATTR           (probe)
+
+385:         654 LOAD_FAST            (mode)
+             656 LOAD_CONST           ("2")
+             658 COMPARE_OP           (==)
+             662 LOAD_FAST            (args)
+             664 STORE_ATTR           (runtime_only)
+
+387:         674 LOAD_FAST            (args)
+             676 LOAD_ATTR            (probe)
+             696 TO_BOOL
+             704 POP_JUMP_IF_TRUE     (to 1014)
+             708 LOAD_FAST            (args)
+             710 LOAD_ATTR            (runtime_only)
+             730 TO_BOOL
+             738 POP_JUMP_IF_TRUE     (to 1014)
+
+388:         742 LOAD_GLOBAL          (NULL + input)
+             752 LOAD_CONST           ("Telnet 用户名 [默认 ")
+             754 LOAD_FAST            (args)
+             756 LOAD_ATTR            (telnet_user)
+             776 FORMAT_SIMPLE
+             778 LOAD_CONST           ("]：")
+             780 BUILD_STRING         3
+             782 CALL                 (1 positional)
+             790 LOAD_ATTR            (NULL|self + strip)
+             810 CALL                 (0 positional)
+             818 STORE_FAST           (user)
+
+389:         820 LOAD_FAST            (user)
+             822 TO_BOOL
+             830 POP_JUMP_IF_FALSE    (to 846)
+
+390:         834 LOAD_FAST_LOAD_FAST  (user, args)
+             836 STORE_ATTR           (telnet_user)
+
+391:     >>  846 LOAD_GLOBAL          (NULL + input)
+             856 LOAD_CONST           ("是否使用自定义 Telnet 密码？[y/N]：")
+             858 CALL                 (1 positional)
+             866 LOAD_ATTR            (NULL|self + strip)
+             886 CALL                 (0 positional)
+             894 LOAD_ATTR            (NULL|self + lower)
+             914 CALL                 (0 positional)
+             922 LOAD_CONST           ("y")
+             924 COMPARE_OP           (==)
+             928 POP_JUMP_IF_FALSE    (to 1014)
+
+392:         932 LOAD_GLOBAL          (getpass)
+             942 LOAD_ATTR            (getpass)
+             962 PUSH_NULL
+             964 LOAD_CONST           ("密码（输入不回显）：")
+             966 CALL                 (1 positional)
+             974 LOAD_ATTR            (NULL|self + strip)
+             994 CALL                 (0 positional)
+            1002 LOAD_FAST            (args)
+            1004 STORE_ATTR           (telnet_password)
+
+393:     >> 1014 LOAD_FAST            (args)
+            1016 RETURN_VALUE
+            1018 PUSH_EXC_INFO
+
+370:        1020 LOAD_GLOBAL          (ValueError)
+            1030 CHECK_EXC_MATCH
+            1032 POP_JUMP_IF_FALSE    (to 1064)
+            1036 POP_TOP
+
+371:        1038 LOAD_GLOBAL          (NULL + print)
+            1048 LOAD_CONST           ("  地址格式不对，请输入形如 192.168.1.1 的 IP。")
+            1050 CALL                 (1 positional)
+            1058 POP_TOP
+            1060 POP_EXCEPT
+            1062 JUMP_FORWARD         (to 1072)
+
+370:     >> 1064 RERAISE              0
+            1066 COPY                 3
+            1068 POP_EXCEPT
+            1070 RERAISE              1
+
+364:     >> 1072 EXTENDED_ARG         (256)
+            1074 JUMP_BACKWARD        (to 212)
+            1078 PUSH_EXC_INFO
+
+379:        1080 LOAD_GLOBAL          (ValueError)
+            1090 CHECK_EXC_MATCH
+            1092 POP_JUMP_IF_FALSE    (to 1104)
+            1096 POP_TOP
+
+380:        1098 POP_EXCEPT
+            1100 EXTENDED_ARG         (256)
+            1102 JUMP_BACKWARD_NO_INTERRUPT (to 584)
+
+379:     >> 1104 RERAISE              0
+            1106 COPY                 3
+            1108 POP_EXCEPT
+            1110 RERAISE              1
+
+ExceptionTable:
+  364 to 426 -> 1018 [0]
+  496 to 576 -> 1078 [0]
+  1018 to 1058 -> 1066 [1] lasti
+  1064 to 1064 -> 1066 [1] lasti
+  1078 to 1096 -> 1106 [1] lasti
+  1104 to 1104 -> 1106 [1] lasti
+
+# Method Name:       main
+# Filename:          enable_telnet.py
+# Argument count:    0
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  2
+# Stack size:        4
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        396
+# Constants:
+#    0: None
+#    1: 1
+#    2: '\n已取消。'
+#    3: 130
+#    4: '确认无误后按回车键开始，Ctrl+C 可随时中止...'
+# Names:
+#    0: set_console_title
+#    1: WINDOW_TITLE
+#    2: len
+#    3: sys
+#    4: argv
+#    5: run
+#    6: build_parser
+#    7: parse_args
+#    8: print_contact
+#    9: wizard
+#   10: EOFError
+#   11: KeyboardInterrupt
+#   12: print
+#   13: input
+#   14: press_any_key
+# Varnames:
+#	code, args
+# Local variables:
+#    0: code
+#    1: args
+
+396:           0 RESUME               0
+
+397:           2 LOAD_GLOBAL          (NULL + set_console_title)
+              12 LOAD_GLOBAL          (WINDOW_TITLE)
+              22 CALL                 (1 positional)
+              30 POP_TOP
+
+398:          32 LOAD_GLOBAL          (NULL + len)
+              42 LOAD_GLOBAL          (sys)
+              52 LOAD_ATTR            (argv)
+              72 CALL                 (1 positional)
+              80 LOAD_CONST           (1)
+              82 COMPARE_OP           (>)
+              86 POP_JUMP_IF_FALSE    (to 180)
+
+399:          90 LOAD_GLOBAL          (NULL + run)
+             100 LOAD_GLOBAL          (NULL + build_parser)
+             110 CALL                 (0 positional)
+             118 LOAD_ATTR            (NULL|self + parse_args)
+             138 CALL                 (0 positional)
+             146 CALL                 (1 positional)
+             154 STORE_FAST           (code)
+
+400:         156 LOAD_GLOBAL          (NULL + print_contact)
+             166 CALL                 (0 positional)
+             174 POP_TOP
+
+401:         176 LOAD_FAST            (code)
+             178 RETURN_VALUE
+
+403:     >>  180 NOP
+
+404:         182 LOAD_GLOBAL          (NULL + wizard)
+             192 CALL                 (0 positional)
+             200 STORE_FAST           (args)
+
+408:         202 LOAD_GLOBAL          (NULL + print)
+             212 CALL                 (0 positional)
+             220 POP_TOP
+
+409:         222 NOP
+
+410:         224 LOAD_GLOBAL          (NULL + input)
+             234 LOAD_CONST           ("确认无误后按回车键开始，Ctrl+C 可随时中止...")
+             236 CALL                 (1 positional)
+             244 POP_TOP
+
+414:         246 LOAD_GLOBAL          (NULL + print)
+             256 CALL                 (0 positional)
+             264 POP_TOP
+
+415:         266 LOAD_GLOBAL          (NULL + run)
+             276 LOAD_FAST            (args)
+             278 CALL                 (1 positional)
+             286 STORE_FAST           (code)
+
+416:         288 LOAD_GLOBAL          (NULL + print)
+             298 CALL                 (0 positional)
+             306 POP_TOP
+
+417:         308 LOAD_GLOBAL          (NULL + print_contact)
+             318 CALL                 (0 positional)
+             326 POP_TOP
+
+418:         328 LOAD_GLOBAL          (NULL + press_any_key)
+             338 CALL                 (0 positional)
+             346 POP_TOP
+
+419:         348 LOAD_FAST            (code)
+             350 RETURN_VALUE
+             352 PUSH_EXC_INFO
+
+405:         354 LOAD_GLOBAL          (EOFError)
+             364 LOAD_GLOBAL          (KeyboardInterrupt)
+             374 BUILD_TUPLE          2
+             376 CHECK_EXC_MATCH
+             378 POP_JUMP_IF_FALSE    (to 410)
+             382 POP_TOP
+
+406:         384 LOAD_GLOBAL          (NULL + print)
+             394 LOAD_CONST           ("\n已取消。")
+             396 CALL                 (1 positional)
+             404 POP_TOP
+
+407:         406 POP_EXCEPT
+             408 RETURN_CONST         (130)
+
+405:     >>  410 RERAISE              0
+             412 COPY                 3
+             414 POP_EXCEPT
+             416 RERAISE              1
+             418 PUSH_EXC_INFO
+
+411:         420 LOAD_GLOBAL          (EOFError)
+             430 LOAD_GLOBAL          (KeyboardInterrupt)
+             440 BUILD_TUPLE          2
+             442 CHECK_EXC_MATCH
+             444 POP_JUMP_IF_FALSE    (to 476)
+             448 POP_TOP
+
+412:         450 LOAD_GLOBAL          (NULL + print)
+             460 LOAD_CONST           ("\n已取消。")
+             462 CALL                 (1 positional)
+             470 POP_TOP
+
+413:         472 POP_EXCEPT
+             474 RETURN_CONST         (130)
+
+411:     >>  476 RERAISE              0
+             478 COPY                 3
+             480 POP_EXCEPT
+             482 RERAISE              1
+
+ExceptionTable:
+  182 to 200 -> 352 [0]
+  224 to 244 -> 418 [0]
+  352 to 404 -> 412 [1] lasti
+  410 to 410 -> 412 [1] lasti
+  418 to 470 -> 478 [1] lasti
+  476 to 476 -> 478 [1] lasti
+
+# Method Name:       <genexpr>
+# Filename:          enable_telnet.py
+# Argument count:    1
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  2
+# Stack size:        4
+# Flags:             0x01000033 (0x1000000 | GENERATOR | NESTED | NEWLOCALS | OPTIMIZED)
+# First Line:        183
+# Constants:
+#    0: 2
+#    1: None
+# Varnames:
+#	.0, i
+# Positional arguments:
+#	.0
+# Local variables:
+#    1: i
+# Free variables:
+#    0: digest
+               0 COPY_FREE_VARS       1
+
+183:           2 RETURN_GENERATOR
+               4 POP_TOP
+               6 RESUME               0
+               8 LOAD_FAST            (.0)
+              10 GET_ITER
+              12 FOR_ITER             (to 48)
+              16 STORE_FAST           (i)
+              18 LOAD_DEREF           (digest)
+              20 LOAD_CONST           (2)
+              22 LOAD_FAST            (i)
+              24 BINARY_OP            (*)
+              28 LOAD_CONST           (2)
+              30 BINARY_OP            (+)
+              34 BINARY_SUBSCR
+              38 YIELD_VALUE          0
+              40 RESUME               5
+              42 POP_TOP
+              44 JUMP_BACKWARD        (to 12)
+         >>   48 END_FOR
+              50 POP_TOP
+              52 RETURN_CONST         (None)
+              54 CALL_INTRINSIC_1     (INTRINSIC_STOPITERATION_ERROR)
+              56 RERAISE              1
+
+ExceptionTable:
+  6 to 52 -> 54 [0] lasti
+
+# Method Name:       <genexpr>
+# Filename:          enable_telnet.py
+# Argument count:    1
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  2
+# Stack size:        4
+# Flags:             0x01000033 (0x1000000 | GENERATOR | NESTED | NEWLOCALS | OPTIMIZED)
+# First Line:        184
+# Constants:
+#    0: 3
+#    1: None
+# Varnames:
+#	.0, i
+# Positional arguments:
+#	.0
+# Local variables:
+#    1: i
+# Free variables:
+#    0: digest
+               0 COPY_FREE_VARS       1
+
+184:           2 RETURN_GENERATOR
+               4 POP_TOP
+               6 RESUME               0
+               8 LOAD_FAST            (.0)
+              10 GET_ITER
+              12 FOR_ITER             (to 48)
+              16 STORE_FAST           (i)
+              18 LOAD_DEREF           (digest)
+              20 LOAD_CONST           (3)
+              22 LOAD_FAST            (i)
+              24 BINARY_OP            (*)
+              28 LOAD_CONST           (3)
+              30 BINARY_OP            (+)
+              34 BINARY_SUBSCR
+              38 YIELD_VALUE          0
+              40 RESUME               5
+              42 POP_TOP
+              44 JUMP_BACKWARD        (to 12)
+         >>   48 END_FOR
+              50 POP_TOP
+              52 RETURN_CONST         (None)
+              54 CALL_INTRINSIC_1     (INTRINSIC_STOPITERATION_ERROR)
+              56 RERAISE              1
+
+ExceptionTable:
+  6 to 52 -> 54 [0] lasti
+
+# Method Name:       __init__
+# Filename:          enable_telnet.py
+# Argument count:    3
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  3
+# Stack size:        5
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        208
+# Constants:
+#    0: None
+#    1: 6
+#    2: ('timeout',)
+#    3: 0
+# Names:
+#    0: socket
+#    1: create_connection
+#    2: sock
+#    3: state
+#    4: command
+#    5: bytearray
+#    6: buffer
+# Varnames:
+#	self, host, port
+# Positional arguments:
+#	self, host, port
+
+208:           0 RESUME               0
+
+209:           2 LOAD_GLOBAL          (socket)
+              12 LOAD_ATTR            (create_connection)
+              32 PUSH_NULL
+              34 LOAD_FAST_LOAD_FAST  (host, port)
+              36 BUILD_TUPLE          2
+              38 LOAD_CONST           (6)
+              40 LOAD_CONST           (('timeout',))
+              42 CALL_KW              2
+              44 LOAD_FAST            (self)
+              46 STORE_ATTR           (sock)
+
+210:          56 LOAD_CONST           (0)
+              58 LOAD_FAST            (self)
+              60 STORE_ATTR           (state)
+
+211:          70 LOAD_CONST           (0)
+              72 LOAD_FAST            (self)
+              74 STORE_ATTR           (command)
+
+212:          84 LOAD_GLOBAL          (NULL + bytearray)
+              94 CALL                 (0 positional)
+             102 LOAD_FAST            (self)
+             104 STORE_ATTR           (buffer)
+             114 RETURN_CONST         (None)
+
+
+# Method Name:       close
+# Filename:          enable_telnet.py
+# Argument count:    1
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  1
+# Stack size:        2
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        214
+# Constants:
+#    0: None
+# Names:
+#    0: sock
+#    1: close
+# Varnames:
+#	self
+# Positional arguments:
+#	self
+
+214:           0 RESUME               0
+
+215:           2 LOAD_FAST            (self)
+               4 LOAD_ATTR            (sock)
+              24 LOAD_ATTR            (NULL|self + close)
+              44 CALL                 (0 positional)
+              52 POP_TOP
+              54 RETURN_CONST         (None)
+
+
+# Method Name:       write_line
+# Filename:          enable_telnet.py
+# Argument count:    2
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  2
+# Stack size:        5
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        217
+# Constants:
+#    0: None
+#    1: 'utf-8'
+#    2: b'\n'
+# Names:
+#    0: sock
+#    1: sendall
+#    2: encode
+# Varnames:
+#	self, line
+# Positional arguments:
+#	self, line
+
+217:           0 RESUME               0
+
+218:           2 LOAD_FAST            (self)
+               4 LOAD_ATTR            (sock)
+              24 LOAD_ATTR            (NULL|self + sendall)
+              44 LOAD_FAST            (line)
+              46 LOAD_ATTR            (NULL|self + encode)
+              66 LOAD_CONST           ("utf-8")
+              68 CALL                 (1 positional)
+              76 LOAD_CONST           (b'\n')
+              78 BINARY_OP            (+)
+              82 CALL                 (1 positional)
+              90 POP_TOP
+              92 RETURN_CONST         (None)
+
+
+# Method Name:       read_until
+# Filename:          enable_telnet.py
+# Argument count:    3
+# Position-only argument count: 0
+# Keyword-only arguments: 0
+# Number of locals:  11
+# Stack size:        8
+# Flags:             0x01000003 (0x1000000 | NEWLOCALS | OPTIMIZED)
+# First Line:        220
+# Constants:
+#    0: None
+#    1: 0
+#    2: 'Telnet 等待提示符超时'
+#    3: 4096
+#    4: 'Telnet 连接被设备关闭'
+#    5: 255
+#    6: 1
+#    7: (251, 252, 253, 254)
+#    8: 2
+#    9: 250
+#   10: 3
+#   11: (251, 252)
+#   12: 254
+#   13: 252
+#   14: 4
+#   15: 240
+# Names:
+#    0: time
+#    1: monotonic
+#    2: buffer
+#    3: ToolError
+#    4: sock
+#    5: settimeout
+#    6: recv
+#    7: socket
+#    8: timeout
+#    9: state
+#   10: append
+#   11: command
+#   12: sendall
+#   13: bytes
+#   14: index
+#   15: len
+# Varnames:
+#	self, marker, timeout, deadline, remaining, chunk, exc, byte, reply, end, out
+# Positional arguments:
+#	self, marker, timeout
+# Local variables:
+#    3: deadline
+#    4: remaining
+#    5: chunk
+#    6: exc
+#    7: byte
+#    8: reply
+#    9: end
+#   10: out
+
+220:           0 RESUME               0
+
+221:           2 LOAD_GLOBAL          (time)
+              12 LOAD_ATTR            (monotonic)
+              32 PUSH_NULL
+              34 CALL                 (0 positional)
+              42 LOAD_FAST            (timeout)
+              44 BINARY_OP            (+)
+              48 STORE_FAST           (deadline)
+
+222:          50 LOAD_FAST_LOAD_FAST  (marker, self)
+              52 LOAD_ATTR            (buffer)
+              72 CONTAINS_OP          (not in)
+              76 EXTENDED_ARG         (256)
+              78 POP_JUMP_IF_FALSE    (to 980)
+
+223:          82 LOAD_FAST            (deadline)
+              84 LOAD_GLOBAL          (time)
+              94 LOAD_ATTR            (monotonic)
+             114 PUSH_NULL
+             116 CALL                 (0 positional)
+             124 BINARY_OP            (-)
+             128 STORE_FAST           (remaining)
+
+224:         130 LOAD_FAST            (remaining)
+             132 LOAD_CONST           (0)
+             134 COMPARE_OP           (<=)
+             138 POP_JUMP_IF_FALSE    (to 164)
+
+225:         142 LOAD_GLOBAL          (NULL + ToolError)
+             152 LOAD_CONST           ("Telnet 等待提示符超时")
+             154 CALL                 (1 positional)
+             162 RAISE_VARARGS        (exception instance)
+
+226:     >>  164 LOAD_FAST            (self)
+             166 LOAD_ATTR            (sock)
+             186 LOAD_ATTR            (NULL|self + settimeout)
+             206 LOAD_FAST            (remaining)
+             208 CALL                 (1 positional)
+             216 POP_TOP
+
+227:         218 NOP
+
+228:         220 LOAD_FAST            (self)
+             222 LOAD_ATTR            (sock)
+             242 LOAD_ATTR            (NULL|self + recv)
+             262 LOAD_CONST           (4096)
+             264 CALL                 (1 positional)
+             272 STORE_FAST           (chunk)
+
+231:         274 LOAD_FAST            (chunk)
+             276 TO_BOOL
+             284 POP_JUMP_IF_TRUE     (to 310)
+
+232:         288 LOAD_GLOBAL          (NULL + ToolError)
+             298 LOAD_CONST           ("Telnet 连接被设备关闭")
+             300 CALL                 (1 positional)
+             308 RAISE_VARARGS        (exception instance)
+
+233:     >>  310 LOAD_FAST            (chunk)
+             312 GET_ITER
+             314 EXTENDED_ARG         (256)
+             316 FOR_ITER             (to 940)
+             320 STORE_FAST           (byte)
+
+234:         322 LOAD_FAST            (self)
+             324 LOAD_ATTR            (state)
+             344 LOAD_CONST           (0)
+             346 COMPARE_OP           (==)
+             350 POP_JUMP_IF_FALSE    (to 442)
+
+235:         354 LOAD_FAST            (byte)
+             356 LOAD_CONST           (255)
+             358 COMPARE_OP           (==)
+             362 POP_JUMP_IF_FALSE    (to 384)
+
+236:         366 LOAD_CONST           (1)
+             368 LOAD_FAST            (self)
+             370 STORE_ATTR           (state)
+             380 JUMP_BACKWARD        (to 314)
+
+238:     >>  384 LOAD_FAST            (self)
+             386 LOAD_ATTR            (buffer)
+             406 LOAD_ATTR            (NULL|self + append)
+             426 LOAD_FAST            (byte)
+             428 CALL                 (1 positional)
+             436 POP_TOP
+             438 JUMP_BACKWARD        (to 314)
+
+239:     >>  442 LOAD_FAST            (self)
+             444 LOAD_ATTR            (state)
+             464 LOAD_CONST           (1)
+             466 COMPARE_OP           (==)
+             470 POP_JUMP_IF_FALSE    (to 630)
+
+240:         474 LOAD_FAST            (byte)
+             476 LOAD_CONST           ((251, 252, 253, 254))
+             478 CONTAINS_OP          (in)
+             482 POP_JUMP_IF_FALSE    (to 516)
+
+241:         486 LOAD_FAST_LOAD_FAST  (byte, self)
+             488 STORE_ATTR           (command)
+
+242:         498 LOAD_CONST           (2)
+             500 LOAD_FAST            (self)
+             502 STORE_ATTR           (state)
+             512 JUMP_BACKWARD        (to 314)
+
+243:     >>  516 LOAD_FAST            (byte)
+             518 LOAD_CONST           (250)
+             520 COMPARE_OP           (==)
+             524 POP_JUMP_IF_FALSE    (to 546)
+
+244:         528 LOAD_CONST           (3)
+             530 LOAD_FAST            (self)
+             532 STORE_ATTR           (state)
+             542 JUMP_BACKWARD        (to 314)
+
+246:     >>  546 LOAD_FAST            (byte)
+             548 LOAD_CONST           (255)
+             550 COMPARE_OP           (==)
+             554 POP_JUMP_IF_FALSE    (to 612)
+
+247:         558 LOAD_FAST            (self)
+             560 LOAD_ATTR            (buffer)
+             580 LOAD_ATTR            (NULL|self + append)
+             600 LOAD_FAST            (byte)
+             602 CALL                 (1 positional)
+             610 POP_TOP
+
+248:     >>  612 LOAD_CONST           (0)
+             614 LOAD_FAST            (self)
+             616 STORE_ATTR           (state)
+             626 JUMP_BACKWARD        (to 314)
+
+249:     >>  630 LOAD_FAST            (self)
+             632 LOAD_ATTR            (state)
+             652 LOAD_CONST           (2)
+             654 COMPARE_OP           (==)
+             658 POP_JUMP_IF_FALSE    (to 796)
+
+250:         662 LOAD_FAST            (self)
+             664 LOAD_ATTR            (command)
+             684 LOAD_CONST           ((251, 252))
+             686 CONTAINS_OP          (in)
+             690 POP_JUMP_IF_FALSE    (to 698)
+             694 LOAD_CONST           (254)
+             696 JUMP_FORWARD         (to 700)
+         >>  698 LOAD_CONST           (252)
+         >>  700 STORE_FAST           (reply)
+
+251:         702 LOAD_FAST            (self)
+             704 LOAD_ATTR            (sock)
+             724 LOAD_ATTR            (NULL|self + sendall)
+             744 LOAD_GLOBAL          (NULL + bytes)
+             754 LOAD_CONST           (255)
+             756 LOAD_FAST_LOAD_FAST  (reply, byte)
+             758 BUILD_TUPLE          3
+             760 CALL                 (1 positional)
+             768 CALL                 (1 positional)
+             776 POP_TOP
+
+252:     >>  778 LOAD_CONST           (0)
+             780 LOAD_FAST            (self)
+             782 STORE_ATTR           (state)
+             792 JUMP_BACKWARD        (to 314)
+
+253:     >>  796 LOAD_FAST            (self)
+             798 LOAD_ATTR            (state)
+             818 LOAD_CONST           (3)
+             820 COMPARE_OP           (==)
+             824 POP_JUMP_IF_FALSE    (to 866)
+
+254:         828 LOAD_FAST            (byte)
+             830 LOAD_CONST           (255)
+             832 COMPARE_OP           (==)
+             836 POP_JUMP_IF_FALSE    (to 860)
+
+255:         840 LOAD_CONST           (4)
+             842 LOAD_FAST            (self)
+             844 STORE_ATTR           (state)
+             854 EXTENDED_ARG         (256)
+             856 JUMP_BACKWARD        (to 314)
+
+254:     >>  860 EXTENDED_ARG         (256)
+             862 JUMP_BACKWARD        (to 314)
+
+256:     >>  866 LOAD_FAST            (self)
+             868 LOAD_ATTR            (state)
+             888 LOAD_CONST           (4)
+             890 COMPARE_OP           (==)
+             894 POP_JUMP_IF_TRUE     (to 904)
+             898 EXTENDED_ARG         (256)
+             900 JUMP_BACKWARD        (to 314)
+
+257:     >>  904 LOAD_FAST            (byte)
+             906 LOAD_CONST           (240)
+             908 COMPARE_OP           (==)
+             912 POP_JUMP_IF_FALSE    (to 920)
+             916 LOAD_CONST           (0)
+             918 JUMP_FORWARD         (to 922)
+         >>  920 LOAD_CONST           (3)
+         >>  922 LOAD_FAST            (self)
+             924 STORE_ATTR           (state)
+             934 EXTENDED_ARG         (256)
+             936 JUMP_BACKWARD        (to 314)
+
+233:     >>  940 END_FOR
+             942 POP_TOP
+
+222:         944 LOAD_FAST_LOAD_FAST  (marker, self)
+         >>  946 LOAD_ATTR            (buffer)
+             966 CONTAINS_OP          (not in)
+             970 POP_JUMP_IF_FALSE    (to 980)
+             974 EXTENDED_ARG         (256)
+             976 JUMP_BACKWARD        (to 82)
+
+258:     >>  980 LOAD_FAST            (self)
+             982 LOAD_ATTR            (buffer)
+            1002 LOAD_ATTR            (NULL|self + index)
+            1022 LOAD_FAST            (marker)
+            1024 CALL                 (1 positional)
+            1032 LOAD_GLOBAL          (NULL + len)
+            1042 LOAD_FAST            (marker)
+            1044 CALL                 (1 positional)
+            1052 BINARY_OP            (+)
+            1056 STORE_FAST           (end)
+
+259:        1058 LOAD_GLOBAL          (NULL + bytes)
+            1068 LOAD_FAST            (self)
+            1070 LOAD_ATTR            (buffer)
+            1090 LOAD_CONST           (None)
+            1092 LOAD_FAST            (end)
+            1094 BINARY_SLICE
+            1096 CALL                 (1 positional)
+            1104 STORE_FAST           (out)
+
+260:        1106 LOAD_FAST            (self)
+            1108 LOAD_ATTR            (buffer)
+            1128 LOAD_CONST           (None)
+            1130 LOAD_FAST            (end)
+            1132 BUILD_SLICE          2
+            1134 DELETE_SUBSCR
+
+261:        1136 LOAD_FAST            (out)
+            1138 RETURN_VALUE
+            1140 PUSH_EXC_INFO
+
+229:        1142 LOAD_GLOBAL          (socket)
+            1152 LOAD_ATTR            (timeout)
+            1172 CHECK_EXC_MATCH
+            1174 POP_JUMP_IF_FALSE    (to 1212)
+            1178 STORE_FAST           (exc)
+
+230:        1180 LOAD_GLOBAL          (NULL + ToolError)
+            1190 LOAD_CONST           ("Telnet 等待提示符超时")
+            1192 CALL                 (1 positional)
+            1200 LOAD_FAST            (exc)
+            1202 RAISE_VARARGS        (exception instance with __cause__)
+            1204 LOAD_CONST           (None)
+            1206 STORE_FAST           (exc)
+            1208 DELETE_FAST          (exc)
+            1210 RERAISE              1
+
+229:     >> 1212 RERAISE              0
+            1214 COPY                 3
+            1216 POP_EXCEPT
+            1218 RERAISE              1
+
+ExceptionTable:
+  220 to 272 -> 1140 [0]
+  1140 to 1178 -> 1214 [1] lasti
+  1180 to 1202 -> 1204 [1] lasti
+  1204 to 1212 -> 1214 [1] lasti

@@ -1,0 +1,76 @@
+# 发布包 commit 与 PR#34 包含关系 · git 取证原始输出
+# 生成时间: 2026-10-21 10:38:33 +08:00  仓库: firmware\ponwrt-hg5585f (shallow clone)
+# 注意: 本仓库是浅克隆, .git/shallow 的 graft 根 = edaeeb3 (Merge pull request #34)
+
+## 1) git log --oneline --graph (最近 15 条)
+* 0d2b2a4 2026-10-21 09:50:34 +0800  (HEAD -> master) tempinfo: 补光模块四项 + JSON/短格式 + 修两个 bug
+* ffd1dd6 2026-10-20 22:16:22 +0800  hg5585f: 硬件卸载恒开 + packet_steering=2 + 绑核/温度服务
+* e585ae8 2026-10-18 13:35:58 +0800  (origin/master) fix(ci): 清理残包误删 Go 模块元数据，导致 geoview/hysteria 编译失败
+* 96ff7a3 2026-10-18 09:52:47 +0800  ci: 工具链缓存 + 缓存 key 周号化 + 下载重试，编译时间目标砍半
+* 5b12fdb 2026-10-17 21:56:04 +0800  hg5585f: 分流内核改为编译时三选一，默认 Passwall
+* 5afb8e7 2026-10-17 20:59:48 +0800  hg5585f: 修复 miniupnpd 构建失败，改为 PPPoE 主路由形态
+* ef99ae5 2026-10-17 17:32:00 +0800  hg5585f: 收敛到 CT/CU 两个 profile，预置联通 10G-EPON 桥接
+* edaeeb3 2026-10-16 23:01:49 +0800  (grafted) Merge pull request #34
+
+## 2) .git/shallow 内容 (graft 根)
+edaeeb300c9d71149f2fa1ee15e9afc2d7eb4c26
+
+## 3) git rev-parse HEAD
+0d2b2a48faf97c9f176d096f707e613652a9e85b
+
+## 4) git show -s 5b12fdb (发布包 commit, 由 profiles.json / 包内 metadata 指向)
+5b12fdbce807a10b2c2ef5480fcfc2a8e82c696f
+2026-10-17 21:56:04 +0800
+hg5585f: 分流内核改为编译时三选一，默认 Passwall
+
+## 5) git show -s edaeeb3 (PR #34 合并提交)
+edaeeb300c9d71149f2fa1ee15e9afc2d7eb4c26
+2026-10-16 23:01:49 +0800
+Merge pull request #34
+
+## 6) 祖先关系检查 (exit 0 = 是祖先)
+git merge-base --is-ancestor edaeeb3 5b12fdb -> exit 0
+git merge-base --is-ancestor 5b12fdb HEAD    -> exit 0
+
+## 7) 发布 commit 下的 CT dtsi 内容 (git show 5b12fdb:target/linux/airoha/dts/an7581-fiberhome-hg5585f-ct-common.dtsi)
+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+/dts-v1/;
+
+#include "an7581-fiberhome-hg5585f-common.dtsi"
+
+&mdio {
+	/*
+	 * The explicit GPY211C ID lets phylib register GPIO34 before the first
+	 * MDIO transaction, so warm boots cannot probe the PHY while it is reset.
+	 */
+	gpy211: ethernet-phy@7 {
+		compatible = "ethernet-phy-id67c9.de10";
+		reg = <7>;
+		reset-gpios = <&en7581_pinctrl 34 GPIO_ACTIVE_LOW>;
+		reset-assert-us = <100000>;
+		reset-deassert-us = <100000>;
+	};
+};
+
+&eth_pcs {
+	status = "okay";
+};
+
+&gdm4 {
+	nvmem-cells = <&fiberhome_base_mac>;
+	nvmem-cell-names = "mac-address";
+	status = "okay";
+	phy-handle = <&gpy211>;
+	phy-mode = "2500base-x";
+	openwrt,netdev-name = "lan1";
+};
+
+## 8) edaeeb3 -> 5b12fdb 与 5b12fdb -> HEAD 在 target/linux/airoha/dts 下的差异 (空 = 无差异)
+--- edaeeb3..5b12fdb ---
+--- 5b12fdb..HEAD ---
+
+## 9) upstream (pbs05/ponwrt) 的 PR #34 head 引用 (git ls-remote)
+0bfa4c42683a3c5d30a1f05798990ec6ddde5d38	refs/pull/34/head
+
+## 10) 本仓 README-HG5585F.md 中的 PR 引用行
+- [pbs05/ponwrt](https://github.com/pbs05/ponwrt) · [Issue #42 10G-EPON 掉线](https://github.com/pbs05/ponwrt/issues/42) · [PR #34 HG5585F-CT PHY](https://github.com/pbs05/ponwrt/pull/34) · [PR #43 HG5585F-CU LED](https://github.com/pbs05/ponwrt/pull/43)

@@ -1,0 +1,1821 @@
+﻿d with -1. 2164264183 bytes read
+ERROR:   nand_read(30803968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(30935040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(31066112) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(31197184) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(31328256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(31459328) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(31590400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(31721472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(31852544) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(31983616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(32114688) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(32245760) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(32376832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(32507904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(32638976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(32770048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(32901120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(33032192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(33163264) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(33294336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(33425408) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(33556480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(33687552) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(33818624) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(33949696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(34080768) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(34211840) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(34342912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(34473984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(34605056) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(34736128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(34867200) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(34998272) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(35129344) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(35260416) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(35391488) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(35522560) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(35653632) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(35784704) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(35915776) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(36046848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(36177920) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(36308992) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(36440064) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(36571136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(36702208) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(36833280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(36964352) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(37095424) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(37226496) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(37357568) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(37488640) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(37619712) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(37750784) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(37881856) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(38012928) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(38144000) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(38275072) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(38406144) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(38537216) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(38668288) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(38799360) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(38930432) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(39061504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(39192576) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(39323648) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(39454720) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(39585792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(39716864) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(39847936) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(39979008) failed with -1. 2164264183 bytes read
+NOTICE:  UBI: Bad EC magic in block 305 ffffffff
+NOTICE:  UBI: Bad EC magic in block 306 ffffffff
+NOTICE:  UBI: Bad EC magic in block 307 ffffffff
+NOTICE:  UBI: Bad EC magic in block 308 ffffffff
+NOTICE:  UBI: Bad EC magic in block 309 ffffffff
+NOTICE:  UBI: Bad EC magic in block 310 ffffffff
+NOTICE:  UBI: Bad EC magic in block 311 ffffffff
+NOTICE:  UBI: Bad EC magic in block 312 ffffffff
+NOTICE:  UBI: Bad EC magic in block 313 ffffffff
+NOTICE:  UBI: Bad EC magic in block 314 ffffffff
+NOTICE:  UBI: Bad EC magic in block 315 ffffffff
+NOTICE:  UBI: Bad EC magic in block 316 ffffffff
+NOTICE:  UBI: Bad EC magic in block 317 ffffffff
+NOTICE:  UBI: Bad EC magic in block 318 ffffffff
+NOTICE:  UBI: Bad EC magic in block 319 ffffffff
+NOTICE:  UBI: Bad EC magic in block 320 ffffffff
+NOTICE:  UBI: Bad EC magic in block 321 ffffffff
+NOTICE:  UBI: Bad EC magic in block 322 ffffffff
+NOTICE:  UBI: Bad EC magic in block 323 ffffffff
+NOTICE:  UBI: Bad EC magic in block 324 ffffffff
+NOTICE:  UBI: Bad EC magic in block 325 ffffffff
+NOTICE:  UBI: Bad EC magic in block 326 ffffffff
+NOTICE:  UBI: Bad EC magic in block 327 ffffffff
+NOTICE:  UBI: Bad EC magic in block 328 ffffffff
+NOTICE:  UBI: Bad EC magic in block 329 ffffffff
+NOTICE:  UBI: Bad EC magic in block 330 ffffffff
+NOTICE:  UBI: Bad EC magic in block 331 ffffffff
+NOTICE:  UBI: Bad EC magic in block 332 ffffffff
+NOTICE:  UBI: Bad EC magic in block 333 ffffffff
+NOTICE:  UBI: Bad EC magic in block 334 ffffffff
+NOTICE:  UBI: Bad EC magic in block 335 ffffffff
+NOTICE:  UBI: Bad EC magic in block 336 ffffffff
+NOTICE:  UBI: Bad EC magic in block 337 ffffffff
+NOTICE:  UBI: Bad EC magic in block 338 ffffffff
+NOTICE:  UBI: Bad EC magic in block 339 ffffffff
+NOTICE:  UBI: Bad EC magic in block 340 ffffffff
+NOTICE:  UBI: Bad EC magic in block 341 ffffffff
+NOTICE:  UBI: Bad EC magic in block 342 ffffffff
+NOTICE:  UBI: Bad EC magic in block 343 ffffffff
+NOTICE:  UBI: Bad EC magic in block 344 ffffffff
+NOTICE:  UBI: Bad EC magic in block 345 ffffffff
+NOTICE:  UBI: Bad EC magic in block 346 ffffffff
+NOTICE:  UBI: Bad EC magic in block 347 ffffffff
+NOTICE:  UBI: Bad EC magic in block 348 ffffffff
+NOTICE:  UBI: Bad EC magic in block 349 ffffffff
+NOTICE:  UBI: Bad EC magic in block 350 ffffffff
+NOTICE:  UBI: Bad EC magic in block 351 ffffffff
+NOTICE:  UBI: Bad EC magic in block 352 ffffffff
+NOTICE:  UBI: Bad EC magic in block 353 ffffffff
+NOTICE:  UBI: Bad EC magic in block 354 ffffffff
+NOTICE:  UBI: Bad EC magic in block 355 ffffffff
+NOTICE:  UBI: Bad EC magic in block 356 ffffffff
+NOTICE:  UBI: Bad EC magic in block 357 ffffffff
+NOTICE:  UBI: Bad EC magic in block 358 ffffffff
+NOTICE:  UBI: Bad EC magic in block 359 ffffffff
+NOTICE:  UBI: Bad EC magic in block 360 ffffffff
+NOTICE:  UBI: Bad EC magic in block 361 ffffffff
+NOTICE:  UBI: Bad EC magic in block 362 ffffffff
+NOTICE:  UBI: Bad EC magic in block 363 ffffffff
+NOTICE:  UBI: Bad EC magic in block 364 ffffffff
+NOTICE:  UBI: Bad EC magic in block 365 ffffffff
+NOTICE:  UBI: Bad EC magic in block 366 ffffffff
+NOTICE:  UBI: Bad EC magic in block 367 ffffffff
+NOTICE:  UBI: Bad EC magic in block 368 ffffffff
+NOTICE:  UBI: Bad EC magic in block 369 ffffffff
+NOTICE:  UBI: Bad EC magic in block 370 ffffffff
+NOTICE:  UBI: Bad EC magic in block 371 ffffffff
+NOTICE:  UBI: Bad EC magic in block 372 ffffffff
+NOTICE:  UBI: Bad EC magic in block 373 ffffffff
+NOTICE:  UBI: Bad EC magic in block 374 ffffffff
+NOTICE:  UBI: Bad EC magic in block 375 ffffffff
+NOTICE:  UBI: Bad EC magic in block 376 ffffffff
+NOTICE:  UBI: Bad EC magic in block 377 ffffffff
+NOTICE:  UBI: Bad EC magic in block 378 ffffffff
+NOTICE:  UBI: Bad EC magic in block 379 ffffffff
+NOTICE:  UBI: Bad EC magic in block 380 ffffffff
+NOTICE:  UBI: Bad EC magic in block 381 ffffffff
+NOTICE:  UBI: Bad EC magic in block 382 ffffffff
+NOTICE:  UBI: Bad EC magic in block 383 ffffffff
+NOTICE:  UBI: Bad EC magic in block 384 ffffffff
+NOTICE:  UBI: Bad EC magic in block 385 ffffffff
+NOTICE:  UBI: Bad EC magic in block 386 ffffffff
+NOTICE:  UBI: Bad EC magic in block 387 ffffffff
+NOTICE:  UBI: Bad EC magic in block 388 ffffffff
+NOTICE:  UBI: Bad EC magic in block 389 ffffffff
+NOTICE:  UBI: Bad EC magic in block 390 ffffffff
+NOTICE:  UBI: Bad EC magic in block 391 ffffffff
+NOTICE:  UBI: Bad EC magic in block 392 ffffffff
+NOTICE:  UBI: Bad EC magic in block 393 ffffffff
+NOTICE:  UBI: Bad EC magic in block 394 ffffffff
+NOTICE:  UBI: Bad EC magic in block 395 ffffffff
+NOTICE:  UBI: Bad EC magic in block 396 ffffffff
+NOTICE:  UBI: Bad EC magic in block 397 ffffffff
+NOTICE:  UBI: Bad EC magic in block 398 ffffffff
+NOTICE:  UBI: Bad EC magic in block 399 ffffffff
+NOTICE:  UBI: Bad EC magic in block 400 ffffffff
+NOTICE:  UBI: Bad EC magic in block 401 ffffffff
+NOTICE:  UBI: Bad EC magic in block 402 ffffffff
+NOTICE:  UBI: Bad EC magic in block 403 ffffffff
+NOTICE:  UBI: Bad EC magic in block 404 ffffffff
+NOTICE:  UBI: Bad EC magic in block 405 ffffffff
+NOTICE:  UBI: Bad EC magic in block 406 ffffffff
+NOTICE:  UBI: Bad EC magic in block 407 ffffffff
+NOTICE:  UBI: Bad EC magic in block 408 ffffffff
+NOTICE:  UBI: Bad EC magic in block 409 ffffffff
+NOTICE:  UBI: Bad EC magic in block 410 ffffffff
+NOTICE:  UBI: Bad EC magic in block 411 ffffffff
+NOTICE:  UBI: Bad EC magic in block 412 ffffffff
+NOTICE:  UBI: Bad EC magic in block 413 ffffffff
+NOTICE:  UBI: Bad EC magic in block 414 ffffffff
+NOTICE:  UBI: Bad EC magic in block 415 ffffffff
+NOTICE:  UBI: Bad EC magic in block 416 ffffffff
+NOTICE:  UBI: Bad EC magic in block 417 ffffffff
+NOTICE:  UBI: Bad EC magic in block 418 ffffffff
+NOTICE:  UBI: Bad EC magic in block 419 ffffffff
+NOTICE:  UBI: Bad EC magic in block 420 ffffffff
+NOTICE:  UBI: Bad EC magic in block 421 ffffffff
+NOTICE:  UBI: Bad EC magic in block 422 ffffffff
+NOTICE:  UBI: Bad EC magic in block 423 ffffffff
+NOTICE:  UBI: Bad EC magic in block 424 ffffffff
+NOTICE:  UBI: Bad EC magic in block 425 ffffffff
+NOTICE:  UBI: Bad EC magic in block 426 ffffffff
+NOTICE:  UBI: Bad EC magic in block 427 ffffffff
+NOTICE:  UBI: Bad EC magic in block 428 ffffffff
+NOTICE:  UBI: Bad EC magic in block 429 ffffffff
+NOTICE:  UBI: Bad EC magic in block 430 ffffffff
+NOTICE:  UBI: Bad EC magic in block 431 ffffffff
+NOTICE:  UBI: Bad EC magic in block 432 ffffffff
+NOTICE:  UBI: Bad EC magic in block 433 ffffffff
+NOTICE:  UBI: Bad EC magic in block 434 ffffffff
+NOTICE:  UBI: Bad EC magic in block 435 ffffffff
+NOTICE:  UBI: Bad EC magic in block 436 ffffffff
+NOTICE:  UBI: Bad EC magic in block 437 ffffffff
+NOTICE:  UBI: Bad EC magic in block 438 ffffffff
+NOTICE:  UBI: Bad EC magic in block 439 ffffffff
+NOTICE:  UBI: Bad EC magic in block 440 ffffffff
+NOTICE:  UBI: Bad EC magic in block 441 ffffffff
+NOTICE:  UBI: Bad EC magic in block 442 ffffffff
+NOTICE:  UBI: Bad EC magic in block 443 ffffffff
+NOTICE:  UBI: Bad EC magic in block 444 ffffffff
+NOTICE:  UBI: Bad EC magic in block 445 ffffffff
+NOTICE:  UBI: Bad EC magic in block 446 ffffffff
+NOTICE:  UBI: Bad EC magic in block 447 ffffffff
+NOTICE:  UBI: Bad EC magic in block 448 ffffffff
+NOTICE:  UBI: Bad EC magic in block 449 ffffffff
+NOTICE:  UBI: Bad EC magic in block 450 ffffffff
+NOTICE:  UBI: Bad EC magic in block 451 ffffffff
+NOTICE:  UBI: Bad EC magic in block 452 ffffffff
+NOTICE:  UBI: Bad EC magic in block 453 ffffffff
+NOTICE:  UBI: Bad EC magic in block 454 ffffffff
+NOTICE:  UBI: Bad EC magic in block 455 ffffffff
+NOTICE:  UBI: Bad EC magic in block 456 ffffffff
+NOTICE:  UBI: Bad EC magic in block 457 ffffffff
+NOTICE:  UBI: Bad EC magic in block 458 ffffffff
+NOTICE:  UBI: Bad EC magic in block 459 ffffffff
+NOTICE:  UBI: Bad EC magic in block 460 ffffffff
+NOTICE:  UBI: Bad EC magic in block 461 ffffffff
+NOTICE:  UBI: Bad EC magic in block 462 ffffffff
+NOTICE:  UBI: Bad EC magic in block 463 ffffffff
+NOTICE:  UBI: Bad EC magic in block 464 ffffffff
+NOTICE:  UBI: Bad EC magic in block 465 ffffffff
+NOTICE:  UBI: Bad EC magic in block 466 ffffffff
+NOTICE:  UBI: Bad EC magic in block 467 ffffffff
+NOTICE:  UBI: Bad EC magic in block 468 ffffffff
+NOTICE:  UBI: Bad EC magic in block 469 ffffffff
+NOTICE:  UBI: Bad EC magic in block 470 ffffffff
+NOTICE:  UBI: Bad EC magic in block 471 ffffffff
+NOTICE:  UBI: Bad EC magic in block 472 ffffffff
+NOTICE:  UBI: Bad EC magic in block 473 ffffffff
+NOTICE:  UBI: Bad EC magic in block 474 ffffffff
+NOTICE:  UBI: Bad EC magic in block 475 ffffffff
+NOTICE:  UBI: Bad EC magic in block 476 ffffffff
+NOTICE:  UBI: Bad EC magic in block 477 ffffffff
+NOTICE:  UBI: Bad EC magic in block 478 ffffffff
+NOTICE:  UBI: Bad EC magic in block 479 ffffffff
+NOTICE:  UBI: Bad EC magic in block 480 ffffffff
+NOTICE:  UBI: Bad EC magic in block 481 ffffffff
+NOTICE:  UBI: Bad EC magic in block 482 ffffffff
+NOTICE:  UBI: Bad EC magic in block 483 ffffffff
+NOTICE:  UBI: Bad EC magic in block 484 ffffffff
+NOTICE:  UBI: Bad EC magic in block 485 ffffffff
+NOTICE:  UBI: Bad EC magic in block 486 ffffffff
+NOTICE:  UBI: Bad EC magic in block 487 ffffffff
+NOTICE:  UBI: Bad EC magic in block 488 ffffffff
+NOTICE:  UBI: Bad EC magic in block 489 ffffffff
+NOTICE:  UBI: Bad EC magic in block 490 ffffffff
+NOTICE:  UBI: Bad EC magic in block 491 ffffffff
+NOTICE:  UBI: Bad EC magic in block 492 ffffffff
+NOTICE:  UBI: Bad EC magic in block 493 ffffffff
+NOTICE:  UBI: Bad EC magic in block 494 ffffffff
+NOTICE:  UBI: Bad EC magic in block 495 ffffffff
+NOTICE:  UBI: Bad EC magic in block 496 ffffffff
+NOTICE:  UBI: Bad EC magic in block 497 ffffffff
+NOTICE:  UBI: Bad EC magic in block 498 ffffffff
+NOTICE:  UBI: Bad EC magic in block 499 ffffffff
+NOTICE:  UBI: Bad EC magic in block 500 ffffffff
+NOTICE:  UBI: Bad EC magic in block 501 ffffffff
+NOTICE:  UBI: Bad EC magic in block 502 ffffffff
+NOTICE:  UBI: Bad EC magic in block 503 ffffffff
+NOTICE:  UBI: Bad EC magic in block 504 ffffffff
+NOTICE:  UBI: Bad EC magic in block 505 ffffffff
+NOTICE:  UBI: Bad EC magic in block 506 ffffffff
+NOTICE:  UBI: Bad EC magic in block 507 ffffffff
+NOTICE:  UBI: Bad EC magic in block 508 ffffffff
+NOTICE:  UBI: Bad EC magic in block 509 ffffffff
+NOTICE:  UBI: Bad EC magic in block 510 ffffffff
+NOTICE:  UBI: Bad EC magic in block 511 ffffffff
+NOTICE:  UBI: Bad EC magic in block 512 ffffffff
+NOTICE:  UBI: Bad EC magic in block 513 ffffffff
+NOTICE:  UBI: Bad EC magic in block 514 ffffffff
+NOTICE:  UBI: Bad EC magic in block 515 ffffffff
+NOTICE:  UBI: Bad EC magic in block 516 ffffffff
+NOTICE:  UBI: Bad EC magic in block 517 ffffffff
+NOTICE:  UBI: Bad EC magic in block 518 ffffffff
+NOTICE:  UBI: Bad EC magic in block 519 ffffffff
+NOTICE:  UBI: Bad EC magic in block 520 ffffffff
+NOTICE:  UBI: Bad EC magic in block 521 ffffffff
+NOTICE:  UBI: Bad EC magic in block 522 ffffffff
+NOTICE:  UBI: Bad EC magic in block 523 ffffffff
+NOTICE:  UBI: Bad EC magic in block 524 ffffffff
+NOTICE:  UBI: Bad EC magic in block 525 ffffffff
+NOTICE:  UBI: Bad EC magic in block 526 ffffffff
+NOTICE:  UBI: Bad EC magic in block 527 ffffffff
+NOTICE:  UBI: Bad EC magic in block 528 ffffffff
+NOTICE:  UBI: Bad EC magic in block 529 ffffffff
+NOTICE:  UBI: Bad EC magic in block 530 ffffffff
+NOTICE:  UBI: Bad EC magic in block 531 ffffffff
+NOTICE:  UBI: Bad EC magic in block 532 ffffffff
+NOTICE:  UBI: Bad EC magic in block 533 ffffffff
+NOTICE:  UBI: Bad EC magic in block 534 ffffffff
+NOTICE:  UBI: Bad EC magic in block 535 ffffffff
+NOTICE:  UBI: Bad EC magic in block 536 ffffffff
+NOTICE:  UBI: Bad EC magic in block 537 ffffffff
+NOTICE:  UBI: Bad EC magic in block 538 ffffffff
+NOTICE:  UBI: Bad EC magic in block 539 ffffffff
+NOTICE:  UBI: Bad EC magic in block 540 ffffffff
+NOTICE:  UBI: Bad EC magic in block 541 ffffffff
+NOTICE:  UBI: Bad EC magic in block 542 ffffffff
+NOTICE:  UBI: Bad EC magic in block 543 ffffffff
+NOTICE:  UBI: Bad EC magic in block 544 ffffffff
+NOTICE:  UBI: Bad EC magic in block 545 ffffffff
+NOTICE:  UBI: Bad EC magic in block 546 ffffffff
+NOTICE:  UBI: Bad EC magic in block 547 ffffffff
+NOTICE:  UBI: Bad EC magic in block 548 ffffffff
+NOTICE:  UBI: Bad EC magic in block 549 ffffffff
+NOTICE:  UBI: Bad EC magic in block 550 ffffffff
+ERROR:   nand_read(72353792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(72484864) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(72615936) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(72747008) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(72878080) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(73009152) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(73140224) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(73271296) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(73402368) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(73533440) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(73664512) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(73795584) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(73926656) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(74057728) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(74188800) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(74319872) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(74450944) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(74582016) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(74713088) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(74844160) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(74975232) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(75106304) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(75237376) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(75368448) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(75499520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(75630592) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(75761664) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(75892736) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(76023808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(76154880) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(76285952) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(76417024) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(76548096) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(76679168) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(76810240) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(76941312) failed with -1. 2164264183 bytes read
+NOTICE:  UBI: Bad EC magic in block 587 ffffffff
+NOTICE:  UBI: Bad EC magic in block 588 ffffffff
+NOTICE:  UBI: Bad EC magic in block 589 ffffffff
+NOTICE:  UBI: Bad EC magic in block 590 ffffffff
+NOTICE:  UBI: Bad EC magic in block 591 ffffffff
+NOTICE:  UBI: Bad EC magic in block 592 ffffffff
+NOTICE:  UBI: Bad EC magic in block 593 ffffffff
+NOTICE:  UBI: Bad EC magic in block 594 ffffffff
+NOTICE:  UBI: Bad EC magic in block 595 ffffffff
+NOTICE:  UBI: Bad EC magic in block 596 ffffffff
+NOTICE:  UBI: Bad EC magic in block 597 ffffffff
+NOTICE:  UBI: Bad EC magic in block 598 ffffffff
+ERROR:   nand_read(78645248) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(78776320) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(78907392) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(79038464) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(79169536) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(79300608) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(79431680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(79562752) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(79693824) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(79824896) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(79955968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(80087040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(80218112) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(80349184) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(80480256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(80611328) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(80742400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(80873472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(81004544) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(81135616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(81266688) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(81397760) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(81528832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(81659904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(81790976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(81922048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(82053120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(82184192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(82315264) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(82446336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(82577408) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(82708480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(82839552) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(82970624) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(83101696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(83232768) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(83363840) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(83494912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(83625984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(83757056) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(83888128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(84019200) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(84150272) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(84281344) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(84412416) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(84543488) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(84674560) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(84805632) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(84936704) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(85067776) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(85198848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(85329920) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(85460992) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(85592064) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(85723136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(85854208) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(85985280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(86116352) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(86247424) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(86378496) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(86509568) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(86640640) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(86771712) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(86902784) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(87033856) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(87164928) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(87296000) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(87427072) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(87558144) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(87689216) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(87820288) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(87951360) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(88082432) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(88213504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(88344576) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(88475648) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(88606720) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(88737792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(88868864) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(88999936) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(89131008) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(89262080) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(89393152) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(89524224) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(89655296) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(89786368) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(89917440) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(90048512) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(90179584) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(90310656) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(90441728) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(90572800) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(90703872) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(90834944) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(90966016) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(91097088) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(91228160) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(91359232) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(91490304) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(91621376) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(91752448) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(91883520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(92014592) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(92145664) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(92276736) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(92407808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(92538880) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(92669952) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(92801024) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(92932096) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(93063168) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(93194240) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(93325312) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(93456384) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(93587456) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(93718528) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(93849600) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(93980672) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(94111744) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(94242816) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(94373888) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(94504960) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(94636032) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(94767104) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(94898176) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(95029248) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(95160320) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(95291392) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(95422464) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(95553536) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(95684608) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(95815680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(95946752) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(96077824) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(96208896) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(96339968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(96471040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(96602112) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(96733184) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(96864256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(96995328) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(97126400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(97257472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(97388544) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(97519616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(97650688) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(97781760) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(97912832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(98043904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(98174976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(98306048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(98437120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(98568192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(98699264) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(98830336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(98961408) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(99092480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(99223552) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(99354624) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(99485696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(99616768) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(99747840) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(99878912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(100009984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(100141056) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(100272128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(100403200) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(100534272) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(100665344) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(100796416) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(100927488) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(101058560) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(101189632) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(101320704) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(101451776) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(101582848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(101713920) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(101844992) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(101976064) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(102107136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(102238208) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(102369280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(102500352) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(102631424) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(102762496) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(102893568) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(103024640) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(103155712) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(103286784) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(103417856) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(103548928) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(103680000) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(103811072) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(103942144) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(104073216) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(104204288) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(104335360) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(104466432) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(104597504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(104728576) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(104859648) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(104990720) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(105121792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(105252864) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(105383936) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(105515008) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(105646080) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(105777152) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(105908224) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(106039296) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(106170368) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(106301440) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(106432512) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(106563584) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(106694656) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(106825728) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(106956800) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(107087872) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(107218944) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(107350016) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(107481088) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(107612160) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(107743232) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(107874304) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(108005376) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(108136448) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(108267520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(108398592) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(108529664) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(108660736) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(108791808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(108922880) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(109053952) failed with -1. 2164264183 bytes read
+NOTICE:  UBI: Bad EC magic in block 832 ffffffff
+NOTICE:  UBI: Bad EC magic in block 833 ffffffff
+NOTICE:  UBI: Bad EC magic in block 834 ffffffff
+NOTICE:  UBI: Bad EC magic in block 835 ffffffff
+NOTICE:  UBI: Bad EC magic in block 836 ffffffff
+NOTICE:  UBI: Bad EC magic in block 837 ffffffff
+NOTICE:  UBI: Bad EC magic in block 838 ffffffff
+NOTICE:  UBI: Bad EC magic in block 839 ffffffff
+NOTICE:  UBI: Bad EC magic in block 840 ffffffff
+NOTICE:  UBI: Bad EC magic in block 841 ffffffff
+NOTICE:  UBI: Bad EC magic in block 842 ffffffff
+NOTICE:  UBI: Bad EC magic in block 843 ffffffff
+NOTICE:  UBI: Bad EC magic in block 844 ffffffff
+NOTICE:  UBI: Bad EC magic in block 845 ffffffff
+NOTICE:  UBI: Bad EC magic in block 846 ffffffff
+NOTICE:  UBI: Bad EC magic in block 847 ffffffff
+NOTICE:  UBI: Bad EC magic in block 848 ffffffff
+NOTICE:  UBI: Bad EC magic in block 849 ffffffff
+NOTICE:  UBI: Bad EC magic in block 850 ffffffff
+NOTICE:  UBI: Bad EC magic in block 851 ffffffff
+NOTICE:  UBI: Bad EC magic in block 852 ffffffff
+NOTICE:  UBI: Bad EC magic in block 853 ffffffff
+NOTICE:  UBI: Bad EC magic in block 854 ffffffff
+NOTICE:  UBI: Bad EC magic in block 855 ffffffff
+NOTICE:  UBI: Bad EC magic in block 856 ffffffff
+NOTICE:  UBI: Bad EC magic in block 857 ffffffff
+NOTICE:  UBI: Bad EC magic in block 858 ffffffff
+NOTICE:  UBI: Bad EC magic in block 859 ffffffff
+NOTICE:  UBI: Bad EC magic in block 860 ffffffff
+NOTICE:  UBI: Bad EC magic in block 861 ffffffff
+NOTICE:  UBI: Bad EC magic in block 862 ffffffff
+NOTICE:  UBI: Bad EC magic in block 863 ffffffff
+NOTICE:  UBI: Bad EC magic in block 864 ffffffff
+NOTICE:  UBI: Bad EC magic in block 865 ffffffff
+NOTICE:  UBI: Bad EC magic in block 866 ffffffff
+NOTICE:  UBI: Bad EC magic in block 867 ffffffff
+NOTICE:  UBI: Bad EC magic in block 868 ffffffff
+NOTICE:  UBI: Bad EC magic in block 869 ffffffff
+NOTICE:  UBI: Bad EC magic in block 870 ffffffff
+NOTICE:  UBI: Bad EC magic in block 871 ffffffff
+NOTICE:  UBI: Bad EC magic in block 872 ffffffff
+NOTICE:  UBI: Bad EC magic in block 873 ffffffff
+NOTICE:  UBI: Bad EC magic in block 874 ffffffff
+NOTICE:  UBI: Bad EC magic in block 875 ffffffff
+NOTICE:  UBI: Bad EC magic in block 876 ffffffff
+NOTICE:  UBI: Bad EC magic in block 877 ffffffff
+NOTICE:  UBI: Bad EC magic in block 878 ffffffff
+NOTICE:  UBI: Bad EC magic in block 879 ffffffff
+NOTICE:  UBI: Bad EC magic in block 880 ffffffff
+NOTICE:  UBI: Bad EC magic in block 881 ffffffff
+NOTICE:  UBI: Bad EC magic in block 882 ffffffff
+NOTICE:  UBI: Bad EC magic in block 883 ffffffff
+NOTICE:  UBI: Bad EC magic in block 884 ffffffff
+NOTICE:  UBI: Bad EC magic in block 885 ffffffff
+NOTICE:  UBI: Bad EC magic in block 886 ffffffff
+NOTICE:  UBI: Bad EC magic in block 887 ffffffff
+NOTICE:  UBI: Bad EC magic in block 888 ffffffff
+NOTICE:  UBI: Bad EC magic in block 889 ffffffff
+NOTICE:  UBI: Bad EC magic in block 890 ffffffff
+NOTICE:  UBI: Bad EC magic in block 891 ffffffff
+NOTICE:  UBI: Bad EC magic in block 892 ffffffff
+NOTICE:  UBI: Bad EC magic in block 893 ffffffff
+NOTICE:  UBI: Bad EC magic in block 894 ffffffff
+NOTICE:  UBI: Bad EC magic in block 895 ffffffff
+NOTICE:  UBI: Bad EC magic in block 896 ffffffff
+NOTICE:  UBI: Bad EC magic in block 897 ffffffff
+NOTICE:  UBI: Bad EC magic in block 898 ffffffff
+NOTICE:  UBI: Bad EC magic in block 899 ffffffff
+NOTICE:  UBI: Bad EC magic in block 900 ffffffff
+NOTICE:  UBI: Bad EC magic in block 901 ffffffff
+NOTICE:  UBI: Bad EC magic in block 902 ffffffff
+NOTICE:  UBI: Bad EC magic in block 903 ffffffff
+NOTICE:  UBI: Bad EC magic in block 904 ffffffff
+NOTICE:  UBI: Bad EC magic in block 905 ffffffff
+NOTICE:  UBI: Bad EC magic in block 906 ffffffff
+NOTICE:  UBI: Bad EC magic in block 907 ffffffff
+NOTICE:  UBI: Bad EC magic in block 908 ffffffff
+NOTICE:  UBI: Bad EC magic in block 909 ffffffff
+NOTICE:  UBI: Bad EC magic in block 910 ffffffff
+NOTICE:  UBI: Bad EC magic in block 911 ffffffff
+NOTICE:  UBI: Bad EC magic in block 912 ffffffff
+NOTICE:  UBI: Bad EC magic in block 913 ffffffff
+NOTICE:  UBI: Bad EC magic in block 914 ffffffff
+NOTICE:  UBI: Bad EC magic in block 915 ffffffff
+NOTICE:  UBI: Bad EC magic in block 916 ffffffff
+NOTICE:  UBI: Bad EC magic in block 917 ffffffff
+NOTICE:  UBI: Bad EC magic in block 918 ffffffff
+NOTICE:  UBI: Bad EC magic in block 919 ffffffff
+NOTICE:  UBI: Bad EC magic in block 920 ffffffff
+NOTICE:  UBI: Bad EC magic in block 921 ffffffff
+NOTICE:  UBI: Bad EC magic in block 922 ffffffff
+NOTICE:  UBI: Bad EC magic in block 923 ffffffff
+NOTICE:  UBI: Bad EC magic in block 924 ffffffff
+NOTICE:  UBI: Bad EC magic in block 925 ffffffff
+NOTICE:  UBI: Bad EC magic in block 926 ffffffff
+NOTICE:  UBI: Bad EC magic in block 927 ffffffff
+NOTICE:  UBI: Bad EC magic in block 928 ffffffff
+NOTICE:  UBI: Bad EC magic in block 929 ffffffff
+NOTICE:  UBI: Bad EC magic in block 930 ffffffff
+NOTICE:  UBI: Bad EC magic in block 931 ffffffff
+NOTICE:  UBI: Bad EC magic in block 932 ffffffff
+NOTICE:  UBI: Bad EC magic in block 933 ffffffff
+NOTICE:  UBI: Bad EC magic in block 934 ffffffff
+NOTICE:  UBI: Bad EC magic in block 935 ffffffff
+NOTICE:  UBI: Bad EC magic in block 936 ffffffff
+NOTICE:  UBI: Bad EC magic in block 937 ffffffff
+NOTICE:  UBI: Bad EC magic in block 938 ffffffff
+NOTICE:  UBI: Bad EC magic in block 939 ffffffff
+NOTICE:  UBI: Bad EC magic in block 940 ffffffff
+NOTICE:  UBI: Bad EC magic in block 941 ffffffff
+NOTICE:  UBI: Bad EC magic in block 942 ffffffff
+NOTICE:  UBI: Bad EC magic in block 943 ffffffff
+NOTICE:  UBI: Bad EC magic in block 944 ffffffff
+NOTICE:  UBI: Bad EC magic in block 945 ffffffff
+NOTICE:  UBI: Bad EC magic in block 946 ffffffff
+NOTICE:  UBI: Bad EC magic in block 947 ffffffff
+NOTICE:  UBI: Bad EC magic in block 948 ffffffff
+NOTICE:  UBI: Bad EC magic in block 949 ffffffff
+NOTICE:  UBI: Bad EC magic in block 950 ffffffff
+NOTICE:  UBI: Bad EC magic in block 951 ffffffff
+NOTICE:  UBI: Bad EC magic in block 952 ffffffff
+NOTICE:  UBI: Bad EC magic in block 953 ffffffff
+NOTICE:  UBI: Bad EC magic in block 954 ffffffff
+NOTICE:  UBI: Bad EC magic in block 955 ffffffff
+NOTICE:  UBI: Bad EC magic in block 956 ffffffff
+NOTICE:  UBI: Bad EC magic in block 957 ffffffff
+NOTICE:  UBI: Bad EC magic in block 958 ffffffff
+NOTICE:  UBI: Bad EC magic in block 959 ffffffff
+NOTICE:  UBI: Bad EC magic in block 960 ffffffff
+NOTICE:  UBI: Bad EC magic in block 961 ffffffff
+NOTICE:  UBI: Bad EC magic in block 962 ffffffff
+NOTICE:  UBI: Bad EC magic in block 963 ffffffff
+NOTICE:  UBI: Bad EC magic in block 964 ffffffff
+NOTICE:  UBI: Bad EC magic in block 965 ffffffff
+NOTICE:  UBI: Bad EC magic in block 966 ffffffff
+NOTICE:  UBI: Bad EC magic in block 967 ffffffff
+NOTICE:  UBI: Bad EC magic in block 968 ffffffff
+NOTICE:  UBI: Bad EC magic in block 969 ffffffff
+NOTICE:  UBI: Bad EC magic in block 970 ffffffff
+NOTICE:  UBI: Bad EC magic in block 971 ffffffff
+NOTICE:  UBI: Bad EC magic in block 972 ffffffff
+NOTICE:  UBI: Bad EC magic in block 973 ffffffff
+NOTICE:  UBI: Bad EC magic in block 974 ffffffff
+NOTICE:  UBI: Bad EC magic in block 975 ffffffff
+NOTICE:  UBI: Bad EC magic in block 976 ffffffff
+NOTICE:  UBI: Bad EC magic in block 977 ffffffff
+NOTICE:  UBI: Bad EC magic in block 978 ffffffff
+NOTICE:  UBI: Bad EC magic in block 979 ffffffff
+NOTICE:  UBI: Bad EC magic in block 980 ffffffff
+NOTICE:  UBI: Bad EC magic in block 981 ffffffff
+NOTICE:  UBI: Bad EC magic in block 982 ffffffff
+NOTICE:  UBI: Bad EC magic in block 983 ffffffff
+NOTICE:  UBI: Bad EC magic in block 984 ffffffff
+NOTICE:  UBI: Bad EC magic in block 985 ffffffff
+NOTICE:  UBI: Bad EC magic in block 986 ffffffff
+NOTICE:  UBI: Bad EC magic in block 987 ffffffff
+NOTICE:  UBI: Bad EC magic in block 988 ffffffff
+NOTICE:  UBI: Bad EC magic in block 989 ffffffff
+NOTICE:  UBI: Bad EC magic in block 990 ffffffff
+NOTICE:  UBI: Bad EC magic in block 991 ffffffff
+NOTICE:  UBI: Bad EC magic in block 992 ffffffff
+NOTICE:  UBI: Bad EC magic in block 993 ffffffff
+NOTICE:  UBI: Bad EC magic in block 994 ffffffff
+NOTICE:  UBI: Bad EC magic in block 995 ffffffff
+NOTICE:  UBI: Bad EC magic in block 996 ffffffff
+NOTICE:  UBI: Bad EC magic in block 997 ffffffff
+NOTICE:  UBI: Bad EC magic in block 998 ffffffff
+NOTICE:  UBI: Bad EC magic in block 999 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1000 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1001 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1002 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1003 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1004 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1005 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1006 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1007 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1008 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1009 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1010 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1011 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1012 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1013 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1014 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1015 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1016 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1017 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1018 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1019 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1020 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1021 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1022 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1023 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1024 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1025 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1026 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1027 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1028 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1029 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1030 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1031 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1032 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1033 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1034 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1035 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1036 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1037 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1038 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1039 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1040 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1041 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1042 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1043 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1044 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1045 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1046 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1047 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1048 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1049 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1050 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1051 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1052 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1053 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1054 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1055 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1056 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1057 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1058 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1059 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1060 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1061 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1062 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1063 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1064 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1065 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1066 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1067 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1068 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1069 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1070 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1071 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1072 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1073 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1074 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1075 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1076 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1077 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1078 ffffffff
+ERROR:   nand_read(141559808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(141690880) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(141819904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(141950976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(142082048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(142213120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(142344192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(142475264) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(142606336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(142737408) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(142868480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(142999552) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(143130624) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(143261696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(143392768) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(143523840) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(143654912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(143785984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(143917056) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(144048128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(144179200) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(144310272) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(144441344) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(144572416) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(144703488) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(144834560) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(144965632) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(145096704) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(145227776) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(145358848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(145489920) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(145620992) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(145752064) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(145883136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(146014208) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(146145280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(146276352) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(146407424) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(146538496) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(146669568) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(146800640) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(146931712) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(147064832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(147193856) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(147326976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(147456000) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(147589120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(147718144) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(147851264) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(147980288) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(148113408) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(148242432) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(148375552) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(148504576) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(148637696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(148766720) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(148899840) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(149028864) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(149161984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(149291008) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(149424128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(149553152) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(149686272) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(149815296) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(149948416) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(150079488) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(150208512) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(150339584) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(150472704) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(150603776) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(150734848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(150863872) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(150996992) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(151128064) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(151259136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(151388160) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(151519232) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(151652352) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(151781376) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(151914496) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(152043520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(152176640) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(152307712) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(152438784) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(152569856) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(152698880) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(152829952) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(152963072) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(153092096) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(153223168) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(153354240) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(153487360) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(153618432) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(153749504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(153878528) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(154009600) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(154142720) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(154271744) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(154404864) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(154535936) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(154667008) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(154798080) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(154929152) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(155060224) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(155191296) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(155322368) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(155451392) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(155584512) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(155715584) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(155844608) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(155975680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(156108800) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(156237824) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(156368896) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(156502016) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(156631040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(156764160) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(156893184) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(157024256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(157155328) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(157286400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(157419520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(157548544) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(157679616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(157810688) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(157943808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(158074880) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(158203904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(158334976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(158466048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(158597120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(158728192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(158861312) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(158990336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(159123456) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(159252480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(159385600) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(159516672) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(159647744) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(159778816) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(159909888) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(160040960) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(160169984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(160303104) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(160432128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(160565248) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(160694272) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(160827392) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(160958464) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(161087488) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(161220608) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(161351680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(161482752) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(161613824) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(161742848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(161875968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(162004992) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(162136064) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(162267136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(162398208) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(162529280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(162662400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(162793472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(162924544) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(163055616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(163184640) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(163317760) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(163448832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(163579904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(163710976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(163840000) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(163971072) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(164102144) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(164233216) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(164364288) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(164495360) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(164626432) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(164757504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(164888576) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(165019648) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(165150720) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(165281792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(165412864) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(165543936) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(165675008) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(165806080) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(165937152) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(166068224) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(166199296) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(166330368) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(166461440) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(166592512) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(166723584) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(166856704) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(166985728) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(167116800) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(167247872) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(167378944) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(167510016) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(167641088) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(167772160) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(167905280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(168034304) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(168165376) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(168296448) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(168427520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(168558592) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(168689664) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(168820736) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(168951808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(169082880) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(169216000) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(169345024) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(169476096) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(169607168) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(169738240) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(169869312) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(170000384) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(170133504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(170262528) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(170393600) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(170524672) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(170655744) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(170786816) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(170919936) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(171048960) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(171180032) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(171311104) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(171442176) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(171573248) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(171704320) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(171835392) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(171966464) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(172097536) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(172228608) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(172359680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(172490752) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(172621824) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(172754944) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(172886016) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(173015040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(173148160) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(173279232) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(173408256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(173539328) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(173670400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(173803520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(173934592) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(174065664) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(174196736) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(174327808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(174458880) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(174587904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(174718976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(174850048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(174981120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(175112192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(175245312) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(175374336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(175507456) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(175638528) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(175769600) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(175900672) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(176029696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(176160768) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(176291840) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(176422912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(176553984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(176685056) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(176816128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(176947200) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(177078272) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(177209344) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(177340416) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(177473536) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(177602560) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(177733632) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(177864704) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(177995776) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(178126848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(178259968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(178391040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(178522112) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(178651136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(178784256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(178915328) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(179046400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(179177472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(179308544) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(179439616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(179570688) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(179701760) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(179830784) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(179963904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(180092928) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(180226048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(180357120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(180488192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(180617216) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(180748288) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(180879360) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(181012480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(181141504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(181272576) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(181405696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(181534720) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(181665792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(181798912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(181929984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(182059008) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(182190080) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(182321152) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(182452224) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(182585344) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(182714368) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(182845440) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(182976512) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(183107584) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(183240704) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(183369728) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(183500800) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(183631872) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(183762944) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(183894016) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(184027136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(184156160) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(184289280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(184418304) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(184551424) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(184680448) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(184811520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(184942592) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(185075712) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(185204736) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(185335808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(185466880) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(185600000) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(185729024) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(185860096) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(185991168) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(186124288) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(186253312) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(186384384) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(186517504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(186646528) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(186777600) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(186908672) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(187041792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(187170816) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(187301888) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(187432960) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(187566080) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(187695104) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(187826176) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(187957248) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(188088320) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(188219392) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(188350464) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(188481536) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(188612608) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(188743680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(188874752) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(189005824) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(189138944) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(189267968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(189399040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(189530112) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(189661184) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(189792256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(189923328) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(190054400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(190185472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(190316544) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(190447616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(190578688) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(190709760) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(190840832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(190971904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(191105024) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(191234048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(191367168) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(191496192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(191627264) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(191758336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(191889408) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(192020480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(192153600) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(192284672) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(192413696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(192546816) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(192675840) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(192806912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(192937984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(193071104) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(193202176) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(193331200) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(193462272) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(193593344) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(193724416) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(193857536) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(193986560) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(194119680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(194250752) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(194379776) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(194510848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(194643968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(194775040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(194904064) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(195035136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(195168256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(195297280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(195430400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(195561472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(195690496) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(195823616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(195954688) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(196083712) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(196216832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(196347904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(196478976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(196608000) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(196739072) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(196870144) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(197001216) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(197132288) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(197263360) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(197396480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(197527552) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(197656576) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(197787648) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(197920768) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(198049792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(198182912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(198311936) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(198445056) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(198576128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(198705152) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(198836224) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(198967296) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(199098368) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(199231488) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(199362560) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(199491584) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(199622656) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(199755776) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(199886848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(200015872) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(200148992) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(200280064) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(200411136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(200542208) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(200673280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(200802304) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(200935424) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(201064448) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(201195520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(201328640) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(201459712) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(201588736) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(201719808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(201852928) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(201981952) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(202115072) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(202244096) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(202377216) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(202506240) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(202639360) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(202768384) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(202901504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(203030528) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(203163648) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(203292672) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(203425792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(203554816) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(203687936) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(203816960) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(203948032) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(204081152) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(204210176) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(204343296) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(204472320) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(204605440) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(204734464) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(204865536) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(204998656) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(205127680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(205260800) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(205389824) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(205522944) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(205651968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(205785088) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(205916160) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(206047232) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(206178304) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(206309376) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(206438400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(206571520) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(206702592) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(206833664) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(206964736) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(207095808) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(207224832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(207357952) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(207489024) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(207618048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(207749120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(207880192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(208011264) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(208142336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(208273408) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(208404480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(208535552) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(208668672) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(208799744) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(208930816) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(209061888) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(209192960) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(209324032) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(209455104) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(209586176) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(209717248) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(209848320) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(209979392) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(210110464) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(210241536) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(210372608) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(210503680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(210634752) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(210765824) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(210896896) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(211027968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(211159040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(211290112) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(211421184) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(211552256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(211683328) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(211814400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(211945472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(212076544) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(212207616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(212338688) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(212469760) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(212600832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(212731904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(212862976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(212994048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(213125120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(213256192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(213387264) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(213518336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(213649408) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(213780480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(213911552) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(214042624) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(214173696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(214304768) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(214435840) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(214566912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(214697984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(214829056) failed with -1. 2164264183 bytes read
+NOTICE:  UBI: Bad EC magic in block 1639 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1640 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1641 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1642 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1643 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1644 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1645 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1646 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1647 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1648 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1649 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1650 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1651 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1652 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1653 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1654 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1655 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1656 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1657 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1658 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1659 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1660 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1661 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1662 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1663 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1664 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1665 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1666 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1667 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1668 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1669 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1670 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1671 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1672 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1673 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1674 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1675 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1676 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1677 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1678 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1679 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1680 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1681 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1682 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1683 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1684 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1685 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1686 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1687 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1688 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1689 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1690 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1691 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1692 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1693 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1694 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1695 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1696 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1697 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1698 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1699 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1700 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1701 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1702 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1703 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1704 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1705 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1706 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1707 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1708 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1709 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1710 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1711 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1712 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1713 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1714 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1715 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1716 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1717 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1718 ffffffff
+ERROR:   nand_read(225445888) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(225576960) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(225708032) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(225839104) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(225970176) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(226101248) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(226232320) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(226363392) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(226494464) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(226625536) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(226756608) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(226887680) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(227018752) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(227149824) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(227280896) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(227411968) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(227543040) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(227674112) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(227805184) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(227936256) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(228067328) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(228198400) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(228329472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(228460544) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(228591616) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(228722688) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(228853760) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(228984832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(229115904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(229246976) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(229378048) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(229509120) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(229640192) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(229771264) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(229902336) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(230033408) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(230164480) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(230295552) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(230426624) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(230557696) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(230688768) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(230819840) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(230950912) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(231081984) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(231213056) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(231344128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(231475200) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(231606272) failed with -1. 2164264183 bytes read
+NOTICE:  UBI: Bad EC magic in block 1767 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1768 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1769 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1770 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1771 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1772 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1773 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1774 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1775 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1776 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1777 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1778 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1779 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1780 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1781 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1782 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1783 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1784 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1785 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1786 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1787 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1788 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1789 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1790 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1791 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1792 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1793 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1794 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1795 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1796 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1797 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1798 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1799 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1800 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1801 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1802 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1803 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1804 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1805 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1806 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1807 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1808 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1809 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1810 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1811 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1812 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1813 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1814 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1815 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1816 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1817 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1818 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1819 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1820 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1821 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1822 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1823 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1824 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1825 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1826 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1827 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1828 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1829 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1830 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1831 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1832 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1833 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1834 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1835 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1836 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1837 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1838 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1839 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1840 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1841 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1842 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1843 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1844 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1845 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1846 ffffffff
+ERROR:   nand_read(242221056) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(242352128) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(242483200) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(242614272) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(242745344) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(242876416) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(243007488) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(243138560) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(243269632) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(243400704) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(243531776) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(243662848) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(243793920) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(243924992) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(244056064) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(244187136) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(244318208) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(244449280) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(244580352) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(244713472) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(244842496) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(244973568) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(245104640) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(245237760) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(245368832) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(245499904) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(245628928) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(245760000) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(245891072) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(246022144) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(246153216) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(246284288) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(246415360) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(246546432) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(246677504) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(246808576) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(246939648) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(247070720) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(247201792) failed with -1. 2164264183 bytes read
+ERROR:   nand_read(247332864) failed with -1. 2164264183 bytes read
+NOTICE:  UBI: Bad EC magic in block 1887 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1888 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1889 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1890 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1891 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1892 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1893 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1894 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1895 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1896 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1897 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1898 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1899 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1900 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1901 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1902 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1903 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1904 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1905 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1906 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1907 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1908 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1909 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1910 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1911 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1912 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1913 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1914 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1915 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1916 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1917 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1918 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1919 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1920 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1921 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1922 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1923 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1924 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1925 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1926 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1927 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1928 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1929 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1930 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1931 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1932 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1933 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1934 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1935 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1936 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1937 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1938 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1939 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1940 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1941 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1942 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1943 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1944 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1945 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1946 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1947 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1948 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1949 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1950 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1951 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1952 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1953 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1954 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1955 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1956 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1957 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1958 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1959 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1960 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1961 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1962 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1963 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1964 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1965 ffffffff
+ERROR:   nand_read(257818624) failed with -1. 2164264183 bytes read
+NOTICE:  UBI: Bad EC magic in block 1967 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1968 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1969 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1970 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1971 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1972 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1973 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1974 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1975 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1976 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1977 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1978 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1979 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1980 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1981 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1982 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1983 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1984 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1985 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1986 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1987 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1988 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1989 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1990 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1991 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1992 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1993 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1994 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1995 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1996 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1997 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1998 ffffffff
+NOTICE:  UBI: Bad EC magic in block 1999 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2000 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2001 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2002 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2003 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2004 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2005 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2006 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2007 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2008 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2009 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2010 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2011 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2012 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2013 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2014 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2015 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2016 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2017 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2018 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2019 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2020 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2021 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2022 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2023 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2024 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2025 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2026 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2027 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2028 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2029 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2030 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2031 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2032 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2033 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2034 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2035 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2036 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2037 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2038 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2039 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2040 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2041 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2042 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2043 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2044 ffffffff
+NOTICE:  UBI: Bad EC magic in block 2045 ffffffff
+ERROR:   nand_read(268304384) failed with -1. 2164264183 bytes read
+NOTICE:  UBI: scanning is finished
+NOTICE:  UBI: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+NOTICE:  UBI: VID header offset: 2048 (aligned 2048), data offset: 4096
+ERROR:   UBI error: No volume named fip could be found
+ERROR:   BL2: Failed to load image id 3 (-2)
+ERROR:   Stored BL31 + U-Boot FIP failed (-2)
+Press x to load BL31 + U-Boot FIP via XMODEM

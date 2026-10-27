@@ -1,0 +1,3166 @@
+import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { jsonExport } from "../lib/export.js";
+import {
+	accountProvenance,
+	createAccountService,
+	isPrivateAddress,
+	queryAccount,
+	refreshPolicy,
+	resolveAccountSpec,
+	selectResolvedAddress,
+	selectResolvedAddresses,
+	validateAccountConfig,
+	withHealthAge
+} from "../lib/accounts.js";
+
+function credentials(values) {
+	return {
+		resolve: async (ref) => Object.hasOwn(values, ref) ? { value: values[ref] } : void 0
+	};
+}
+
+function jsonResponse(value, status = 200, headers = {}) {
+	return new Response(JSON.stringify(value), {
+		status,
+		headers: { "content-type": "application/json", ...headers }
+	});
+}
+
+function closeTo(actual, expected, label) {
+	assert.ok(Math.abs(actual - expected) < 1e-12, `${label}: expected ${expected}, got ${actual}`);
+}
+
+/** Build a fake provider-status error the way lib/accounts.js statusError() does. */
+function statusErrorFromTest(status, message) {
+	const error = new Error(message);
+	error.providerStatus = status;
+	return error;
+}
+
+const now = Date.parse("2026-08-15T00:00:00Z");
+
+{
+	const secret = "opencode-go-native-test-key";
+	const service = createAccountService({
+		credentials: credentials({ OPENCODE_API_KEY: secret, OPENCODE_GO_API_KEY: "other-legacy-account" }),
+		getProviders: async () => [{ id: "opencode-go" }],
+		deps: { includeLegacyProviders: false, now: () => now, fetch: async (url, init) => {
+			assert.equal(String(url), "https://opencode.ai/inference/go/v1/usage");
+			assert.equal(init.headers.authorization, `Bearer ${secret}`);
+			return jsonResponse({ usage: { rolling: { percent: 1 }, weekly: { percent: 4 }, monthly: { percent: 9 } } });
+		} }
+	});
+	assert.equal((await service.providerViews())[0].configured, true, "native id-only routes must discover the same key used by the collector");
+	assert.equal((await service.get("opencode-go")).status, "ok");
+	const overridden = resolveAccountSpec({ id: "opencode-go" }, validateAccountConfig({ monitors: {
+		"opencode-go": { adapter: "opencode-go", credentialRef: "CUSTOM_GO_KEY" }
+	} }));
+	assert.equal(overridden.apiKeyRef, "CUSTOM_GO_KEY");
+	assert.equal(resolveAccountSpec({ id: "custom-go" }, validateAccountConfig({ monitors: {
+		"custom-go": { adapter: "opencode-go" }
+	} })).apiKeyRef, void 0, "custom routes must not inherit the native reference");
+	assert.equal(JSON.stringify(await service.providerViews()).includes(secret), false);
+	const native = resolveAccountSpec({ id: "opencode-go" }, validateAccountConfig());
+	const legacy = await queryAccount(native, credentials({ OPENCODE_GO_API_KEY: "legacy-go-key" }), {
+		fetch: async (_url, init) => {
+			assert.equal(init.headers.authorization, "Bearer legacy-go-key");
+			return jsonResponse({ usage: { rolling: { percent: 2 } } });
+		}
+	});
+	assert.equal(legacy.status, "ok");
+	const absent = await queryAccount(overridden, credentials({ OPENCODE_API_KEY: secret }), {
+		readFile: async () => { throw new Error("explicit missing references must not read another local account"); },
+		fetch: async () => { throw new Error("explicit missing references must not fetch"); }
+	});
+	assert.equal(absent.status, "not-configured");
+	assert.deepEqual(absent.missingCredentials, ["CUSTOM_GO_KEY"]);
+	const custom = resolveAccountSpec({ id: "custom-go" }, validateAccountConfig({ monitors: {
+		"custom-go": { adapter: "opencode-go" }
+	} }));
+	assert.equal((await queryAccount(custom, credentials({ OPENCODE_API_KEY: secret }), {
+		fetch: async () => { throw new Error("a custom route cannot borrow a native key"); }
+	})).status, "not-configured");
+	console.log("OpenCode Go canonical route discovery and explicit reference precedence ok");
+}
+
+// BEGIN MiniMax id-only regression matrix
+{
+	const cases = [
+		{ name: "id-only global", key: "minimax-mock-secret", host: "www.minimax.io" },
+		{ name: "id-only CN", provider: { id: "minimax-cn" }, keys: { MINIMAX_API_KEY: "wrong-mock-secret", MINIMAX_CN_API_KEY: "cn-mock-secret" }, key: "cn-mock-secret", host: "www.minimaxi.com" },
+		{ name: "explicit CN", monitor: { region: "cn" }, key: "minimax-mock-secret", host: "www.minimaxi.com" },
+		{ name: "configured CN overrides global inference", keys: { MINIMAX_API_KEY: "minimax-mock-secret", MINIMAX_API_REGION: "cn" }, key: "minimax-mock-secret", host: "www.minimaxi.com" },
+		{ name: "configured global overrides CN inference", provider: { id: "minimax-cn" }, keys: { MINIMAX_CN_API_KEY: "cn-mock-secret", MINIMAX_API_REGION: "global" }, key: "cn-mock-secret", host: "www.minimax.io" },
+		{ name: "monitor global overrides configured CN", monitor: { region: "global" }, keys: { MINIMAX_API_KEY: "minimax-mock-secret", MINIMAX_API_REGION: "cn" }, key: "minimax-mock-secret", host: "www.minimax.io" },
+		{ name: "monitor CN overrides configured global", monitor: { region: "cn" }, keys: { MINIMAX_API_KEY: "minimax-mock-secret", MINIMAX_API_REGION: "global" }, key: "minimax-mock-secret", host: "www.minimaxi.com" },
+		{ name: "empty configured region preserves CN inference", provider: { id: "minimax-cn" }, keys: { MINIMAX_CN_API_KEY: "cn-mock-secret", MINIMAX_API_REGION: "   " }, key: "cn-mock-secret", host: "www.minimaxi.com" },
+		{ name: "provider ref", provider: { apiKeyEnv: "PROVIDER_KEY" }, keys: { PROVIDER_KEY: "provider-mock-secret" }, key: "provider-mock-secret" },
+		{ name: "monitor ref", provider: { apiKeyEnv: "PROVIDER_KEY" }, monitor: { credentialRef: "MONITOR_KEY" }, keys: { PROVIDER_KEY: "wrong-mock-secret", MONITOR_KEY: "monitor-mock-secret" }, key: "monitor-mock-secret" },
+		{ name: "CN provider ref", provider: { id: "minimax-cn", apiKeyEnv: "PROVIDER_KEY" }, keys: { MINIMAX_CN_API_KEY: "wrong-mock-secret", PROVIDER_KEY: "provider-mock-secret" }, key: "provider-mock-secret", host: "www.minimaxi.com" },
+		{ name: "CN monitor ref", provider: { id: "minimax-cn", apiKeyEnv: "PROVIDER_KEY" }, monitor: { credentialRef: "MONITOR_KEY" }, keys: { MINIMAX_CN_API_KEY: "wrong-mock-secret", PROVIDER_KEY: "wrong-mock-secret", MONITOR_KEY: "monitor-mock-secret" }, key: "monitor-mock-secret", host: "www.minimaxi.com" },
+		{ name: "missing default", keys: {}, missingRef: "MINIMAX_API_KEY" },
+		{ name: "missing CN default never borrows global key", provider: { id: "minimax-cn" }, missingRef: "MINIMAX_CN_API_KEY" },
+		{ name: "missing explicit ref", monitor: { credentialRef: "MISSING_KEY" } },
+		{ name: "missing provider ref", provider: { apiKeyEnv: "MISSING_KEY" } },
+		{ name: "missing CN explicit ref", provider: { id: "minimax-cn" }, monitor: { credentialRef: "MISSING_KEY" }, keys: { MINIMAX_CN_API_KEY: "cn-mock-secret" } },
+		{ name: "missing CN provider ref", provider: { id: "minimax-cn", apiKeyEnv: "MISSING_KEY" }, keys: { MINIMAX_CN_API_KEY: "cn-mock-secret" } },
+		{ name: "custom route", provider: { id: "custom-minimax" }, monitor: { adapter: "minimax-token-plan" } },
+		{ name: "minimax-coding alias has no invented default", provider: { id: "minimax-coding" } },
+		{ name: "minimaxi alias has no invented default", provider: { id: "minimaxi" } },
+		{ name: "custom endpoint", monitor: { usageBaseURL: "https://quota.example.invalid/usage" } },
+		{ name: "provider endpoint", provider: { baseURL: "https://api.minimax.io/anthropic" } },
+		{ name: "CN custom endpoint", provider: { id: "minimax-cn" }, monitor: { usageBaseURL: "https://quota.example.invalid/usage" }, keys: { MINIMAX_CN_API_KEY: "cn-mock-secret" } },
+		{ name: "CN provider endpoint", provider: { id: "minimax-cn", baseURL: "https://api.minimaxi.com/anthropic" }, keys: { MINIMAX_CN_API_KEY: "cn-mock-secret" } },
+		{ name: "custom endpoint with explicit reference", monitor: { usageBaseURL: "https://quota.example.invalid/usage", credentialRef: "MONITOR_KEY" }, keys: { MINIMAX_API_KEY: "wrong-mock-secret", MONITOR_KEY: "monitor-mock-secret" }, key: "monitor-mock-secret", host: "quota.example.invalid" },
+		{ name: "different adapter", monitor: { adapter: "general" } }
+	];
+	for (const test of cases) {
+		const calls = [];
+		const provider = { id: "minimax", ...test.provider };
+		const service = createAccountService({
+			credentials: credentials(test.keys ?? { MINIMAX_API_KEY: "minimax-mock-secret" }),
+			getProviders: async () => [provider],
+			config: validateAccountConfig(test.monitor === void 0 ? {} : { monitors: { [provider.id]: { adapter: "minimax-token-plan", ...test.monitor } } }),
+			deps: { includeLegacyProviders: false, now: () => now, fetch: async (url, init) => {
+				calls.push({ url: String(url), authorization: init.headers.authorization });
+				return jsonResponse({ base_resp: { status_code: 0 }, model_remains: [{ model_name: "MiniMax-M2", current_interval_remaining_percent: 55 }] });
+			} }
+		});
+		const before = await service.providerViews();
+		assert.equal(before[0].configured, test.key !== void 0, test.name);
+		assert.equal(calls.length, 0, "discovery must not call upstream");
+		const account = await service.get(provider.id);
+		assert.equal(account.status, test.key === void 0 ? "not-configured" : "ok", test.name);
+		assert.equal(calls.length, test.key === void 0 ? 0 : 1, test.name);
+		if (test.key !== void 0) {
+			assert.equal(new URL(calls[0].url).hostname, test.host ?? "www.minimax.io", test.name);
+			assert.ok(calls[0].authorization.includes(test.key), test.name);
+		}
+		if (test.missingRef !== void 0) assert.deepEqual(account.missingCredentials, [test.missingRef], test.name);
+		const after = await service.providerViews();
+		assert.equal(after[0].configured, before[0].configured, test.name);
+		const refreshed = await service.refreshDue({ force: true });
+		assert.equal(refreshed[0].status, account.status, test.name);
+		assert.equal(calls.length, test.key === void 0 ? 0 : 2, `${test.name}: forced refresh`);
+		for (const call of calls) {
+			assert.equal(new URL(call.url).hostname, test.host ?? "www.minimax.io", `${test.name}: refresh preserves region`);
+			assert.equal(call.authorization, `Bearer ${test.key}`, `${test.name}: refresh preserves credential`);
+		}
+		for (const secret of ["minimax-mock-secret", "cn-mock-secret", "provider-mock-secret", "monitor-mock-secret", "wrong-mock-secret"]) {
+			assert.equal(JSON.stringify({ before, account, after, refreshed }).includes(secret), false, test.name);
+		}
+	}
+	for (const route of [
+		{ id: "minimax", keys: { MINIMAX_API_KEY: "rejected-mock-secret" }, host: "www.minimax.io" },
+		{ id: "minimax-cn", keys: { MINIMAX_CN_API_KEY: "rejected-mock-secret" }, host: "www.minimaxi.com" },
+		{ id: "minimax", keys: { MINIMAX_API_KEY: "rejected-mock-secret", MINIMAX_API_REGION: "cn" }, host: "www.minimaxi.com" }
+	]) {
+		for (const failure of [{ http: 401 }, { code: 1004 }, { code: 2049 }]) {
+			const calls = [];
+			const rejected = await queryAccount(resolveAccountSpec({ id: route.id }, validateAccountConfig()), credentials(route.keys), {
+				now: () => now, fetch: async (url) => {
+					calls.push(String(url));
+					return jsonResponse({ base_resp: { status_code: failure.code ?? 0 } }, failure.http ?? 200);
+				}
+			});
+			assert.equal(rejected.status, "unauthorized");
+			assert.deepEqual(calls, [`https://${route.host}/v1/token_plan/remains`], "rejected inferred/configured-region credentials must not cross regions");
+		}
+	}
+	console.log("MiniMax id-only discovery/query/refresh, credential boundaries, and region regression matrix ok");
+}
+// END MiniMax id-only regression matrix
+const relay = {
+	id: "relay-a",
+	displayName: "Relay A",
+	apiKeyEnv: "RELAY_A_KEY",
+	baseURL: "https://relay.example.com/v1"
+};
+
+const passion = {
+	id: "passion",
+	displayName: "Passion",
+	apiKeyEnv: "PASSION_API_KEY",
+	baseURL: "https://api.passionapi.com"
+};
+
+const deepseek = {
+	id: "deepseek-official",
+	displayName: "DeepSeek",
+	apiKeyEnv: "DEEPSEEK_API_KEY",
+	baseURL: "https://api.deepseek.com"
+};
+
+{
+	const provenanceCases = new Map([
+		["deepseek-balance", "official"],
+		["deepseek-account", "official"],
+		["openrouter-balance", "official"],
+		["moonshot-balance", "official"],
+		["zai-balance", "official"],
+		["orcarouter-balance", "official"],
+		["opencode-go", "official"],
+		["zai-token-plan", "official"],
+		["kimi-token-plan", "official"],
+		["minimax-token-plan", "official"],
+		["ollama", "official"],
+		["new-api", "provider"],
+		["sub2api", "provider"],
+		["sub2api-auth", "provider"],
+		["general", "configured"],
+		["declarative", "configured"],
+		[null, "unknown"]
+	]);
+	for (const [adapter, expected] of provenanceCases) assert.equal(accountProvenance({ adapter }), expected, `${adapter} provenance`);
+	assert.equal(accountProvenance(resolveAccountSpec(deepseek, validateAccountConfig())), "official");
+	assert.equal(accountProvenance({ ...resolveAccountSpec(relay, validateAccountConfig()), provenanceHint: "experimental" }), "experimental");
+	console.log("account provenance vocabulary ok");
+}
+
+{
+	assert.deepEqual(validateAccountConfig().refresh, {
+		enabled: true,
+		activeMs: 60000,
+		detailMs: 120000,
+		backgroundMs: 900000
+	});
+	assert.equal(validateAccountConfig({ disableBackgroundRefresh: true }).refresh.enabled, false, "the legacy disable alias must remain effective");
+	assert.equal(validateAccountConfig({ disableBackgroundRefresh: true, refresh: { enabled: true } }).refresh.enabled, true, "explicit refresh.enabled must override the legacy alias");
+	assert.deepEqual(validateAccountConfig({ refresh: { activeMs: 120000, detailMs: 180000, backgroundMs: 240000 } }).refresh, {
+		enabled: true,
+		activeMs: 120000,
+		detailMs: 180000,
+		backgroundMs: 240000
+	});
+	for (const invalid of [
+		{ refresh: null },
+		{ refresh: { enabled: "false" } },
+		{ refresh: { activeMs: 59999 } },
+		{ refresh: { detailMs: 60000.5 } },
+		{ refresh: { backgroundMs: Infinity } },
+		{ refresh: { backgroundMs: 86400001 } },
+		{ disableBackgroundRefresh: "true" }
+	]) assert.throws(() => validateAccountConfig(invalid), /refresh|disableBackgroundRefresh/);
+	console.log("public refresh config defaults, precedence, and bounds ok");
+}
+
+{
+	const active = refreshPolicy({ activity: "active", status: "ok", rateLimitFailures: 0, lastAttemptAt: now }, now);
+	const detail = refreshPolicy({ activity: "detail", status: "ok", rateLimitFailures: 0, lastAttemptAt: now }, now);
+	const background = refreshPolicy({ activity: "background", status: "ok", rateLimitFailures: 0, lastAttemptAt: now }, now);
+	assert.equal(active.delayMs, 60000);
+	assert.equal(detail.delayMs, 120000);
+	assert.equal(background.delayMs, 900000);
+	const first429 = refreshPolicy({ activity: "active", status: "rate-limited", rateLimitFailures: 1, lastAttemptAt: now }, now);
+	const second429 = refreshPolicy({ activity: "active", status: "rate-limited", rateLimitFailures: 2, lastAttemptAt: now }, now);
+	const third429 = refreshPolicy({ activity: "active", status: "rate-limited", rateLimitFailures: 3, lastAttemptAt: now }, now);
+	const fourth429 = refreshPolicy({ activity: "active", status: "rate-limited", rateLimitFailures: 4, lastAttemptAt: now }, now);
+	const fifth429 = refreshPolicy({ activity: "active", status: "rate-limited", rateLimitFailures: 5, lastAttemptAt: now }, now);
+	const failedRetry = refreshPolicy({ activity: "active", status: "unavailable", rateLimitFailures: 2, lastAttemptAt: now }, now);
+	const bounded429 = refreshPolicy({ activity: "active", status: "rate-limited", rateLimitFailures: 99, lastAttemptAt: now }, now);
+	assert.equal(first429.delayMs, 300000);
+	assert.equal(second429.delayMs, 600000);
+	assert.equal(third429.delayMs, 1200000);
+	assert.equal(fourth429.delayMs, 2400000);
+	assert.equal(fifth429.delayMs, 3600000);
+	assert.equal(failedRetry.nextRefreshAt, second429.nextRefreshAt, "a non-success retry must preserve the existing rate-limit backoff");
+	assert.equal(bounded429.delayMs, 3600000, "429 backoff must remain bounded");
+	assert.equal(refreshPolicy({ activity: "detail", rateLimitFailures: 1, lastAttemptAt: now }, now).delayMs, 300000);
+	assert.equal(refreshPolicy({ activity: "background", rateLimitFailures: 1, lastAttemptAt: now }, now).delayMs, 900000, "429 must not shorten the normal background interval");
+	assert.equal(refreshPolicy({ activity: "active", rateLimitFailures: 1, lastAttemptAt: now }, now, { activeMs: 1800000 }).delayMs, 1800000, "429 must not shorten a custom normal interval");
+	assert.equal(refreshPolicy({ activity: "active", rateLimitFailures: 0, lastAttemptAt: now }, now).delayMs, 60000, "success/reset state must restore the normal interval");
+	assert.equal(refreshPolicy({ activity: "background", status: "pending", rateLimitFailures: 0, lastAttemptAt: null }, now).nextRefreshAt, now);
+	console.log("adaptive refresh defaults and monotonic 429 backoff ok");
+}
+
+{
+	const stored = { status: "ok", lastSuccessAt: now, fetchedAt: now };
+	const first = withHealthAge(stored, now + 1000);
+	const second = withHealthAge(stored, now + 9000);
+	assert.equal(first.ageMs, 1000);
+	assert.equal(second.ageMs, 9000);
+	assert.equal(Object.hasOwn(stored, "ageMs"), false, "ageMs must never become a cached dead value");
+	assert.equal(withHealthAge({ status: "unavailable", lastSuccessAt: null }, now).ageMs, null);
+	console.log("health age is derived at read time ok");
+}
+
+assert.equal(isPrivateAddress("127.0.0.1"), true);
+assert.equal(isPrivateAddress("::ffff:127.0.0.1"), true);
+assert.equal(isPrivateAddress("::ffff:7f00:1"), true);
+assert.equal(isPrivateAddress("fc00::1"), true);
+assert.equal(isPrivateAddress("fe80::1"), true);
+assert.equal(isPrivateAddress("fec0::1"), true);
+assert.equal(isPrivateAddress("100::1"), true);
+assert.equal(isPrivateAddress("2001:2::1"), true);
+assert.equal(isPrivateAddress("2002:7f00:1::"), true);
+assert.equal(isPrivateAddress("2606:4700:4700::1111"), false);
+// RFC 2544 benchmarking (198.18.0.0/15) stays non-public; Clash/Mihomo
+// fake-IP answers are only accepted later through the HTTPS-hostname rule.
+assert.equal(isPrivateAddress("198.18.0.50"), true);
+console.log("IPv4/IPv6 private-address classification ok");
+
+{
+	const spec = resolveAccountSpec(passion, validateAccountConfig());
+	assert.equal(spec.adapter, "sub2api");
+	assert.equal(spec.mode, "balance");
+	console.log("Passion Sub2API auto-detection ok");
+}
+
+{
+	const config = validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} });
+	const spec = resolveAccountSpec(relay, config);
+	assert.equal(spec.adapter, "new-api");
+	assert.equal(spec.mode, "balance");
+	assert.equal(spec.apiKeyRef, "RELAY_A_KEY");
+	assert.equal(spec.baseURL, relay.baseURL);
+	console.log("explicit New API binding ok");
+}
+
+{
+	const calls = [];
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			if (String(url).endsWith("/api/status")) return jsonResponse({ data: { quota_per_unit: 500000, quota_display_type: "USD", usd_exchange_rate: 6.73 } });
+			return jsonResponse({ code: true, data: {
+				total_granted: 1500000,
+				total_used: 500000,
+				total_available: 1000000,
+				unlimited_quota: false,
+				expires_at: 1798761600
+			} });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(account.balance, {
+		remaining: 2,
+		used: 1,
+		total: 3,
+		currency: "USD",
+		unlimited: false,
+		expiresAt: "2027-01-01T00:00:00.000Z"
+	});
+	assert.deepEqual(account.alert, { level: "normal", metric: "remaining-percent", value: 66.7 });
+	assert.equal(calls[0].init.headers.authorization, "Bearer sk-relay");
+	assert.equal(JSON.stringify(account).includes("sk-relay"), false);
+	console.log("New API token-scoped normalization ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => String(url).endsWith("/api/status")
+			? jsonResponse({ data: { quota_per_unit: 500000, quota_display_type: "CNY", usd_exchange_rate: 7 } })
+			: jsonResponse({ code: true, data: {
+				total_granted: 7500000,
+				total_used: 2500000,
+				total_available: 5000000,
+				unlimited_quota: false
+			} })
+	});
+	assert.deepEqual(account.balance, {
+		remaining: 70,
+		used: 35,
+		total: 105,
+		currency: "CNY",
+		unlimited: false,
+		expiresAt: null
+	});
+	console.log("New API token route converts every CNY balance component ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	for (const statusCode of [404, 405]) {
+		const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+			now: () => now,
+			fetch: async (url) => String(url).endsWith("/api/status")
+				? jsonResponse({}, statusCode)
+				: jsonResponse({ code: true, data: { total_granted: 5000000, total_used: 0, total_available: 5000000 } })
+		});
+		assert.deepEqual({ remaining: account.balance.remaining, currency: account.balance.currency }, { remaining: 10, currency: "USD" });
+		assert.equal(account.quotaUnit, 500000);
+		assert.equal(account.quotaUnitFallback, true);
+	}
+	const missingStatusFields = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => String(url).endsWith("/api/status")
+			? jsonResponse({ data: {} })
+			: jsonResponse({ code: true, data: { total_granted: 5000000, total_used: 0, total_available: 5000000 } })
+	});
+	assert.deepEqual({ remaining: missingStatusFields.balance.remaining, currency: missingStatusFields.balance.currency }, { remaining: 10, currency: "USD" });
+	assert.equal(missingStatusFields.quotaUnitFallback, true);
+	console.log("New API legacy status schema and 404/405 retain USD fallback ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	for (const usdExchangeRate of [void 0, 0, -1, "invalid", Infinity]) {
+		const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+			now: () => now,
+			fetch: async (url) => {
+				if (!String(url).endsWith("/api/status")) return jsonResponse({ code: true, data: { total_granted: 5000000, total_used: 0, total_available: 5000000 } });
+				const statusBody = { data: { quota_per_unit: 500000, quota_display_type: "CNY", usd_exchange_rate: usdExchangeRate } };
+				if (usdExchangeRate !== Infinity) return jsonResponse(statusBody);
+				return { ok: true, status: 200, headers: { get: () => "application/json" }, json: async () => statusBody };
+			}
+		});
+		assert.equal(account.status, "invalid-response", `CNY rate ${String(usdExchangeRate)} must fail closed`);
+		assert.equal(account.balance, null);
+	}
+	console.log("New API explicit CNY with an invalid exchange rate fails closed ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	for (const quotaDisplayType of ["TOKENS", "CUSTOM"]) {
+		const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+			now: () => now,
+			fetch: async (url) => String(url).endsWith("/api/status")
+				? jsonResponse({ data: { quota_per_unit: 500000, quota_display_type: quotaDisplayType } })
+				: jsonResponse({ code: true, data: { total_granted: 5000000, total_used: 0, total_available: 5000000 } })
+		});
+		assert.equal(account.status, "unsupported");
+		assert.equal(account.balance, null, `${quotaDisplayType} must not enter the ISO currency field`);
+	}
+	console.log("New API TOKENS/CUSTOM display types remain unsupported ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => String(url).endsWith("/api/status")
+			? jsonResponse({ data: { quota_per_unit: 500000, quota_display_type: "USD" } })
+			: jsonResponse({ code: true, data: { total_granted: 0, total_used: 0, total_available: null, unlimited_quota: true } })
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(account.balance, { remaining: null, used: 0, total: 0, currency: "USD", unlimited: true, expiresAt: null });
+	assert.deepEqual(account.alert, { level: "normal", metric: "remaining-percent", value: 100 });
+	console.log("New API unlimited quota behavior remains intact ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => String(url).endsWith("/api/status")
+			? jsonResponse({ data: { quota_per_unit: 500000 } })
+			: jsonResponse({ code: true, data: { total_granted: 1, total_used: 0, total_available: 1, expires_at: 0 } })
+	});
+	assert.equal(account.balance.expiresAt, null, "expires_at=0 means no expiry, not the Unix epoch");
+	console.log("New API zero expiry normalization ok");
+}
+
+{
+	const spec = resolveAccountSpec(deepseek, validateAccountConfig());
+	for (const [httpStatus, providerStatus] of [[401, "unauthorized"], [403, "unauthorized"], [429, "rate-limited"], [503, "unavailable"]]) {
+		const account = await queryAccount(spec, credentials({ DEEPSEEK_API_KEY: "sk-test" }), {
+			now: () => now,
+			fetch: async () => jsonResponse({}, httpStatus)
+		});
+		assert.equal(account.status, providerStatus, `HTTP ${httpStatus} should map to ${providerStatus}`);
+	}
+	const malformed = await queryAccount(spec, credentials({ DEEPSEEK_API_KEY: "sk-test" }), {
+		now: () => now,
+		fetch: async () => ({ ok: true, status: 200, json: async () => { throw new SyntaxError("bad JSON"); } })
+	});
+	assert.equal(malformed.status, "invalid-response");
+	console.log("built-in balance account status classification ok");
+}
+
+{
+	const spec = resolveAccountSpec(deepseek, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ DEEPSEEK_API_KEY: "sk-test" }), {
+		now: () => now,
+		fetch: async () => jsonResponse({
+			is_available: false,
+			balance_infos: [{ currency: "CNY", total_balance: "12.50", granted_balance: "0", topped_up_balance: "12.50" }]
+		})
+	});
+	assert.equal(account.status, "unavailable");
+	assert.equal(account.balance.available, false);
+	assert.equal(account.balance.remaining, 12.5);
+	let clock = now;
+	let available = true;
+	const service = createAccountService({
+		credentials: credentials({ DEEPSEEK_API_KEY: "sk-test" }),
+		getProviders: async () => [deepseek],
+		config: validateAccountConfig(),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => clock,
+			fetch: async () => jsonResponse({
+				is_available: available,
+				balance_infos: [{ currency: "CNY", total_balance: available ? "20.00" : "12.50", granted_balance: "0", topped_up_balance: available ? "20.00" : "12.50" }]
+			})
+		}
+	});
+	const healthy = await service.get("deepseek-official");
+	assert.equal(healthy.status, "ok");
+	assert.equal(healthy.lastSuccessAt, now);
+	available = false;
+	clock += 1000;
+	const observed = await service.get("deepseek-official", { force: true });
+	assert.equal(observed.status, "unavailable");
+	assert.equal(observed.stale, false, "a valid unavailable response must replace rather than retain the previous balance");
+	assert.equal(observed.balance.remaining, 12.5);
+	assert.equal(observed.lastAttemptAt, clock);
+	assert.equal(observed.lastSuccessAt, clock, "a valid DeepSeek response must advance health success even when the account is unavailable");
+	assert.equal(observed.ageMs, 0);
+	console.log("DeepSeek provider-reported unavailable state ok");
+}
+
+{
+	const provider = { id: "openrouter", displayName: "OpenRouter", apiKeyEnv: "OPENROUTER_API_KEY", baseURL: "https://openrouter.ai/api/v1" };
+	const spec = resolveAccountSpec(provider, validateAccountConfig());
+	assert.equal(spec.apiKeyRef, "OPENROUTER_MANAGEMENT_KEY");
+	const inferenceOnly = await queryAccount(spec, credentials({ OPENROUTER_API_KEY: "inference-key" }), {
+		now: () => now,
+		fetch: async () => { throw new Error("must not use the inference key"); }
+	});
+	assert.equal(inferenceOnly.status, "not-configured");
+	assert.deepEqual(inferenceOnly.missingCredentials, ["OPENROUTER_MANAGEMENT_KEY"]);
+	const unconfiguredService = createAccountService({
+		credentials: credentials({ OPENROUTER_API_KEY: "inference-key" }),
+		getProviders: async () => [provider],
+		config: validateAccountConfig(),
+		deps: { includeLegacyProviders: false, now: () => now, fetch: async () => { throw new Error("must not request upstream"); } }
+	});
+	const unconfigured = await unconfiguredService.get("openrouter");
+	assert.equal(unconfigured.lastAttemptAt, null, "missing management credentials must not count as a provider attempt");
+	assert.equal(unconfigured.lastSuccessAt, null);
+	const account = await queryAccount(spec, credentials({ OPENROUTER_MANAGEMENT_KEY: "management-key" }), {
+		now: () => now,
+		fetch: async (_url, init) => {
+			assert.equal(init.headers.authorization, "Bearer management-key");
+			return jsonResponse({ data: { total_credits: 25.75, total_usage: 25.75 } });
+		}
+	});
+	assert.equal(account.status, "ok", "a valid zero balance is not a transport/account availability failure");
+	assert.equal(account.balance.remaining, 0);
+	assert.equal(account.balance.used, 25.75);
+	assert.equal(account.balance.total, 25.75);
+	console.log("OpenRouter management credential and zero balance contract ok");
+}
+
+{
+	const provider = { id: "orcarouter", displayName: "OrcaRouter", apiKeyEnv: "ORCAROUTER_API_KEY", baseURL: "https://api.orcarouter.ai/v1" };
+	const spec = resolveAccountSpec(provider, validateAccountConfig());
+	assert.equal(spec.adapter, "orcarouter-balance");
+	assert.equal(spec.mode, "balance");
+	const calls = [];
+	const account = await queryAccount(spec, credentials({ ORCAROUTER_API_KEY: "sk-orca-test" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			assert.equal(init.headers.authorization, "Bearer sk-orca-test");
+			return jsonResponse({ object: "balance", unit: "USD", paid_balance: 1.25, free_credit: [{ model: "orcarouter/free", balance_usd: 6 }], promo_credits: [{ balance: 0.5, unit: "USD" }] });
+		}
+	});
+	assert.deepEqual(calls.map((call) => call.url), ["https://api.orcarouter.ai/v1/balance"]);
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 7.75);
+	assert.equal(account.balance.used, void 0);
+	assert.equal(account.balance.total, void 0);
+	assert.equal(account.balance.currency, "USD");
+	assert.equal(account.balance.expiresAt, null, "an access_until value of zero means no expiry");
+	assert.equal(JSON.stringify(account).includes("sk-orca-test"), false, "OrcaRouter credentials must not cross the account snapshot boundary");
+	console.log("OrcaRouter wallet account adapter ok");
+}
+
+{
+	const provider = { id: "orcarouter", displayName: "OrcaRouter", apiKeyEnv: "ORCAROUTER_API_KEY", baseURL: "https://api.orcarouter.ai/v1" };
+	const spec = resolveAccountSpec(provider, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ ORCAROUTER_API_KEY: "sk-orca-test" }), {
+		now: () => now,
+		fetch: async () => jsonResponse({ object: "balance", unit: "USD", paid_balance: 0, free_credit: [{ balance_usd: 6 }], promo_credits: [] })
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 6);
+	assert.equal(account.balance.unlimited, false);
+	console.log("OrcaRouter wallet account display semantics ok");
+}
+
+{
+	const provider = { id: "orcarouter", displayName: "OrcaRouter", apiKeyEnv: "ORCAROUTER_API_KEY", baseURL: "https://api.orcarouter.ai/v1" };
+	const spec = resolveAccountSpec(provider, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ ORCAROUTER_API_KEY: "sk-orca-test" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/balance")) return jsonResponse({}, 404);
+			if (String(url).endsWith("/subscription")) return jsonResponse({ soft_limit_usd: 12.5, hard_limit_usd: 12.5, system_hard_limit_usd: 12.5 });
+			return jsonResponse({ total_usage: 275 });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 9.75);
+	assert.equal(account.balance.used, 2.75);
+	assert.equal(account.balance.total, 12.5);
+	console.log("OrcaRouter OpenAI billing fallback account semantics ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general", warning: { warnBelow: 5, criticalBelow: 1 } }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			assert.equal(String(url), "https://relay.example.com/user/balance");
+			assert.equal(init.headers.authorization, "Bearer sk-relay");
+			return jsonResponse({ balance: 4, currency: "USD", is_active: true });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 4);
+	assert.deepEqual(account.alert, { level: "warning", metric: "balance", value: 4, threshold: 5 });
+	console.log("general balance template ok");
+}
+
+{
+	const spec = resolveAccountSpec(passion, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ PASSION_API_KEY: "sk-passion" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			assert.equal(String(url), "https://api.passionapi.com/v1/usage");
+			assert.equal(init.headers.authorization, "Bearer sk-passion");
+			return jsonResponse({ mode: "unrestricted", isValid: true, planName: "Wallet", remaining: 28.5, unit: "USD", balance: 28.5 });
+		}
+	});
+	assert.equal(account.mode, "balance");
+	assert.equal(account.plan, "Wallet");
+	assert.deepEqual(account.balance, { remaining: 28.5, currency: "USD", unlimited: false, expiresAt: null });
+	console.log("Sub2API wallet balance normalization ok");
+}
+
+{
+	const spec = resolveAccountSpec({ ...relay, id: "sub2" }, validateAccountConfig({ monitors: {
+		sub2: { adapter: "sub2api" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-sub2" }), {
+		now: () => now,
+		fetch: async () => jsonResponse({
+			mode: "quota_limited",
+			isValid: true,
+			status: "active",
+			planName: "Quota Plan",
+			quota: { limit: 100, used: 25, remaining: 75, unit: "USD" },
+			rate_limits: [{ window: "5h", limit: 20, used: 18, remaining: 2, reset_at: "2026-08-15T05:00:00Z" }]
+		})
+	});
+	assert.equal(account.mode, "subscription");
+	assert.equal(account.plan, "Quota Plan");
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["quota", 25, 75],
+		["session", 90, 10]
+	]);
+	assert.deepEqual(account.alert, { level: "critical", metric: "remaining-percent", value: 10 });
+	console.log("Sub2API quota-plan normalization ok");
+}
+
+{
+	const spec = resolveAccountSpec({ ...relay, id: "sub2" }, validateAccountConfig({ monitors: {
+		sub2: { adapter: "sub2api" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-sub2" }), {
+		now: () => now,
+		fetch: async () => jsonResponse({
+			mode: "unrestricted",
+			isValid: true,
+			planName: "Pro Plan",
+			remaining: 15,
+			subscription: {
+				daily_usage_usd: 2,
+				daily_limit_usd: 5,
+				weekly_usage_usd: 10,
+				weekly_limit_usd: 20,
+				monthly_usage_usd: 60,
+				monthly_limit_usd: 100
+			}
+		})
+	});
+	assert.equal(account.mode, "subscription");
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["daily", 40, 60],
+		["weekly", 50, 50],
+		["monthly", 60, 40]
+	]);
+	assert.deepEqual(account.alert, { level: "normal", metric: "remaining-percent", value: 40 });
+	console.log("Sub2API subscription-window normalization ok");
+}
+
+{
+	const calls = [];
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "new-api",
+			fallbackCredentialRef: "RELAY_A_PAT"
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "inference-key", RELAY_A_PAT: "management-pat" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), authorization: init.headers.authorization });
+			if (String(url).endsWith("/api/usage/token/")) return jsonResponse({}, 404);
+			if (String(url).endsWith("/api/status")) return jsonResponse({ data: { quota_per_unit: 500000, quota_display_type: "CNY", usd_exchange_rate: 6.73 } });
+			return jsonResponse({ success: true, data: { group: "pro", quota: 5000000, used_quota: 2500000 } });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.plan, "pro");
+	assert.deepEqual({ currency: account.balance.currency, unlimited: account.balance.unlimited, expiresAt: account.balance.expiresAt }, { currency: "CNY", unlimited: false, expiresAt: null });
+	closeTo(account.balance.remaining, 67.3, "management fallback CNY remaining");
+	closeTo(account.balance.used, 33.65, "management fallback CNY used");
+	closeTo(account.balance.total, 100.95, "management fallback CNY total");
+	assert.ok(calls.some((call) => call.url.endsWith("/api/user/self") && call.authorization === "Bearer management-pat"));
+	console.log("New API management fallback shares non-hardcoded CNY conversion ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "new-api",
+			fallbackCredentialRef: "RELAY_A_PAT"
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "inference-key", RELAY_A_PAT: "management-pat" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/api/usage/token/") || String(url).endsWith("/api/status")) return jsonResponse({}, 404);
+			return jsonResponse({ success: true, data: { quota: 5000000, used_quota: 0 } });
+		}
+	});
+	assert.deepEqual(account.balance, { remaining: 10, used: 0, total: 10, currency: "USD", unlimited: false, expiresAt: null });
+	assert.equal(account.quotaUnitFallback, true);
+	console.log("New API management fallback retains legacy USD behavior when status is unavailable ok");
+}
+
+{
+	const custom = {
+		monitors: {
+			"relay-a": {
+				adapter: "declarative",
+				mode: "balance",
+				request: { path: "/account/balance", auth: { type: "bearer", credentialRef: "CUSTOM_KEY" } },
+				extract: {
+					root: "/data",
+					remaining: "/available",
+					used: "/used",
+					total: "/total",
+					currency: "/currency",
+					divisor: 100
+				},
+				warning: { warnBelow: 5, criticalBelow: 1 }
+			}
+		}
+	};
+	const spec = resolveAccountSpec(relay, validateAccountConfig(custom));
+	const account = await queryAccount(spec, credentials({ CUSTOM_KEY: "custom-secret" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			assert.equal(String(url), "https://relay.example.com/account/balance");
+			assert.equal(init.redirect, "manual");
+			assert.equal(init.headers.authorization, "Bearer custom-secret");
+			return jsonResponse({ data: { available: 450, used: 550, total: 1000, currency: "USD" } });
+		}
+	});
+	assert.deepEqual(account.balance, { remaining: 4.5, used: 5.5, total: 10, currency: "USD", unlimited: false, expiresAt: null });
+	assert.deepEqual(account.alert, { level: "warning", metric: "balance", value: 4.5, threshold: 5 });
+	console.log("declarative balance mapping and warning threshold ok");
+}
+
+{
+	const monitor = {
+		adapter: "declarative",
+		mode: "balance",
+		usageBaseURL: "https://relay.example.com",
+		request: {
+			path: "/stats/balance?view=summary",
+			auth: { type: "query", param: "key", credentialRef: "QUERY_KEY" }
+		},
+		extract: { root: "/data", valid: "/success", invalidMessage: "/message", remaining: "/balance_cny", currencyValue: "CNY" }
+	};
+	const config = validateAccountConfig({ monitors: { "relay-a": monitor } });
+	const spec = resolveAccountSpec(relay, config);
+	const secret = "query-key +/?&=#%中文";
+	let calls = 0;
+	const service = createAccountService({
+		getProviders: async () => [relay],
+		credentials: credentials({ QUERY_KEY: secret, RELAY_A_KEY: "wrong-provider-key" }),
+		config,
+		deps: { includeLegacyProviders: false, now: () => now, fetch: async (url, init) => {
+			calls += 1;
+			const target = new URL(url);
+			assert.equal(target.origin, "https://relay.example.com");
+			assert.equal(target.pathname, "/stats/balance");
+			assert.equal(target.searchParams.get("view"), "summary");
+			assert.deepEqual(target.searchParams.getAll("key"), [secret], "encode the key exactly once");
+			assert.equal(init.headers.authorization, void 0);
+			assert.equal(init.headers["x-api-key"], void 0);
+			assert.equal(init.redirect, "manual");
+			return jsonResponse({ data: { success: true, balance_cny: 50 } });
+		} }
+	});
+	const views = await service.providerViews();
+	assert.equal(views[0].configured, true, "discovery uses the same nested credential reference as the request");
+	assert.equal(calls, 0, "discovery does not send the query key");
+	const account = await service.get("relay-a");
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 50);
+	assert.equal(account.balance.currency, "CNY");
+	await service.refreshDue({ force: true });
+	assert.equal(calls, 2);
+	for (const value of [config, spec, views, account, service.cached("relay-a")]) {
+		assert.equal(JSON.stringify(value).includes(secret), false);
+		assert.equal(JSON.stringify(value).includes(encodeURIComponent(secret)), false);
+	}
+	const missing = await queryAccount(spec, credentials({ RELAY_A_KEY: "must-not-fall-back" }), {
+		now: () => now, fetch: async () => { throw new Error("must not send a request without QUERY_KEY"); }
+	});
+	assert.equal(missing.status, "not-configured");
+	assert.deepEqual(missing.missingCredentials, ["QUERY_KEY"]);
+	for (const response of [
+		() => { throw new Error(`network failure at https://relay.example.com/?key=${secret}`); },
+		() => jsonResponse({ data: { success: false, message: secret } }),
+		() => new Response(null, { status: 302, headers: { location: `https://elsewhere.example/?key=${secret}` } }),
+		() => jsonResponse({ message: secret }, 401)
+	]) {
+		const failed = await queryAccount(spec, credentials({ QUERY_KEY: secret }), { now: () => now, fetch: response });
+		assert.notEqual(failed.status, "ok");
+		assert.equal(JSON.stringify(failed).includes(secret), false, "URL, redirect and upstream errors cannot leak query credentials");
+	}
+	for (const param of [void 0, null, "", " key", "key=other", "key&extra", "key\n", "key?", "1key", "~key", "a".repeat(65), 1, {}]) {
+		assert.throws(() => validateAccountConfig({ monitors: { "relay-a": {
+			...monitor, request: { ...monitor.request, auth: { type: "query", param, credentialRef: "QUERY_KEY" } }
+		} } }), /request.auth.param/);
+	}
+	// A self-contained monitor may appear before its settings-backed provider.
+	const standalone = createAccountService({
+		getProviders: async () => [], credentials: credentials({ QUERY_KEY: secret }), config,
+		deps: { includeLegacyProviders: false }
+	});
+	await standalone.validate();
+	assert.equal((await standalone.providerViews())[0].configured, true);
+	const blocked = resolveAccountSpec(relay, validateAccountConfig({ monitors: { "relay-a": {
+		...monitor, usageBaseURL: "https://another.example.com"
+	} } }));
+	assert.equal((await queryAccount(blocked, credentials({ QUERY_KEY: secret }), {
+		fetch: async () => { throw new Error("cross-origin query credentials must not be sent"); }
+	})).status, "blocked");
+	console.log("declarative query authentication encoding, discovery, missing keys, secrecy, validation and origin policy ok");
+}
+
+{
+	const secret = "synthetic-query +/?&=#%中文";
+	const monitor = {
+		adapter: "declarative", mode: "balance", usageBaseURL: "https://relay.example.com",
+		request: { path: "/balance?view=summary", auth: { type: "query", param: "key", credentialRef: "QUERY_KEY" } },
+		extract: { remaining: "/remaining", plan: "/plan", currency: "/currency" }
+	};
+	const configFor = (value) => validateAccountConfig({ monitors: { "relay-a": value } });
+	const specFor = (value) => resolveAccountSpec(relay, configFor(value));
+	const encoded = encodeURIComponent(secret);
+	const formEncoded = new URLSearchParams({ key: secret }).toString().slice(4);
+	const echoes = [secret, encoded, formEncoded, formEncoded.replace(/%[0-9A-F]{2}/g, (value) => value.toLowerCase()),
+		`https://relay.example.com/balance?key=${formEncoded}`];
+	const assertSecretFree = (value) => {
+		const rendered = JSON.stringify(value);
+		for (const echo of echoes) assert.equal(rendered.includes(echo), false, "reflected credentials must not reach read models");
+	};
+	// Exercise the policy and pinned transport seam, not the deps.fetch bypass.
+	let calls = 0;
+	const deps = {
+		now: () => now,
+		lookup: async () => [{ address: "93.184.216.34", family: 4 }],
+		requestPinned: async (url, address, init) => {
+			calls += 1;
+			assert.equal(address.address, "93.184.216.34");
+			assert.deepEqual(url.searchParams.getAll("key"), [secret]);
+			assert.equal(url.searchParams.get("view"), "summary");
+			assert.equal(init.headers.authorization, void 0);
+			assert.equal(init.headers["x-api-key"], void 0);
+			return jsonResponse({ remaining: 50, plan: "Standard", currency: "CNY" });
+		}
+	};
+	const spec = specFor(monitor);
+	const configBefore = JSON.stringify(spec);
+	assert.equal((await queryAccount(spec, credentials({ QUERY_KEY: secret }), deps)).status, "ok");
+	assert.equal(calls, 1);
+	assert.equal(JSON.stringify(spec), configBefore, "request construction must not mutate configuration");
+	for (const echo of echoes) {
+		for (const field of ["plan", "currency", "kind"]) {
+			const subscription = field === "kind";
+			const configured = subscription ? { ...monitor, mode: "subscription", extract: { items: "/items", kind: "/kind", usedPercent: "/used" } } : monitor;
+			const body = subscription ? { items: [{ kind: echo, used: 10 }] } : { remaining: 50, [field]: echo };
+			const account = await queryAccount(specFor(configured), credentials({ QUERY_KEY: secret }), {
+				...deps, requestPinned: async () => jsonResponse(body)
+			});
+			assert.equal(account.status, "invalid-response", `${field} reflection must fail before caching`);
+			assertSecretFree(account);
+		}
+	}
+	let reflected = false;
+	const captured = [];
+	const originals = { log: console.log, warn: console.warn, error: console.error };
+	try {
+		for (const method of Object.keys(originals)) console[method] = (...args) => captured.push(args);
+		const service = createAccountService({
+			config: configFor(monitor), getProviders: async () => [relay], credentials: credentials({ QUERY_KEY: secret }),
+			deps: { ...deps, includeLegacyProviders: false, requestPinned: async () => jsonResponse({ remaining: reflected ? 999 : 50, plan: reflected ? secret : "Standard" }) }
+		});
+		const first = await service.get("relay-a");
+		assert.equal(first.status, "ok");
+		reflected = true;
+		const stale = await service.get("relay-a", { force: true });
+		assert.equal(stale.stale, true);
+		assert.equal(stale.status, "invalid-response");
+		assert.equal(stale.balance.remaining, 50, "only previously safe values may be retained on failure");
+		assert.equal(stale.plan, "Standard");
+		const views = await service.providerViews();
+		for (const value of [first, stale, await service.get("relay-a"), service.cached("relay-a"), views, jsonExport({}, views, now), captured]) assertSecretFree(value);
+	} finally {
+		Object.assign(console, originals);
+	}
+	for (const path of ["/balance?key=embedded", "/balance?key=one&key=two", "/balance?%6bey=embedded", "/balance#fragment", "/balance#"]) {
+		assert.throws(() => configFor({ ...monitor, request: { ...monitor.request, path } }), /request.path/);
+	}
+	for (const usageBaseURL of ["https://relay.example.com/?key=embedded", "https://relay.example.com/#fragment", "https://relay.example.com/#"]) {
+		assert.throws(() => configFor({ ...monitor, usageBaseURL }), /usageBaseURL/);
+	}
+	for (const auth of [null, [], "query", 1, { ...monitor.request.auth, value: secret }, { ...monitor.request.auth, credentialRef: 42 }, { ...monitor.request.auth, credentialRef: " " }]) {
+		assert.throws(() => configFor({ ...monitor, request: { ...monitor.request, auth } }), /request.auth/);
+	}
+	for (const target of [
+		{ ...monitor, usageBaseURL: "https://elsewhere.example.com" },
+		{ ...monitor, usageBaseURL: "http://relay.example.com", allowInsecure: true },
+		{ ...monitor, usageBaseURL: "https://127.0.0.1", allowCrossOrigin: true }
+	]) {
+		let sent = 0;
+		const account = await queryAccount(specFor(target), credentials({ QUERY_KEY: secret }), { ...deps, requestPinned: async () => { sent += 1; throw new Error("must not send"); } });
+		assert.equal(account.status, "blocked");
+		assert.equal(sent, 0);
+	}
+	let sent = 0;
+	const privateDns = await queryAccount(spec, credentials({ QUERY_KEY: secret }), { ...deps, lookup: async () => [{ address: "10.0.0.2", family: 4 }], requestPinned: async () => { sent += 1; } });
+	assert.equal(privateDns.status, "blocked");
+	assert.equal(sent, 0);
+	for (const status of [301, 302, 303, 307, 308, 401, 403, 429, 500]) {
+		let requests = 0;
+		const account = await queryAccount(spec, credentials({ QUERY_KEY: secret }), { ...deps, requestPinned: async () => {
+			requests += 1;
+			return jsonResponse({ message: secret }, status, { location: `https://relay.example.com/?key=${formEncoded}` });
+		} });
+		assert.notEqual(account.status, "ok");
+		assert.equal(requests, 1, "redirects and authentication failures must not retry or follow Location");
+		assertSecretFree(account);
+	}
+	for (const respond of [
+		() => { throw new Error(`TLS failure ${secret}`, { cause: new Error(`https://relay.example.com/?key=${formEncoded}`) }); },
+		() => { const error = new Error(encoded); error.name = "TimeoutError"; throw error; },
+		() => new Response(secret, { headers: { "content-type": "text/plain" } }),
+		() => new Response(`{"broken":"${formEncoded}`, { headers: { "content-type": "application/json" } }),
+		() => jsonResponse({ plan: secret }, 200, { "content-length": "999999999" })
+	]) {
+		const account = await queryAccount(spec, credentials({ QUERY_KEY: secret }), { ...deps, requestPinned: respond });
+		assert.notEqual(account.status, "ok");
+		assertSecretFree(account);
+	}
+	console.log("query-auth reflected response rejection, safe cache/stale/export/logs, strict config and pinned policy ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "/account/balance", auth: { type: "bearer", credentialRef: "CUSTOM_KEY" } },
+			extract: { root: "/data", used: "/spend", total: "/max_budget", currencyValue: "CNY" }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({ CUSTOM_KEY: "custom-secret" }), {
+		now: () => now,
+		fetch: async () => jsonResponse({ data: { spend: 30, max_budget: 100 } })
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(account.balance, { remaining: 70, used: 30, total: 100, currency: "CNY", unlimited: false, expiresAt: null });
+	console.log("declarative remaining derived from used and total ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "/account/balance" },
+			extract: { root: "/data", used: "/spend", total: "/max_budget", divisor: 100 }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => jsonResponse({ data: { spend: 300, max_budget: 1000 } })
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(account.balance, { remaining: 7, used: 3, total: 10, currency: "USD", unlimited: false, expiresAt: null });
+	console.log("declarative remaining derivation applies divisor after raw-unit subtraction ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "/account/balance" },
+			extract: { root: "/data", remaining: "/remaining", used: "/spend", total: "/max_budget" }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => jsonResponse({ data: { remaining: 40, spend: 30, max_budget: 100 } })
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 40, "explicit remaining keeps precedence over derived value");
+	console.log("declarative explicit remaining precedence ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "/account/balance" },
+			extract: { root: "/data", remaining: "/remaining", used: "/spend", total: "/max_budget" }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => jsonResponse({ data: { remaining: 0, spend: 30, max_budget: 100 } })
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 0, "explicit zero remaining is valid and must not be treated as missing");
+	console.log("declarative explicit zero remaining is valid ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "/account/balance" },
+			extract: { root: "/data", used: "/spend", total: "/max_budget" }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => jsonResponse({ data: { spend: 120, max_budget: 100 } })
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 0, "derived remaining is clamped at zero");
+	console.log("declarative derived remaining clamps over-spend to zero ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "/account/balance" },
+			extract: { root: "/data", total: "/max_budget" }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => jsonResponse({ data: { max_budget: 100 } })
+	});
+	assert.equal(account.status, "invalid-response");
+	assert.equal(account.balance, null, "incomplete custom balance must not expose total as remaining");
+	console.log("declarative incomplete balance fails closed ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "/account/balance" },
+			extract: { root: "/data", remaining: "/remaining", used: "/spend", total: "/max_budget" }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => jsonResponse({ data: { remaining: "not-a-number", spend: 30, max_budget: 100 } })
+	});
+	assert.equal(account.status, "invalid-response");
+	assert.equal(account.balance, null, "malformed explicit remaining must not be masked by derivation");
+	console.log("declarative malformed explicit remaining fails closed ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "/account/balance" },
+			extract: {
+				root: "/data",
+				remaining: { pointer: "/remaining", divisor: 100 },
+				used: "/spend",
+				total: "/max_budget"
+			}
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => jsonResponse({ data: { remaining: "not-a-number", spend: 30, max_budget: 100 } })
+	});
+	assert.equal(account.status, "invalid-response");
+	assert.equal(account.balance, null, "malformed mapped remaining must not be masked by derivation");
+	console.log("declarative malformed mapped remaining fails closed ok");
+}
+
+{
+	assert.throws(() => validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "https://evil.example/steal" },
+			extract: { remaining: "/balance" }
+		}
+	} }), /relative path/i);
+	console.log("declarative absolute URL rejection ok");
+}
+
+{
+	for (const header of ["x-api-key", "api-key"]) {
+		assert.throws(() => validateAccountConfig({ monitors: {
+			"relay-a": {
+				adapter: "declarative",
+				mode: "balance",
+				request: { path: "/balance", headers: { [header]: "literal-secret" } },
+				extract: { remaining: "/balance" }
+			}
+		} }), /cannot override/i);
+	}
+	assert.throws(() => validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api", usageBaseURL: "https://user:password@relay.example.com" }
+	} }), /must not contain credentials/i);
+	console.log("literal auth header and URL credential rejection ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "subscription",
+			request: { path: "/quota", auth: { type: "x-api-key", credentialRef: "CUSTOM_KEY" } },
+			extract: {
+				root: "/data",
+				plan: "/plan",
+				items: "/windows",
+				kind: "/kind",
+				remainingPercent: "/remaining",
+				resetsAt: "/reset"
+			}
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({ CUSTOM_KEY: "secret" }), {
+		now: () => now,
+		fetch: async (_url, init) => {
+			assert.equal(init.headers["x-api-key"], "secret");
+			return jsonResponse({ data: { plan: "Team", windows: [
+				{ kind: "session", remaining: 80, reset: "2026-08-15T05:00:00Z" },
+				{ kind: "weekly", remaining: 20 }
+			] } });
+		}
+	});
+	assert.equal(account.mode, "subscription");
+	assert.equal(account.plan, "Team");
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 20, 80],
+		["weekly", 80, 20]
+	]);
+	assert.deepEqual(account.alert, { level: "warning", metric: "remaining-percent", value: 20 });
+	console.log("declarative subscription mapping ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			usageBaseURL: "https://usage.other.example",
+			request: { path: "/balance" },
+			extract: { remaining: "/balance" }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), { now: () => now, fetch: async () => { throw new Error("must not fetch"); } });
+	assert.equal(account.status, "blocked", "cross-origin policy rejection must surface as blocked");
+	console.log("declarative cross-origin default deny ok");
+}
+
+{
+	const localProvider = { ...relay, baseURL: "http://127.0.0.1:8787/v1" };
+	const spec = resolveAccountSpec(localProvider, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			usageBaseURL: "http://127.0.0.1:8787",
+			allowInsecure: true,
+			request: { path: "/balance" },
+			extract: { remaining: "/balance" }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), { now: () => now, fetch: async () => { throw new Error("must not fetch"); } });
+	assert.equal(account.status, "blocked", "private-network policy rejection must surface as blocked, not unsupported");
+	console.log("declarative private-network default deny ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": {
+			adapter: "declarative",
+			mode: "balance",
+			request: { path: "/balance" },
+			extract: { remaining: "/balance" }
+		}
+	} }));
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => jsonResponse({ balance: 1 }, 200, { "content-length": String(1024 * 1024 + 1) })
+	});
+	assert.equal(account.status, "invalid-response");
+	assert.equal(account.reason, "upstream-too-large");
+	console.log("declarative response-size limit ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	const noFallback = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async () => jsonResponse({}, 404)
+	});
+	assert.equal(noFallback.status, "unsupported");
+	assert.equal(noFallback.balance, null);
+	console.log("New API refuses implicit credential fallback ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => String(url).endsWith("/api/status")
+			? jsonResponse({}, 503)
+			: jsonResponse({ code: true, data: { total_granted: 10, total_used: 2, total_available: 8 } })
+	});
+	assert.equal(account.status, "unavailable", "status transport failures must not use the historical quota unit");
+	assert.equal(account.balance, null);
+	console.log("New API status failures do not silently change quota units");
+}
+
+{
+	// sub2api-auth: reuse the provider's own API key (already configured in the
+	// model) against GET /user/balance — the CC Switch General template.
+	const calls = [];
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "sub2api-auth" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), authorization: init?.headers?.authorization });
+			if (String(url).includes("/api/v1/usage/stats")) {
+				return jsonResponse({ code: 0, message: "ok", data: { total_actual_cost: 2.5, total_input_tokens: 100, total_output_tokens: 50 } });
+			}
+			assert.equal(String(url).endsWith("/user/balance"), true);
+			assert.equal(init.headers.authorization, "Bearer sk-relay");
+			return jsonResponse({ balance: 12.5, unit: "USD", planName: "Relay A" });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.mode, "balance");
+	assert.equal(account.plan, "Relay A");
+	assert.deepEqual(account.balance, { remaining: 12.5, used: 2.5, currency: "USD", unlimited: false, expiresAt: null });
+	assert.equal(JSON.stringify(account).includes("sk-relay"), false, "provider key must never leak into the snapshot");
+	console.log("sub2api-auth reuses provider API key against /user/balance ok");
+}
+
+{
+	// sub2api-auth: a numeric-string balance and missing currency default to USD.
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "sub2api-auth" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).includes("/api/v1/usage/stats")) return jsonResponse({ code: 0, message: "ok", data: {} });
+			assert.equal(String(url).endsWith("/user/balance"), true);
+			return jsonResponse({ balance: "7.25" });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 7.25);
+	assert.equal(account.balance.currency, "USD");
+	console.log("sub2api-auth numeric-string balance and default currency ok");
+}
+
+{
+	// sub2api-auth: missing provider API key is not-configured (never a blind request).
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "sub2api-auth" }
+	} }));
+	const account = await queryAccount(spec, credentials({}), { now: () => now, fetch: async () => { throw new Error("must not fetch without a provider API key"); } });
+	assert.equal(account.status, "not-configured");
+	assert.equal(account.balance, null);
+	console.log("sub2api-auth missing provider key is not-configured ok");
+}
+
+{
+	// sub2api-auth: when /user/balance returns no recognizable numeric balance,
+	// the flow falls back to /v1/usage (same model API key).
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "sub2api-auth" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/user/balance")) return jsonResponse({});
+			if (String(url).endsWith("/v1/usage")) return jsonResponse({ isValid: true, balance: 6.6, unit: "USD", planName: "Panel" });
+			if (String(url).includes("/api/v1/usage/stats")) return jsonResponse({ code: 0, message: "ok", data: {} });
+			throw new Error(`unexpected url: ${url}`);
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.mode, "balance");
+	assert.equal(account.balance.remaining, 6.6);
+	assert.equal(account.plan, "Panel");
+	console.log("sub2api-auth /user/balance empty falls back to /v1/usage ok");
+}
+
+{
+	// sub2api-auth: an SPA HTML response for /user/balance (like real panels'
+	// catch-all) is skipped and the panel's /v1/usage is used instead.
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "sub2api-auth" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/user/balance")) return new Response("<!doctype html><title>SPA</title>", {
+				status: 200,
+				headers: { "content-type": "text/html" }
+			});
+			if (String(url).endsWith("/v1/usage")) return jsonResponse({ mode: "unrestricted", isValid: true, remaining: 8.25, unit: "USD", balance: 8.25 });
+			if (String(url).includes("/api/v1/usage/stats")) return jsonResponse({ code: 0, message: "ok", data: {} });
+			throw new Error(`unexpected url: ${url}`);
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 8.25);
+	console.log("sub2api-auth HTML /user/balance falls back to /v1/usage ok");
+}
+
+{
+	// sub2api-auth: when both endpoints fail to yield a balance, the snapshot
+	// stays invalid-response and surfaces the /user/balance top-level keys.
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "sub2api-auth" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/user/balance")) return jsonResponse({ message: "nope" });
+			if (String(url).endsWith("/v1/usage")) return jsonResponse({});
+			if (String(url).includes("/api/v1/usage/stats")) return jsonResponse({ code: 0, message: "ok", data: {} });
+			throw new Error(`unexpected url: ${url}`);
+		}
+	});
+	assert.equal(account.status, "invalid-response");
+	assert.equal(account.balance, null);
+	assert.equal(account.reason, "sub2api-balance-shape-unrecognized", "reason must be a fixed enum, never upstream-controlled keys");
+	console.log("sub2api-auth both endpoints missing balance keeps invalid-response ok");
+}
+
+{
+	// sub2api-auth: a nested { code, data: { balance } } envelope is recognized.
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "sub2api-auth" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/user/balance")) return jsonResponse({ code: 0, message: "ok", data: { balance: 4.2, unit: "USD" } });
+			if (String(url).endsWith("/v1/usage")) throw new Error("must not fall back when /user/balance already yields a balance");
+			if (String(url).includes("/api/v1/usage/stats")) return jsonResponse({ code: 0, message: "ok", data: {} });
+			throw new Error(`unexpected url: ${url}`);
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 4.2);
+	console.log("sub2api-auth nested data.balance envelope ok");
+}
+
+{
+	// Auto-detection hit: a relay provider with an API key and a public-settings
+	// fingerprint is auto-selected as sub2api-auth and queried with its own key.
+	const probed = [];
+	const account = await queryAccount(resolveAccountSpec(relay, validateAccountConfig()), credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			if (String(url).endsWith("/api/v1/settings/public")) {
+				probed.push(String(url));
+				return jsonResponse({ code: 0, message: "ok", data: { affiliate_enabled: true } });
+			}
+			if (String(url).includes("/api/v1/usage/stats")) return jsonResponse({ code: 0, message: "ok", data: {} });
+			assert.ok(String(url).endsWith("/user/balance"));
+			assert.equal(init.headers.authorization, "Bearer sk-relay");
+			return jsonResponse({ balance: 3.5, unit: "USD" });
+		},
+		sub2apiDetection: new Map()
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.mode, "balance");
+	assert.equal(account.adapter, "sub2api-auth");
+	assert.equal(account.balance.remaining, 3.5);
+	assert.ok(probed.length === 1, "panel probe must run");
+	console.log("sub2api-auth auto-detection fingerprint hit ok");
+}
+
+{
+	// Auto-detection miss: the probe shows it is not a Sub2API panel → unsupported,
+	// no balance query is attempted with the provider key.
+	const account = await queryAccount(resolveAccountSpec(relay, validateAccountConfig()), credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/api/v1/settings/public")) {
+				return jsonResponse({ code: 0, message: "ok", data: { affiliate_enabled: "yes" } });
+			}
+			throw new Error("must not query non-panel endpoints when the probe misses");
+		},
+		sub2apiDetection: new Map()
+	});
+	assert.equal(account.status, "unsupported");
+	assert.equal(account.balance, null);
+	console.log("sub2api-auth auto-detection fingerprint miss ok");
+}
+
+{
+	// Auto-detection is gated on a provider API key: an unkeyed relay is left
+	// unsupported and never probed.
+	let fetched = false;
+	const account = await queryAccount(resolveAccountSpec(relay, validateAccountConfig()), credentials({}), {
+		now: () => now,
+		fetch: async () => { fetched = true; throw new Error("must not probe without a provider API key"); },
+		sub2apiDetection: new Map()
+	});
+	assert.equal(account.status, "unsupported");
+	assert.equal(fetched, false, "no request must fire without a provider API key");
+	console.log("sub2api-auth auto-detection requires a provider API key ok");
+}
+
+{
+	// An explicit adapter always wins over auto-detection: a provider bound to
+	// `new-api` is never probed or overridden even with a provider API key.
+	let fetched = false;
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "new-api" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/api/v1/settings/public")) { fetched = true; throw new Error("explicit adapter must not be probed"); }
+			if (String(url).endsWith("/api/status")) return jsonResponse({ data: { quota_per_unit: 500000 } });
+			return jsonResponse({ code: true, data: { total_granted: 10, total_used: 2, total_available: 8 } });
+		},
+		sub2apiDetection: new Map()
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.adapter, "new-api");
+	assert.equal(fetched, false, "explicit adapter must bypass the panel probe");
+	console.log("sub2api-auth auto-detection never overrides explicit adapter ok");
+}
+
+{
+	// P1 regression: upstream-controlled JSON property names must never appear
+	// in the normalized snapshot's reason. A hostile panel echoing sensitive
+	// material as an object key (e.g. an API key) must stay out of safeReason.
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "sub2api-auth" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/user/balance")) return jsonResponse({ "sk-super-secret-api-key": 1 });
+			if (String(url).endsWith("/v1/usage")) return jsonResponse({});
+			if (String(url).includes("/api/v1/usage/stats")) return jsonResponse({ code: 0, message: "ok", data: {} });
+			throw new Error(`unexpected url: ${url}`);
+		}
+	});
+	assert.equal(account.status, "invalid-response");
+	assert.equal(account.reason, "sub2api-balance-shape-unrecognized", "reason must be a fixed enum");
+	assert.equal(JSON.stringify(account).includes("sk-super-secret-api-key"), false, "upstream-controlled key must never reach the snapshot");
+	console.log("sub2api-auth upstream key names never leak into snapshot ok");
+}
+
+{
+	// P1 regression: the detection cache must live on the service, so two
+	// refresh/query cycles for the same configKey probe the panel only once.
+	let probes = 0;
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: "sk-relay" }),
+		getProviders: async () => [relay],
+		config: { monitors: {} },
+		deps: {
+			now: () => now,
+			fetch: async (url, init) => {
+				if (String(url).endsWith("/api/v1/settings/public")) {
+					probes += 1;
+					return jsonResponse({ code: 0, message: "ok", data: { affiliate_enabled: true } });
+				}
+				if (String(url).includes("/api/v1/usage/stats")) return jsonResponse({ code: 0, message: "ok", data: {} });
+				if (String(url).endsWith("/user/balance")) return jsonResponse({ balance: 1.5, unit: "USD" });
+				throw new Error(`unexpected url: ${url}`);
+			}
+		}
+	});
+	const first = await service.get("relay-a", { force: true });
+	assert.equal(first.adapter, "sub2api-auth");
+	assert.equal(probes, 1, "first cycle must probe exactly once");
+	const second = await service.get("relay-a", { force: true });
+	assert.equal(second.adapter, "sub2api-auth");
+	assert.equal(probes, 1, "second cycle must reuse the persisted detection cache");
+	console.log("sub2api-auth detection cache persists across service refreshes ok");
+}
+
+{
+	// Reviewer suggestion: security-policy/TLS failures on /user/balance must
+	// not be silently swallowed into the /v1/usage fallback — the real error
+	// surfaces instead of being masked.
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "sub2api-auth" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/user/balance")) {
+				throw statusErrorFromTest("blocked", "account monitor requires HTTPS");
+			}
+			throw new Error(`must not fall back after a security-policy failure: ${url}`);
+		}
+	});
+	assert.equal(account.status, "blocked", "security-policy failures must surface, not fall back");
+	console.log("sub2api-auth security-policy failure not swallowed ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		lookup: async () => [{ address: "127.0.0.1", family: 4 }]
+	});
+	assert.equal(account.status, "blocked", "DNS answers pointing at private networks must surface as blocked, not unsupported");
+	console.log("DNS-to-private-network rejection ok");
+}
+
+{
+	const httpsTarget = new URL("https://api.deepseek.com/user/balance");
+	const fakeIpv4 = { address: "198.18.0.50", family: 4 };
+	const fakeUla = { address: "fdfe:dcba:9876::1c", family: 6 };
+	const publicIpv4 = { address: "1.1.1.1", family: 4 };
+
+	assert.deepEqual(
+		selectResolvedAddress(httpsTarget, [fakeUla, fakeIpv4]),
+		fakeIpv4,
+		"HTTPS hostname should accept the IPv4 benchmarking fake-IP when all normal answers are blocked"
+	);
+	assert.deepEqual(
+		selectResolvedAddress(httpsTarget, [fakeIpv4, publicIpv4]),
+		publicIpv4,
+		"a real public address must be preferred over a proxy fake-IP"
+	);
+	assert.equal(
+		selectResolvedAddress(httpsTarget, [
+			{ address: "127.0.0.1", family: 4 },
+			{ address: "10.0.0.1", family: 4 },
+			fakeUla
+		]),
+		null,
+		"ordinary private and ULA answers must remain blocked"
+	);
+	assert.equal(
+		selectResolvedAddress(new URL("http://api.deepseek.com/user/balance"), [fakeIpv4]),
+		null,
+		"the fake-IP exception must not weaken insecure HTTP targets"
+	);
+	assert.equal(
+		selectResolvedAddress(httpsTarget, []),
+		null,
+		"an empty answer set must select nothing"
+	);
+	console.log("resolved-address selection policy ok");
+}
+
+{
+	const literalProvider = {
+		...relay,
+		baseURL: "https://198.18.0.50/v1"
+	};
+	const spec = resolveAccountSpec(literalProvider, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		lookup: async () => { throw new Error("literal targets must be blocked before DNS lookup"); }
+	});
+	assert.equal(account.status, "blocked", "literal 198.18/15 targets must surface as blocked without allowPrivateNetwork");
+	console.log("literal benchmarking-range target rejection ok");
+}
+
+{
+	const { createServer } = await import("node:http");
+	const server = createServer((req, res) => {
+		assert.equal(req.url, "/user/balance");
+		res.writeHead(200, { "content-type": "application/json" });
+		res.end(JSON.stringify({ balance: 9, currency: "USD" }));
+	});
+	await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+	const { port } = server.address();
+	try {
+		const localProvider = { ...relay, baseURL: `http://127.0.0.1:${port}/v1` };
+		const spec = resolveAccountSpec(localProvider, validateAccountConfig({ monitors: {
+			"relay-a": {
+				adapter: "general",
+				allowPrivateNetwork: true,
+				allowInsecure: true
+			}
+		} }));
+		const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), { now: () => now });
+		assert.equal(account.status, "ok", "explicit allowPrivateNetwork must preserve private network access");
+		assert.equal(account.balance.remaining, 9);
+	} finally {
+		await new Promise((resolve) => server.close(resolve));
+	}
+	console.log("allowPrivateNetwork opt-in preserves private network access ok");
+}
+
+{
+	// No adapter: the provider genuinely has no balance/subscription interface.
+	const bare = resolveAccountSpec(relay, validateAccountConfig());
+	assert.equal(bare.adapter, null);
+	const account = await queryAccount(bare, credentials({}), { now: () => now, fetch: async () => { throw new Error("must not fetch"); } });
+	assert.equal(account.status, "unsupported", "a provider without any adapter must stay unsupported");
+	console.log("missing adapter stays unsupported ok");
+}
+
+{
+	// HTTP 404/405: the upstream itself has no such account API.
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		fetch: async () => jsonResponse({}, 404)
+	});
+	assert.equal(account.status, "unsupported", "HTTP 404 must stay unsupported, not blocked");
+	console.log("upstream 404 stays unsupported ok");
+}
+
+{
+	// HTTPS policy: local security policy rejects the plain-HTTP target before
+	// any DNS resolution or connection attempt.
+	const insecureProvider = { ...relay, baseURL: "http://relay.example.com/v1" };
+	const spec = resolveAccountSpec(insecureProvider, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		lookup: async () => { throw new Error("must not resolve before the HTTPS policy check"); }
+	});
+	assert.equal(account.status, "blocked", "non-HTTPS targets must surface as blocked without allowInsecure");
+	console.log("non-HTTPS policy rejection ok");
+}
+
+{
+	let calls = 0;
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: "sk-relay" }),
+		getProviders: async () => [relay],
+		config: validateAccountConfig({ monitors: { "relay-a": { adapter: "new-api" } } }),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => now,
+			fetch: async (url) => {
+				calls += 1;
+				if (String(url).endsWith("/api/status")) return jsonResponse({ data: { quota_per_unit: 1 } });
+				return jsonResponse({ code: true, data: { total_granted: 10, total_used: 2, total_available: 8 } });
+			}
+		}
+	});
+	const first = await service.get("relay-a");
+	const second = await service.get("relay-a");
+	assert.equal(first.balance.remaining, 8);
+	assert.equal(second.balance.remaining, 8);
+	assert.equal(calls, 2, "fresh cache must avoid another upstream request");
+	await service.refreshAll();
+	assert.equal(calls, 4, "background refresh must force an upstream update");
+	console.log("account cache and background refresh contract ok");
+}
+
+{
+	let calls = 0;
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: "sk-relay" }),
+		getProviders: async () => [relay],
+		config: validateAccountConfig({
+			refresh: { activeMs: 120000, detailMs: 180000, backgroundMs: 240000 },
+			monitors: { "relay-a": { adapter: "general" } }
+		}),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => now,
+			fetch: async () => {
+				calls += 1;
+				return jsonResponse({ balance: 42, currency: "USD" });
+			}
+		}
+	});
+	await service.get("relay-a");
+	assert.equal(await service.nextRefreshAt(), now + 240000, "production config must override the background interval");
+	service.touch("relay-a", "detail");
+	assert.equal(await service.nextRefreshAt(), now + 180000, "production config must override the detail interval");
+	service.touch("relay-a", "active");
+	assert.equal(await service.nextRefreshAt(), now + 120000, "production config must override the active interval");
+	assert.equal(calls, 1);
+	console.log("normalized refresh intervals reach AccountService policy ok");
+}
+
+{
+	let clock = now;
+	let calls = 0;
+	let provider = { ...relay };
+	const requested = [];
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: "sk-relay" }),
+		getProviders: async () => [provider],
+		config: validateAccountConfig({
+			refresh: { enabled: false },
+			monitors: { "relay-a": { adapter: "general" } }
+		}),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => clock,
+			fetch: async (url) => {
+				calls += 1;
+				requested.push(String(url));
+				return jsonResponse({ balance: calls, currency: "USD" });
+			}
+		}
+	});
+	const first = await service.get("relay-a");
+	assert.equal(first.balance.remaining, 1, "disabled mode must allow one initial fetch when no cache exists");
+	clock += 7 * 86400000;
+	const cached = await service.get("relay-a");
+	assert.equal(cached.balance.remaining, 1);
+	assert.equal(calls, 1, "disabled mode must keep returning the same-config cache regardless of age");
+	assert.deepEqual(await service.refreshDue(), [], "disabled mode must not perform non-force due refreshes");
+	assert.equal(await service.nextRefreshAt(), null, "disabled mode has no adaptive account-refresh deadline");
+	const forced = await service.get("relay-a", { force: true });
+	assert.equal(forced.balance.remaining, 2, "force=true must remain an explicit refresh escape hatch");
+	provider = { ...provider, baseURL: "https://replacement.example.com/v1" };
+	const rebound = await service.get("relay-a");
+	assert.equal(rebound.balance.remaining, 3, "a changed configKey must fetch once instead of reusing disabled-mode cache");
+	await service.get("relay-a");
+	assert.equal(calls, 3, "the replacement config must then become the stable disabled-mode cache");
+	assert.deepEqual(requested, [
+		"https://relay.example.com/user/balance",
+		"https://relay.example.com/user/balance",
+		"https://replacement.example.com/user/balance"
+	]);
+	console.log("disabled refresh first-fetch, cache, force, and config-change semantics ok");
+}
+
+{
+	let clock = now;
+	let calls = 0;
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: "sk-relay" }),
+		getProviders: async () => [relay],
+		config: validateAccountConfig({
+			refresh: { backgroundMs: 60000 },
+			monitors: { "relay-a": { adapter: "general" } }
+		}),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => clock,
+			fetch: async () => {
+				calls += 1;
+				return jsonResponse({ balance: calls, currency: "USD" });
+			}
+		}
+	});
+	await service.get("relay-a");
+	clock += 60000;
+	const refreshed = await service.get("relay-a");
+	assert.equal(refreshed.balance.remaining, 2);
+	assert.equal(calls, 2, "enabled mode must preserve automatic cache-expiry refreshes");
+	console.log("enabled refresh cache expiry behavior ok");
+}
+
+{
+	let phase = "ok";
+	let clock = now;
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: "sk-relay" }),
+		getProviders: async () => [relay],
+		config: validateAccountConfig({ monitors: { "relay-a": { adapter: "new-api" } } }),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => clock,
+			fetch: async (url) => {
+				if (String(url).endsWith("/api/status")) return jsonResponse({ data: { quota_per_unit: 1 } });
+				if (phase === "transient") return jsonResponse({}, 503);
+				if (phase === "rate-limited") return jsonResponse({}, 429);
+				if (phase === "auth") return jsonResponse({}, 401);
+				return jsonResponse({ code: true, data: { total_granted: 10, total_used: 2, total_available: 8 } });
+			}
+		}
+	});
+	const success = await service.get("relay-a");
+	assert.equal(success.status, "ok");
+	assert.equal(success.lastAttemptAt, now);
+	assert.equal(success.lastSuccessAt, now);
+	assert.equal(success.ageMs, 0);
+	assert.equal(success.stale, false);
+	assert.equal(success.provenance, "provider");
+	clock += 1000;
+	const successAgain = await service.get("relay-a", { force: true });
+	const successfulAt = clock;
+	assert.equal(successAgain.lastAttemptAt, successfulAt);
+	assert.equal(successAgain.lastSuccessAt, successfulAt, "consecutive success must advance both health timestamps");
+	assert.equal(successAgain.ageMs, 0);
+	const providerView = (await service.providerViews()).find((entry) => entry.id === "relay-a");
+	assert.deepEqual({
+		stale: providerView.stale,
+		lastAttemptAt: providerView.lastAttemptAt,
+		lastSuccessAt: providerView.lastSuccessAt,
+		ageMs: providerView.ageMs,
+		provenance: providerView.provenance,
+		reason: providerView.reason
+	}, { stale: false, lastAttemptAt: successfulAt, lastSuccessAt: successfulAt, ageMs: 0, provenance: "provider", reason: null });
+	clock += 1000;
+	assert.equal((await service.get("relay-a")).ageMs, 1000, "cached health age must advance at read time");
+	phase = "transient";
+	clock += 300000;
+	const stale = await service.get("relay-a", { force: true });
+	assert.equal(stale.status, "unavailable");
+	assert.equal(stale.stale, true);
+	assert.equal(stale.balance.remaining, 8);
+	assert.equal(stale.lastAttemptAt, clock);
+	assert.equal(stale.lastSuccessAt, successfulAt);
+	assert.equal(stale.ageMs, 301000);
+	assert.equal(stale.reason, "unknown");
+	phase = "rate-limited";
+	clock += 1000;
+	const limited = await service.get("relay-a", { force: true });
+	assert.equal(limited.status, "rate-limited");
+	assert.equal(limited.stale, true);
+	assert.equal(limited.balance.remaining, 8);
+	assert.equal(limited.lastSuccessAt, successfulAt);
+	assert.equal(limited.reason, "rate-limited");
+	assert.equal(await service.nextRefreshAt(), clock + 900000, "the first 429 must not shorten the normal background interval");
+	clock += 300000;
+	const limitedAgain = await service.get("relay-a", { force: true });
+	assert.equal(limitedAgain.status, "rate-limited");
+	assert.equal(await service.nextRefreshAt(), clock + 900000, "backoff below the normal interval must retain the normal background delay");
+	phase = "transient";
+	clock += 1000;
+	const failedRetry = await service.get("relay-a", { force: true });
+	assert.equal(failedRetry.status, "unavailable");
+	assert.equal(failedRetry.stale, true);
+	assert.equal(await service.nextRefreshAt(), clock + 900000, "a failed retry must not clear rate-limit backoff before recovery");
+	phase = "auth";
+	clock += 1000;
+	const unauthorized = await service.get("relay-a", { force: true });
+	assert.equal(unauthorized.status, "unauthorized");
+	assert.equal(unauthorized.balance, null, "auth failures must not retain stale account data");
+	assert.equal(unauthorized.stale, false);
+	assert.equal(unauthorized.lastSuccessAt, successfulAt, "non-transient failures must not erase health history");
+	assert.equal(unauthorized.reason, "unauthorized");
+	phase = "ok";
+	clock += 1000;
+	const recovered = await service.get("relay-a", { force: true });
+	assert.equal(recovered.status, "ok");
+	assert.equal(recovered.stale, false);
+	assert.equal(recovered.lastSuccessAt, clock);
+	assert.equal(recovered.ageMs, 0);
+	assert.equal(await service.nextRefreshAt(), clock + 900000, "success must clear rate-limit backoff");
+	console.log("account health transitions, stale retention, and 429 recovery ok");
+}
+
+{
+	let phase = "ok";
+	let provider = { ...relay };
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: "sk-relay" }),
+		getProviders: async () => [provider],
+		config: validateAccountConfig({ monitors: { "relay-a": { adapter: "general" } } }),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => now,
+			fetch: async () => phase === "ok"
+				? jsonResponse({ balance: 42, currency: "USD" })
+				: jsonResponse({}, 503)
+		}
+	});
+	const first = await service.get("relay-a");
+	assert.equal(first.balance.remaining, 42);
+	provider = { ...provider, baseURL: "https://replacement.example.com/v1" };
+	const reboundView = (await service.providerViews()).find((entry) => entry.id === "relay-a");
+	assert.equal(reboundView.status, "pending", "provider views must not expose a snapshot from a different config key");
+	assert.equal(reboundView.fetchedAt, null);
+	assert.equal(reboundView.lastSuccessAt, null);
+	phase = "unavailable";
+	const changed = await service.get("relay-a", { force: true });
+	assert.equal(changed.status, "unavailable");
+	assert.equal(changed.stale, false, "a new provider binding must not retain data from the previous config key");
+	assert.equal(changed.balance, null);
+	assert.equal(changed.lastSuccessAt, null);
+	console.log("account config changes invalidate stale-data and backoff history ok");
+}
+
+{
+	let clock = now;
+	let configured = true;
+	let calls = 0;
+	const service = createAccountService({
+		credentials: { resolve: async () => configured ? { value: "sk-relay" } : void 0 },
+		getProviders: async () => [relay],
+		config: validateAccountConfig({ monitors: { "relay-a": { adapter: "general" } } }),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => clock,
+			fetch: async () => {
+				calls += 1;
+				return jsonResponse({ balance: 42, currency: "USD" });
+			}
+		}
+	});
+	const success = await service.get("relay-a");
+	assert.equal(success.lastAttemptAt, now);
+	configured = false;
+	clock += 900000;
+	await service.refreshDue();
+	const unconfigured = service.cached("relay-a");
+	assert.equal(unconfigured.status, "not-configured");
+	assert.equal(unconfigured.lastAttemptAt, now, "a local missing-credential evaluation must preserve the last real provider attempt");
+	assert.equal(unconfigured.lastSuccessAt, now);
+	assert.equal(await service.nextRefreshAt(), clock + 900000, "a no-attempt evaluation must still advance the scheduler deadline");
+	clock += 900000;
+	await service.refreshDue();
+	assert.equal(await service.nextRefreshAt(), clock + 900000, "consecutive missing-credential evaluations must never create a one-second loop");
+	assert.equal(calls, 1, "missing credentials must not create extra provider requests");
+	console.log("no-attempt evaluations remain health-accurate and scheduler-bounded ok");
+}
+
+{
+	let provider = { ...relay, baseURL: "https://old.example.com/v1" };
+	let releaseOld;
+	const calls = [];
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: "sk-relay" }),
+		getProviders: async () => [provider],
+		config: validateAccountConfig({ monitors: { "relay-a": { adapter: "general" } } }),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => now,
+			fetch: async (url) => {
+				calls.push(String(url));
+				if (String(url).includes("old.example.com")) {
+					await new Promise((resolve) => { releaseOld = resolve; });
+					return jsonResponse({ balance: 10, currency: "USD" });
+				}
+				return jsonResponse({ balance: 99, currency: "USD" });
+			}
+		}
+	});
+	const oldRequest = service.get("relay-a", { force: true });
+	await new Promise((resolve) => setImmediate(resolve));
+	provider = { ...provider, baseURL: "https://new.example.com/v1" };
+	const newAccount = await service.get("relay-a", { force: true });
+	assert.equal(newAccount.balance.remaining, 99, "a rebound provider must not share the previous config's inflight request");
+	releaseOld();
+	const oldAccount = await oldRequest;
+	assert.equal(oldAccount.balance.remaining, 10);
+	assert.equal((await service.get("relay-a")).balance.remaining, 99, "a late old-config completion must not overwrite the new binding cache");
+	assert.deepEqual(calls, ["https://old.example.com/user/balance", "https://new.example.com/user/balance"]);
+	console.log("single-flight is config-aware and rejects late old-binding cache writes ok");
+}
+
+{
+	const secret = "SECRET_API_KEY_sk-danger";
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: secret }),
+		getProviders: async () => [relay],
+		config: validateAccountConfig({ monitors: { "relay-a": { adapter: "general" } } }),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => now,
+			fetch: async () => {
+				const error = new Error(`Authorization: Bearer ${secret}; Cookie=session-secret; upstream body=${secret}`);
+				error.providerStatus = "unavailable";
+				error.safeReason = `Authorization: Bearer ${secret}`;
+				throw error;
+			}
+		}
+	});
+	const account = await service.get("relay-a", { force: true });
+	assert.equal(account.reason, "unknown");
+	assert.equal(account.lastAttemptAt, now);
+	assert.equal(account.lastSuccessAt, null);
+	assert.equal(account.ageMs, null, "an account that never succeeded has no data age");
+	const wire = JSON.stringify({ account, providers: await service.providerViews() });
+	assert.equal(wire.includes(secret), false);
+	assert.equal(/Authorization|Cookie|upstream body/i.test(wire), false);
+	console.log("account health diagnostics never expose hostile upstream secrets ok");
+}
+
+{
+	let clock = now;
+	let releaseRelayA;
+	let holdRelayA = true;
+	const calls = new Map([["relay-a", 0], ["relay-b", 0]]);
+	const relayB = { ...relay, id: "relay-b", displayName: "Relay B", apiKeyEnv: "RELAY_B_KEY", baseURL: "https://relay-b.example.com/v1" };
+	const service = createAccountService({
+		credentials: credentials({ RELAY_A_KEY: "sk-a", RELAY_B_KEY: "sk-b" }),
+		getProviders: async () => [relay, relayB],
+		config: validateAccountConfig({ monitors: {
+			"relay-a": { adapter: "general" },
+			"relay-b": { adapter: "general" }
+		} }),
+		deps: {
+			includeLegacyProviders: false,
+			now: () => clock,
+			fetch: async (url) => {
+				const id = String(url).includes("relay-b") ? "relay-b" : "relay-a";
+				calls.set(id, calls.get(id) + 1);
+				if (id === "relay-a" && holdRelayA) await new Promise((resolve) => { releaseRelayA = resolve; });
+				return jsonResponse({ balance: id === "relay-a" ? 10 : 20, currency: "USD" });
+			}
+		}
+	});
+	let policyChanges = 0;
+	const unsubscribe = service.subscribePolicyChanges(() => { policyChanges += 1; });
+	service.touch("relay-a", "detail");
+	assert.equal(policyChanges, 1, "background-to-detail activity must notify the central scheduler");
+	service.touch("relay-a", "detail");
+	assert.equal(policyChanges, 1, "refreshing the same activity hint must not create redundant scheduler wakes");
+	service.setActiveProviders(["relay-a"]);
+	assert.equal(policyChanges, 2, "detail-to-active activity must notify the central scheduler");
+	const direct = service.get("relay-a", { force: true, activity: "active" });
+	await new Promise((resolve) => setImmediate(resolve));
+	const central = service.refreshDue({ force: true });
+	holdRelayA = false;
+	releaseRelayA();
+	await Promise.all([direct, central]);
+	assert.deepEqual(Object.fromEntries(calls), { "relay-a": 1, "relay-b": 1 }, "detail/background overlap must preserve one upstream request per provider");
+	clock += 60000;
+	await service.refreshDue();
+	assert.deepEqual(Object.fromEntries(calls), { "relay-a": 2, "relay-b": 1 }, "active and background providers must keep independent due times");
+	unsubscribe();
+	console.log("adaptive refresh preserves single-flight and per-provider independence ok");
+}
+
+{
+	const service = createAccountService({
+		credentials: credentials({}),
+		getProviders: async () => [relay],
+		config: validateAccountConfig({ monitors: { missing: { adapter: "general" } } }),
+		deps: { includeLegacyProviders: false }
+	});
+	await assert.rejects(() => service.providerViews(), /unknown provider: missing/);
+	console.log("unknown monitor provider rejection ok");
+}
+
+{
+	const service = createAccountService({
+		credentials: credentials({ LATE_PROVIDER_API_KEY: "sk-late-provider" }),
+		getProviders: async () => [],
+		config: validateAccountConfig({ monitors: {
+			"late-provider": {
+				adapter: "sub2api",
+				usageBaseURL: "https://late-provider.example.com",
+				credentialRef: "LATE_PROVIDER_API_KEY"
+			}
+		} }),
+		deps: {
+			includeLegacyProviders: false,
+			fetch: async (url, init) => {
+				assert.equal(String(url), "https://late-provider.example.com/v1/usage");
+				assert.equal(init.headers.authorization, "Bearer sk-late-provider");
+				return jsonResponse({ mode: "unrestricted", isValid: true, remaining: 12.5, unit: "USD", balance: 12.5 });
+			}
+		}
+	});
+	const view = (await service.providerViews()).find((entry) => entry.id === "late-provider");
+	assert.equal(view?.adapter, "sub2api");
+	const account = await service.get("late-provider");
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 12.5);
+	console.log("explicit dynamic provider monitor fallback ok");
+}
+
+
+{
+	const target = new URL("https://api.deepseek.com/user/balance");
+	const ipv6 = { address: "2606:4700:4700::1111", family: 6 };
+	const ipv4 = { address: "1.1.1.1", family: 4 };
+	assert.deepEqual(
+		selectResolvedAddresses(target, [ipv6, ipv4]),
+		[ipv6, ipv4],
+		"all validated public DNS answers must remain available for connection fallback"
+	);
+	console.log("multi-address DNS policy preserves validated candidates ok");
+}
+
+{
+	const source = readFileSync(new URL("../lib/accounts.js", import.meta.url), "utf8");
+	assert.match(source, /family:\s*address\.family/, "each pinned request must fix the selected address family");
+	assert.match(source, /autoSelectFamily:\s*false/, "Node network-family autoselection must stay disabled inside each pinned attempt");
+	console.log("Node 24 pinned request disables inner network-family autoselection ok");
+}
+
+{
+	const source = readFileSync(new URL("../lib/accounts.js", import.meta.url), "utf8");
+	assert.match(source, /request\.on\("socket",\s*\(socket\)\s*=>\s*\{[^}]*socket\.on\("error"/, "pinned request must forward connect-phase socket errors to the request (#42)");
+	assert.match(source, /lookup:[\s\S]*process\.nextTick\(\(\) => \{/, "pinned lookup must defer address delivery before connect");
+	console.log("pinned request socket error backstop present ok");
+}
+
+{
+	// Process-level regression for #111: the public queryAccount() API must
+	// survive a deterministic synchronous connect failure caused by a public
+	// address/family mismatch. The mismatch is a stand-in for a route-less
+	// EHOSTUNREACH/EINVAL and does not depend on a real upstream being online.
+	const moduleUrl = JSON.stringify(new URL("../lib/accounts.js", import.meta.url).href);
+	const childSource = `
+import { queryAccount } from ${moduleUrl};
+const spec = {
+  id: "repro",
+  displayName: "Repro",
+  adapter: "general",
+  mode: "balance",
+  baseURL: "https://stats.example.invalid",
+  providerBaseURL: "https://stats.example.invalid",
+  apiKeyRef: "repro",
+  monitor: { allowCrossOrigin: true }
+};
+const credentials = { resolve: async () => ({ value: "sk-repro" }) };
+const snapshot = await queryAccount(spec, credentials, {
+  lookup: async () => [{ address: "93.184.216.34", family: 6 }],
+  timeoutMs: 500
+});
+if (snapshot.status !== "unavailable") {
+  throw new Error("synchronous pinned failure did not return an unavailable snapshot");
+}
+console.log("snapshot -> " + snapshot.status);
+`;
+	for (let run = 1; run <= 20; run += 1) {
+		const child = spawnSync(process.execPath, ["--input-type=module", "-e", childSource], {
+			cwd: process.cwd(),
+			encoding: "utf8",
+			timeout: 5000,
+			windowsHide: true
+		});
+		const output = `${child.stdout ?? ""}\n${child.stderr ?? ""}`;
+		assert.equal(child.error, undefined, `synchronous pinned failure child ${run} could not start: ${output}`);
+		assert.equal(child.status, 0, `synchronous pinned failure child ${run} exited unexpectedly: ${output}`);
+		assert.doesNotMatch(output, /Unhandled ['"]error['"] event/, `synchronous pinned failure child ${run} crashed: ${output}`);
+		assert.match(output, /snapshot -> unavailable/, `synchronous pinned failure child ${run} did not complete queryAccount()`);
+	}
+	console.log("process-level synchronous pinned failure regression 20/20 ok");
+}
+
+{
+	// Real transport regression for #42: a pinned connection to a closed port
+	// must reject through the normal error path (unavailable snapshot), never
+	// escape as an unhandled socket 'error' that kills the host process.
+	const { createServer } = await import("node:http");
+	const probe = createServer();
+	await new Promise((resolve) => probe.listen(0, "127.0.0.1", resolve));
+	const { port } = probe.address();
+	await new Promise((resolve) => probe.close(resolve)); // port is now guaranteed closed
+	const localProvider = { ...relay, baseURL: `http://localhost:${port}/v1` };
+	const spec = resolveAccountSpec(localProvider, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general", allowPrivateNetwork: true, allowInsecure: true }
+	} }));
+	// No requestPinned mock: exercise the real pinnedRequest transport so the
+	// connect-phase ECONNREFUSED travels the exact socket error path from #42.
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		lookup: async () => [
+			{ address: "127.0.0.1", family: 4 }
+		]
+	});
+	assert.equal(account.status, "unavailable");
+	assert.equal(account.reason, "all-addresses-unreachable");
+	console.log("real socket connect refusal degrades without unhandled error ok");
+}
+
+{
+	const { createServer } = await import("node:http");
+	const server = createServer((req, res) => {
+		assert.equal(req.url, "/user/balance");
+		res.writeHead(200, { "content-type": "application/json" });
+		res.end(JSON.stringify({ balance: 11, currency: "USD" }));
+	});
+	await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));
+	const { port } = server.address();
+	try {
+		const localProvider = { ...relay, baseURL: `http://localhost:${port}/v1` };
+		const spec = resolveAccountSpec(localProvider, validateAccountConfig({ monitors: {
+			"relay-a": { adapter: "general", allowPrivateNetwork: true, allowInsecure: true }
+		} }));
+		const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+			now: () => now,
+			lookup: async () => [
+				{ address: "::1", family: 6 },
+				{ address: "127.0.0.1", family: 4 }
+			]
+		});
+		assert.equal(account.status, "ok");
+		assert.equal(account.balance.remaining, 11);
+	} finally {
+		await new Promise((resolve) => server.close(resolve));
+	}
+	console.log("real socket IPv6 failure falls back to pinned IPv4 without escaping ok");
+}
+
+{
+	const attempts = [];
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		lookup: async () => [
+			{ address: "2606:4700:4700::1111", family: 6 },
+			{ address: "1.1.1.1", family: 4 }
+		],
+		requestPinned: async (_url, address) => {
+			attempts.push(address.address);
+			if (address.family === 6) {
+				const error = new Error("IPv6 route unavailable");
+				error.code = "ENETUNREACH";
+				throw error;
+			}
+			return jsonResponse({ balance: 7, currency: "USD" });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 7);
+	assert.deepEqual(attempts, ["2606:4700:4700::1111", "1.1.1.1"]);
+	console.log("IPv6-unreachable falls back to validated IPv4 ok");
+}
+
+{
+	const attempts = [];
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		lookup: async () => [
+			{ address: "1.1.1.1", family: 4 },
+			{ address: "2606:4700:4700::1111", family: 6 }
+		],
+		requestPinned: async (_url, address) => {
+			attempts.push(address.address);
+			if (address.family === 4) {
+				const error = new Error("IPv4 route unavailable");
+				error.code = "EHOSTUNREACH";
+				throw error;
+			}
+			return jsonResponse({ balance: 8, currency: "USD" });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, 8);
+	assert.deepEqual(attempts, ["1.1.1.1", "2606:4700:4700::1111"]);
+	console.log("IPv4-unreachable falls back to validated IPv6 ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		lookup: async () => [
+			{ address: "2606:4700:4700::1111", family: 6 },
+			{ address: "1.1.1.1", family: 4 }
+		],
+		requestPinned: async () => {
+			const error = new Error("no usable local route");
+			error.code = "EADDRNOTAVAIL";
+			throw error;
+		}
+	});
+	assert.equal(account.status, "unavailable");
+	assert.equal(account.reason, "all-addresses-unreachable");
+	assert.equal(account.balance, null);
+	console.log("all validated addresses unreachable degrades to safe unavailable snapshot ok");
+}
+
+{
+	let attempts = 0;
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		lookup: async () => [
+			{ address: "2606:4700:4700::1111", family: 6 },
+			{ address: "1.1.1.1", family: 4 }
+		],
+		requestPinned: async () => {
+			attempts += 1;
+			const error = new Error("certificate expired");
+			error.code = "CERT_HAS_EXPIRED";
+			throw error;
+		}
+	});
+	assert.equal(account.status, "unavailable");
+	assert.equal(account.reason, "unknown", "TLS failures must expose only a fixed diagnostic code");
+	assert.equal(attempts, 1, "non-connection failures must not retry another IP");
+	console.log("TLS failure does not bypass validation via address fallback ok");
+}
+
+{
+	const spec = resolveAccountSpec(relay, validateAccountConfig({ monitors: {
+		"relay-a": { adapter: "general" }
+	} }));
+	const account = await queryAccount(spec, credentials({ RELAY_A_KEY: "sk-relay" }), {
+		now: () => now,
+		lookup: async () => { throw new Error("resolver offline"); }
+	});
+	assert.equal(account.status, "unavailable");
+	assert.equal(account.reason, "dns-resolution-failed");
+	console.log("DNS failure exposes only sanitized diagnostic reason ok");
+}
+
+{
+	// Ollama Cloud: canonical provider id auto-selects the ollama adapter.
+	const spec = resolveAccountSpec({ id: "ollama", displayName: "Ollama", apiKeyEnv: "OLLAMA_API_KEY", baseURL: "https://ollama.com" }, validateAccountConfig());
+	assert.equal(spec.adapter, "ollama");
+	assert.equal(spec.mode, "subscription");
+	assert.equal(spec.apiKeyRef, "OLLAMA_API_KEY");
+	console.log("Ollama canonical id auto-detection ok");
+}
+
+{
+	// Ollama Cloud: a custom provider id with an ollama.com baseURL host also
+	// auto-selects the adapter (the user's own id/displayName are preserved).
+	const spec = resolveAccountSpec({ id: "my-ollama", displayName: "My Ollama", apiKeyEnv: "OLLAMA_API_KEY", baseURL: "https://ollama.com" }, validateAccountConfig());
+	assert.equal(spec.adapter, "ollama");
+	assert.equal(spec.mode, "subscription");
+	assert.equal(spec.id, "my-ollama");
+	assert.equal(spec.displayName, "My Ollama");
+	const subdomain = resolveAccountSpec({ id: "custom", displayName: "Custom", apiKeyEnv: "OLLAMA_API_KEY", baseURL: "https://api.ollama.com" }, validateAccountConfig());
+	assert.equal(subdomain.adapter, "ollama");
+	console.log("Ollama baseURL hostname auto-detection ok");
+}
+
+{
+	// Local Ollama (localhost:11434) must NOT auto-become an Ollama Cloud
+	// quota account: no adapter is selected.
+	const local = resolveAccountSpec({ id: "ollama-local", displayName: "Local Ollama", apiKeyEnv: "OLLAMA_API_KEY", baseURL: "http://localhost:11434" }, validateAccountConfig());
+	assert.equal(local.adapter, null);
+	const loopback = resolveAccountSpec({ id: "ollama-local", displayName: "Local Ollama", apiKeyEnv: "OLLAMA_API_KEY", baseURL: "http://127.0.0.1:11434" }, validateAccountConfig());
+	assert.equal(loopback.adapter, null);
+	// Regression: a local install that happens to use the canonical "ollama"
+	// id must still not be misread as a cloud quota account.
+	const canonicalLocal = resolveAccountSpec({ id: "ollama", displayName: "Ollama", apiKeyEnv: "OLLAMA_API_KEY", baseURL: "http://localhost:11434" }, validateAccountConfig());
+	assert.equal(canonicalLocal.adapter, null, "canonical id + localhost must not select the cloud adapter");
+	console.log("Local Ollama is not auto-detected as cloud quota ok");
+}
+
+{
+	// Explicit monitor.adapter: "ollama" remains the escape hatch for proxies
+	// and custom endpoints where hostname detection cannot work.
+	const spec = resolveAccountSpec({ id: "relay-ollama", displayName: "Relay", apiKeyEnv: "RELAY_KEY", baseURL: "https://relay.example.com" }, validateAccountConfig({ monitors: {
+		"relay-ollama": { adapter: "ollama", usageBaseURL: "https://ollama.example.com" }
+	} }));
+	assert.equal(spec.adapter, "ollama");
+	assert.equal(spec.mode, "subscription");
+	assert.equal(spec.baseURL, "https://ollama.example.com");
+	console.log("Ollama explicit monitor escape hatch ok");
+}
+
+{
+	// Ollama Cloud: queryAccount integration — windows, alert, and no key leak.
+	const spec = resolveAccountSpec({ id: "ollama", displayName: "Ollama", apiKeyEnv: "OLLAMA_API_KEY", baseURL: "https://ollama.com" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ OLLAMA_API_KEY: "sk-ollama-secret" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			assert.equal(String(url), "https://ollama.com/api/usage");
+			assert.equal(init.headers.authorization, "Bearer sk-ollama-secret");
+			return jsonResponse({ limits: { session: { usage: 0.3 }, weekly: { usage: 0.1 } } });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.mode, "subscription");
+	assert.equal(account.adapter, "ollama");
+	assert.equal(account.id, "ollama");
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 30, 70],
+		["weekly", 10, 90]
+	]);
+	assert.deepEqual(account.alert, { level: "normal", metric: "remaining-percent", value: 70 });
+	assert.equal(JSON.stringify(account).includes("sk-ollama-secret"), false, "API key must never cross the account snapshot boundary");
+	console.log("Ollama queryAccount integration and alert ok");
+}
+
+{
+	// Ollama Cloud: no unconditional provider — an unconfigured install must
+	// NOT show an Ollama account; only configured providers appear.
+	const service = createAccountService({
+		credentials: credentials({}),
+		getProviders: async () => [{ id: "deepseek-official", displayName: "DeepSeek", apiKeyEnv: "DEEPSEEK_API_KEY", baseURL: "https://api.deepseek.com" }],
+		config: validateAccountConfig(),
+		deps: { includeLegacyProviders: true, now: () => now }
+	});
+	const views = await service.providerViews();
+	assert.equal(views.some((view) => view.id === "ollama"), false, "unconfigured install must not list an Ollama account");
+	assert.equal(views.some((view) => view.id === "deepseek-official"), true);
+	console.log("Ollama is not unconditionally added ok");
+}
+
+{
+	// Ollama Cloud: a configured provider with ollama identity appears with the
+	// user's own id and gets the subscription adapter.
+	const service = createAccountService({
+		credentials: credentials({ OLLAMA_API_KEY: "sk-ollama" }),
+		getProviders: async () => [{ id: "my-ollama", displayName: "My Ollama", apiKeyEnv: "OLLAMA_API_KEY", baseURL: "https://ollama.com" }],
+		config: validateAccountConfig(),
+		deps: {
+			includeLegacyProviders: true,
+			now: () => now,
+			fetch: async () => jsonResponse({ limits: { session: { usage: 0.2 }, weekly: { usage: 0.1 } } })
+		}
+	});
+	const views = await service.providerViews();
+	const view = views.find((entry) => entry.id === "my-ollama");
+	assert.equal(view?.adapter, "ollama");
+	assert.equal(view?.accountMode, "subscription");
+	const account = await service.get("my-ollama", { force: true });
+	assert.equal(account.status, "ok");
+	assert.equal(account.id, "my-ollama");
+	assert.equal(account.displayName, "My Ollama");
+	assert.equal(account.windows.length, 2);
+	console.log("Configured Ollama provider appears with user id ok");
+}
+
+{
+	const spec = resolveAccountSpec({ id: "deepseek-account", displayName: "DeepSeek Account" }, validateAccountConfig());
+	let balanceCalls = 0;
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		deepseekAccount: {
+			getState: async () => ({ status: "signed-out" }),
+			getBalance: async () => { balanceCalls += 1; throw new Error("must not query a signed-out account"); }
+		},
+		clientMetadata: { version: "0.2.0-rc.2", locale: "zh-CN", timezoneOffsetSeconds: 28800 }
+	});
+	assert.equal(account.status, "signed-out");
+	assert.equal(account.adapter, "deepseek-account");
+	assert.equal(account.balance, null);
+	assert.equal(account.source, "host-account");
+	assert.equal(balanceCalls, 0);
+	console.log("DeepSeek Account signed-out state does not masquerade as a missing API key ok");
+}
+
+{
+	const spec = resolveAccountSpec({ id: "deepseek-account", displayName: "DeepSeek Account" }, validateAccountConfig());
+	const client = { version: "0.2.0-rc.2", locale: "zh-CN", timezoneOffsetSeconds: 28800 };
+	let receivedClient = null;
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		deepseekAccount: {
+			getState: async () => ({ status: "credential-stored" }),
+			getBalance: async (value) => {
+				receivedClient = value;
+				return {
+					status: "ready",
+					value: [{ currency: "CNY", balance: "12.34" }],
+					bonusWallets: [{ currency: "CNY", balance: "5.66" }]
+				};
+			}
+		},
+		clientMetadata: client
+	});
+	assert.deepEqual(receivedClient, client, "the Host account service must receive the real caller metadata");
+	assert.equal(account.status, "ok");
+	assert.equal(account.source, "host-account");
+	assert.deepEqual(account.balance, {
+		wallets: [{ currency: "CNY", remaining: 18, breakdown: { toppedUp: 12.34, granted: 5.66 } }],
+		remaining: 18,
+		currency: "CNY",
+		unlimited: false,
+		expiresAt: null,
+		breakdown: { toppedUp: 12.34, granted: 5.66 }
+	});
+	console.log("DeepSeek Account single-currency wallet keeps legacy balance compatibility ok");
+}
+
+{
+	const spec = resolveAccountSpec({ id: "deepseek-account", displayName: "DeepSeek Account" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		deepseekAccount: {
+			getState: async () => ({ status: "credential-stored" }),
+			getBalance: async () => ({
+				status: "ready",
+				value: [
+					{ currency: "CNY", balance: "10" },
+					{ currency: "USD", balance: "2.50" }
+				],
+				bonusWallets: [
+					{ currency: "CNY", balance: "3" },
+					{ currency: "USD", balance: "1.25" }
+				]
+			})
+		},
+		clientMetadata: { version: "0.2.0-rc.2", locale: "en-US", timezoneOffsetSeconds: -25200 }
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.balance.remaining, null, "different currencies must never be summed into one amount");
+	assert.equal(account.balance.currency, null);
+	assert.deepEqual(account.balance.wallets, [
+		{ currency: "CNY", remaining: 13, breakdown: { toppedUp: 10, granted: 3 } },
+		{ currency: "USD", remaining: 3.75, breakdown: { toppedUp: 2.5, granted: 1.25 } }
+	]);
+	assert.deepEqual(account.alert, { level: "unknown", metric: "balance", value: null });
+	console.log("DeepSeek Account multi-currency wallets remain separate ok");
+}
+
+{
+	let state = "credential-stored";
+	const deepseekAccount = {
+		getState: async () => ({ status: state }),
+		getBalance: async () => ({ status: "ready", value: [{ currency: "USD", balance: "7" }], bonusWallets: [] })
+	};
+	const service = createAccountService({
+		credentials: credentials({}),
+		getProviders: async () => [],
+		config: validateAccountConfig(),
+		deps: { includeLegacyProviders: false, now: () => now, deepseekAccount }
+	});
+	let views = await service.providerViews();
+	const view = views.find((entry) => entry.id === "deepseek-account");
+	assert.equal(view?.configured, true, "stored Desktop login must make the synthetic account provider selectable");
+	assert.equal(view?.status, "pending");
+	const account = await service.get("deepseek-account", {
+		force: true,
+		clientMetadata: { version: "0.2.0-rc.2", locale: "en", timezoneOffsetSeconds: 0 }
+	});
+	assert.equal(account.status, "ok");
+	state = "signed-out";
+	const signedOutService = createAccountService({
+		credentials: credentials({}),
+		getProviders: async () => [],
+		config: validateAccountConfig(),
+		deps: { includeLegacyProviders: false, now: () => now, deepseekAccount }
+	});
+	views = await signedOutService.providerViews();
+	assert.equal(views.find((entry) => entry.id === "deepseek-account")?.configured, false);
+	assert.equal(views.find((entry) => entry.id === "deepseek-account")?.status, "signed-out");
+	console.log("DeepSeek Account provider discovery follows Host login state ok");
+}
+
+{
+	let host = null;
+	let login = "credential-stored";
+	let balanceCalls = 0;
+	const clientMetadata = { version: "0.2.0", locale: "zh-CN", timezoneOffsetSeconds: 28800 };
+	const service = createAccountService({
+		credentials: credentials({}),
+		getProviders: async () => [{ id: "deepseek-account" }],
+		config: validateAccountConfig({ refresh: { enabled: false } }),
+		deps: { includeLegacyProviders: false, now: () => now, deepseekAccount: () => host }
+	});
+	assert.equal((await service.get("deepseek-account", { clientMetadata })).status, "unsupported");
+	host = {
+		getState: async () => ({ status: login }),
+		getBalance: async () => { balanceCalls += 1; return { status: "ready", value: [{ currency: "CNY", balance: "12" }], bonusWallets: [] }; }
+	};
+	assert.equal((await service.providerViews())[0].configured, true);
+	assert.equal((await service.get("deepseek-account", { clientMetadata })).balance.remaining, 12);
+	login = "signed-out";
+	const signedOutView = (await service.providerViews())[0];
+	assert.equal(signedOutView.configured, false, "discovery must not keep cached signed-in state");
+	assert.equal(signedOutView.status, "signed-out");
+	assert.equal(signedOutView.alert, null, "discovery must not retain the signed-out account's balance alert");
+	assert.equal((await service.get("deepseek-account", { clientMetadata })).balance, null);
+	assert.equal(balanceCalls, 1, "signed-out reads must not query a wallet");
+	login = "credential-stored";
+	assert.equal((await service.providerViews())[0].configured, true, "a later sign-in must clear cached signed-out state");
+	host = { getState: async () => ({ status: login }), getBalance: async () => ({ status: "failed" }) };
+	const replaced = await service.get("deepseek-account", { clientMetadata });
+	assert.equal(replaced.status, "unavailable");
+	assert.equal(replaced.balance, null, "a replacement service's failed read cannot retain another service's wallet");
+	assert.equal(replaced.stale, false);
+	await service.refreshAll();
+	await service.refreshDue({ force: true });
+	assert.equal(balanceCalls, 1, "the account service remains excluded from background refresh");
+	host = null;
+	assert.equal((await service.get("deepseek-account", { clientMetadata })).status, "unsupported");
+	assert.equal((await service.providerViews())[0].configured, false);
+	console.log("DeepSeek Account late service, replacement, sign-out, and sign-in invalidate obsolete snapshots ok");
+}
+
+{
+	let resolveBalance;
+	let balanceCalls = 0;
+	let methodReceiver;
+	const host = {
+		getState: async () => ({ status: "credential-stored" }),
+		async getBalance() {
+			methodReceiver = this;
+			balanceCalls += 1;
+			await new Promise((resolve) => { resolveBalance = resolve; });
+			return { status: "ready", value: [{ currency: "CNY", balance: "3" }], bonusWallets: [] };
+		}
+	};
+	const service = createAccountService({
+		credentials: credentials({}),
+		getProviders: async () => [],
+		deps: {
+			includeLegacyProviders: false,
+			deepseekAccount: () => new Proxy(host, { get: (target, key, receiver) => key === Symbol.for("cordis.original") ? target : Reflect.get(target, key, receiver) })
+		}
+	});
+	const clientMetadata = { version: "0.2.0", locale: "en", timezoneOffsetSeconds: 0 };
+	const first = service.get("deepseek-account", { clientMetadata });
+	await new Promise((resolve) => setImmediate(resolve));
+	const second = service.get("deepseek-account", { clientMetadata });
+	await new Promise((resolve) => setImmediate(resolve));
+	assert.equal(balanceCalls, 1, "fresh Cordis wrappers must still share the same in-flight service query");
+	assert.notEqual(methodReceiver, host, "service calls must retain their traceable proxy receiver");
+	resolveBalance();
+	assert.equal((await first).balance.remaining, 3);
+	assert.equal((await second).balance.remaining, 3);
+	assert.equal((await service.providerViews())[0].status, "ok", "fresh wrappers must not invalidate a valid cached snapshot");
+	console.log("DeepSeek Account fresh Cordis wrappers preserve single-flight and scoped service calls ok");
+}
+
+{
+	const service = createAccountService({
+		credentials: credentials({}),
+		getProviders: async () => [{ id: "deepseek-official", apiKeyEnv: "DEEPSEEK_API_KEY" }],
+		deps: { deepseekAccount: () => null }
+	});
+	const views = await service.providerViews();
+	assert.equal(views.some((entry) => entry.id === "deepseek-account"), false);
+	assert.ok(views.some((entry) => entry.id === "deepseek-official"));
+	assert.ok(views.some((entry) => entry.id === "opencode-go"));
+	assert.ok(views.some((entry) => entry.id === "zai"));
+	assert.equal((await service.get("deepseek-official")).status, "not-configured");
+	console.log("missing optional DeepSeek Account service preserves legacy provider discovery ok");
+}
+
+{
+	// A MiniMax CN route that declares only its credential ref (the host's
+	// built-in minimax-cn profile) must reach the CN quota hosts. Without the
+	// route-id hint the key is rejected globally and the panel shows
+	// "unrecognized quota data" instead of the plan windows.
+	const calls = [];
+	const spec = resolveAccountSpec({ id: "minimax-cn", displayName: "MiniMax CN", apiKeyEnv: "MINIMAX_CN_API_KEY" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ MINIMAX_CN_API_KEY: "sk-cp-cn-key" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), auth: init.headers.authorization });
+			return jsonResponse({
+				base_resp: { status_code: 0, status_msg: "success" },
+				model_remains: [{
+					model_name: "general",
+					current_interval_remaining_percent: 72,
+					remains_time: 3600000,
+					current_weekly_remaining_percent: 40,
+					weekly_remains_time: 604800000
+				}]
+			});
+		}
+	});
+	assert.equal(spec.adapter, "minimax-token-plan");
+	assert.equal(account.status, "ok");
+	assert.equal(account.adapter, "minimax-token-plan");
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 28, 72],
+		["weekly", 60, 40]
+	]);
+	assert.deepEqual(calls.map((call) => call.url), ["https://www.minimaxi.com/v1/token_plan/remains"]);
+	assert.equal(calls[0].auth, "Bearer sk-cp-cn-key");
+	assert.equal(JSON.stringify(account).includes("sk-cp-cn-key"), false, "API key must never cross the account snapshot boundary");
+	console.log("MiniMax CN route id selects the CN quota hosts ok");
+}
+
+{
+	// DSH 0.2 provider registries may expose zai-coding-cn without the
+	// apiKeyEnv/baseURL fields that older settings profiles carried. The
+	// canonical route must still bind the standard Z.ai credential and CN host.
+	const calls = [];
+	const provider = { id: "zai-coding-cn", displayName: "Z.ai CN" };
+	const spec = resolveAccountSpec(provider, validateAccountConfig());
+	assert.equal(spec.adapter, "zai-token-plan");
+	assert.equal(spec.apiKeyRef, "ZAI_API_KEY");
+	const account = await queryAccount(spec, credentials({ ZAI_API_KEY: "zai-cn-secret" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			if (String(url).endsWith("/quota/limit")) {
+				return jsonResponse({ data: { limits: [{ type: "TOKENS_LIMIT", unit: 3, number: 5, usage: 100, remaining: 900 }] } });
+			}
+			return jsonResponse({ data: [{ product_name: "GLM Coding Pro" }] });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(calls.map((call) => call.url), [
+		"https://open.bigmodel.cn/api/monitor/usage/quota/limit",
+		"https://open.bigmodel.cn/api/biz/subscription/list"
+	]);
+	assert.ok(calls.every((call) => call.init.headers.authorization === "zai-cn-secret"));
+	assert.equal(JSON.stringify(account).includes("zai-cn-secret"), false, "Z.ai key must not cross the account snapshot boundary");
+	const missing = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => { throw new Error("missing credentials must not reach upstream"); }
+	});
+	assert.equal(missing.status, "not-configured");
+	assert.deepEqual(missing.missingCredentials, ["ZAI_CODING_CN_API_KEY"]);
+	console.log("Z.ai CN route without connection metadata binds key and region safely ok");
+}
+
+{
+	// #129: the Host registry can expose only the route id while DSH stores
+	// its key under ZAI_CODING_CN_API_KEY. Discovery and queries must agree.
+	const defaults = { ZAI_CODING_CN_API_KEY: "cn-route-secret", ZAI_API_KEY: "legacy-secret" };
+	const cases = [
+		{ name: "CN route key only", keys: { ZAI_CODING_CN_API_KEY: defaults.ZAI_CODING_CN_API_KEY }, key: "cn-route-secret" },
+		{ name: "legacy key only", keys: { ZAI_API_KEY: defaults.ZAI_API_KEY }, key: "legacy-secret" },
+		{ name: "CN route key wins", key: "cn-route-secret" },
+		{ name: "empty CN key falls back locally", keys: { ...defaults, ZAI_CODING_CN_API_KEY: "  " }, key: "legacy-secret" },
+		{ name: "global route keeps global key", id: "zai", key: "legacy-secret", host: "api.z.ai" },
+		{ name: "global route cannot borrow CN key", id: "zai", keys: { ZAI_CODING_CN_API_KEY: "cn-route-secret" } },
+		{ name: "global route in CN still cannot borrow CN key", id: "zai", keys: { ZAI_CODING_CN_API_KEY: "cn-route-secret", ZAI_API_REGION: "cn" } },
+		{ name: "global environment never sends CN key", keys: { ...defaults, ZAI_API_REGION: "global" }, key: "legacy-secret", host: "api.z.ai" },
+		{ name: "global environment with only CN key stays unconfigured", keys: { ZAI_CODING_CN_API_KEY: "cn-route-secret", ZAI_API_REGION: "global" } },
+		{ name: "CN monitor overrides global environment", keys: { ...defaults, ZAI_API_REGION: "global" }, monitor: { region: "cn" }, key: "cn-route-secret" },
+		{ name: "global monitor overrides CN environment", keys: { ...defaults, ZAI_API_REGION: "cn" }, monitor: { region: "global" }, key: "legacy-secret", host: "api.z.ai" },
+		{ name: "provider credential wins", apiKeyEnv: "PROVIDER_KEY", keys: { ...defaults, PROVIDER_KEY: "provider-secret" }, key: "provider-secret" },
+		{ name: "monitor credential wins over provider", apiKeyEnv: "PROVIDER_KEY", monitor: { credentialRef: "MONITOR_KEY" }, keys: { ...defaults, PROVIDER_KEY: "provider-secret", MONITOR_KEY: "monitor-secret" }, key: "monitor-secret" },
+		{ name: "missing provider credential cannot fall back", apiKeyEnv: "MISSING_KEY" },
+		{ name: "missing monitor credential cannot fall back", apiKeyEnv: "ZAI_API_KEY", monitor: { credentialRef: "MISSING_KEY" } },
+		{ name: "custom provider cannot borrow defaults", id: "custom-zai", monitor: {} }
+	];
+	for (const test of cases) {
+		const id = test.id ?? "zai-coding-cn";
+		const calls = [];
+		const service = createAccountService({
+			credentials: credentials(test.keys ?? defaults),
+			getProviders: async () => [{ id, ...(test.apiKeyEnv === void 0 ? {} : { apiKeyEnv: test.apiKeyEnv }) }],
+			config: validateAccountConfig(test.monitor === void 0 ? {} : { monitors: { [id]: { adapter: "zai-token-plan", ...test.monitor } } }),
+			deps: {
+				includeLegacyProviders: false,
+				now: () => now,
+				fetch: async (url, init) => {
+					calls.push({ url: String(url), authorization: init.headers.authorization });
+					return jsonResponse({ data: { limits: [{ type: "TOKENS_LIMIT", unit: 3, number: 5, usage: 100, remaining: 900 }] } });
+				}
+			}
+		});
+		const before = await service.providerViews();
+		assert.equal(before[0].configured, test.key !== void 0, `${test.name}: initial provider view`);
+		assert.equal(calls.length, 0, `${test.name}: provider discovery must not query upstream`);
+		const account = await service.get(id);
+		assert.equal(account.status, test.key === void 0 ? "not-configured" : "ok", test.name);
+		assert.equal(calls.length, test.key === void 0 ? 0 : 2, test.name);
+		for (const call of calls) {
+			assert.equal(new URL(call.url).hostname, test.host ?? "open.bigmodel.cn", test.name);
+			assert.equal(call.authorization, test.key, test.name);
+		}
+		const after = await service.providerViews();
+		assert.equal(after[0].configured, before[0].configured, `${test.name}: cached provider view`);
+		const snapshots = JSON.stringify({ before, account, after });
+		for (const secret of ["cn-route-secret", "legacy-secret", "provider-secret", "monitor-secret"]) {
+			assert.equal(snapshots.includes(secret), false, `${test.name}: credentials must not cross the snapshot boundary`);
+		}
+		// Exercise the same binding through the server-owned refresh scheduler.
+		const refreshed = await service.refreshDue({ force: true });
+		assert.equal(refreshed[0].status, account.status, `${test.name}: scheduled refresh`);
+	}
+	console.log("Z.ai route credential discovery, precedence, region isolation, and refresh regression matrix ok");
+}
+
+{
+	const refs = [];
+	const calls = [];
+	const spec = resolveAccountSpec({ id: "zai-coding-cn" }, validateAccountConfig());
+	const account = await queryAccount(spec, {
+		resolve: async (ref) => {
+			refs.push(ref);
+			return { value: { ZAI_CODING_CN_API_KEY: "rejected-cn-secret", ZAI_API_KEY: "other-account-secret" }[ref] };
+		}
+	}, {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), authorization: init.headers.authorization });
+			return jsonResponse({}, 401);
+		}
+	});
+	assert.equal(account.status, "unauthorized");
+	assert.equal(calls.length, 1, "a rejected CN key must not trigger a different-account retry");
+	assert.equal(calls[0].authorization, "rejected-cn-secret");
+	assert.equal(refs.includes("ZAI_API_KEY"), false, "a present CN key must not resolve the legacy key");
+	assert.equal(JSON.stringify(account).includes("rejected-cn-secret"), false);
+	console.log("Z.ai authentication failure never rotates to a different credential ok");
+}
+
+{
+	// An explicit monitor region remains authoritative over the canonical CN id.
+	const calls = [];
+	const spec = resolveAccountSpec({ id: "zai-coding-cn", displayName: "Z.ai CN" }, validateAccountConfig({ monitors: {
+		"zai-coding-cn": { adapter: "zai-token-plan", region: "bigmodel-cn" }
+	} }));
+	const account = await queryAccount(spec, credentials({ ZAI_API_KEY: "zai-cn-secret", ZAI_API_REGION: "global" }), {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return jsonResponse({ data: { limits: [{ type: "TOKENS_LIMIT", unit: 3, number: 5, usage: 100, remaining: 900 }] } });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(calls[0], "https://open.bigmodel.cn/api/monitor/usage/quota/limit");
+	console.log("Z.ai explicit monitor region precedence preserved ok");
+}
+
+{
+	// A user-supplied credentialRef must remain authoritative; the id-only
+	// fallback must not silently read ZAI_API_KEY instead.
+	const calls = [];
+	const spec = resolveAccountSpec({ id: "zai-coding-cn", displayName: "Z.ai CN" }, validateAccountConfig({ monitors: {
+		"zai-coding-cn": { adapter: "zai-token-plan", credentialRef: "CUSTOM_ZAI_KEY" }
+	} }));
+	assert.equal(spec.apiKeyRef, "CUSTOM_ZAI_KEY");
+	const account = await queryAccount(spec, credentials({ ZAI_API_KEY: "wrong-key", CUSTOM_ZAI_KEY: "custom-key" }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), authorization: init.headers.authorization });
+			return jsonResponse({ data: { limits: [{ type: "TOKENS_LIMIT", unit: 3, number: 5, usage: 100, remaining: 900 }] } });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(calls[0].authorization, "custom-key");
+	assert.equal(calls[0].url, "https://open.bigmodel.cn/api/monitor/usage/quota/limit");
+	assert.equal(JSON.stringify(account).includes("custom-key"), false);
+	console.log("Z.ai explicit credentialRef precedence preserved ok");
+}
+
+{
+	// Preserve the existing environment override: an explicit ZAI_API_REGION
+	// can still select global for a canonical CN route when no monitor region is
+	// configured.
+	const calls = [];
+	const spec = resolveAccountSpec({ id: "zai-coding-cn", displayName: "Z.ai CN" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ ZAI_API_KEY: "zai-key", ZAI_API_REGION: "global" }), {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return jsonResponse({ data: { limits: [{ type: "TOKENS_LIMIT", unit: 3, number: 5, usage: 100, remaining: 900 }] } });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(calls[0], "https://api.z.ai/api/monitor/usage/quota/limit");
+	console.log("Z.ai environment region override remains compatible ok");
+}
+
+{
+	// The credential-ref name alone carries the same region signal, for routes
+	// whose id says nothing about the region.
+	const calls = [];
+	const spec = resolveAccountSpec({ id: "minimax-coding", displayName: "MiniMax Coding", apiKeyEnv: "MINIMAX_CN_API_KEY" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ MINIMAX_CN_API_KEY: "sk-cp-cn-key" }), {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return jsonResponse({ base_resp: { status_code: 0 }, model_remains: [{ model_name: "general", current_interval_remaining_percent: 50 }] });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(calls, ["https://www.minimaxi.com/v1/token_plan/remains"]);
+	console.log("MiniMax CN credential ref selects the CN quota hosts ok");
+}
+
+{
+	// A global route keeps the global hosts and never probes CN ones.
+	const calls = [];
+	const spec = resolveAccountSpec({ id: "minimax", displayName: "MiniMax", apiKeyEnv: "MINIMAX_API_KEY", baseURL: "https://api.minimax.io/anthropic" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ MINIMAX_API_KEY: "sk-global-key" }), {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return jsonResponse({ base_resp: { status_code: 0 }, model_remains: [{ model_name: "general", current_interval_remaining_percent: 55 }] });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(calls, ["https://www.minimax.io/v1/token_plan/remains"]);
+	console.log("MiniMax global route keeps the global quota hosts ok");
+}
+
+{
+	// A global route that receives the upstream credential rejection must stay
+	// pinned to global hosts; only an undeclared route may cross regions.
+	const calls = [];
+	const spec = resolveAccountSpec({ id: "minimax", displayName: "MiniMax", apiKeyEnv: "MINIMAX_API_KEY", baseURL: "https://api.minimax.io/anthropic" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ MINIMAX_API_KEY: "sk-global-key" }), {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return jsonResponse({ base_resp: { status_code: 2049, status_msg: "invalid api key" } });
+		}
+	});
+	assert.equal(account.status, "unauthorized");
+	assert.deepEqual(calls, ["https://www.minimax.io/v1/token_plan/remains"]);
+	assert.equal(calls.some((url) => url.includes("minimaxi.com")), false, "global credentials must never cross to CN hosts");
+	console.log("MiniMax global credential rejection stays pinned to global hosts ok");
+}
+{
+	// Command Code: the canonical route id resolves to the subscription adapter,
+	// and so do the ids a sync plugin generates and a bare commandcode.ai host.
+	const configured = validateAccountConfig();
+	const canonical = resolveAccountSpec({ id: "commandcode", displayName: "Command Code", apiKeyEnv: "COMMANDCODE_API_KEY", baseURL: "https://api.commandcode.ai/provider/v1" }, configured);
+	assert.equal(canonical.adapter, "commandcode-goat");
+	assert.equal(canonical.mode, "subscription");
+	assert.equal(canonical.apiKeyRef, "COMMANDCODE_API_KEY");
+	for (const id of ["commandcode-goat-autosync", "commandcode-pro-anthropic", "commandcode-max-responses"]) {
+		const generated = resolveAccountSpec({ id, displayName: id, apiKeyEnv: "COMMANDCODE_API_KEY", baseURL: "https://api.commandcode.ai/provider/v1" }, configured);
+		assert.equal(generated.adapter, "commandcode-goat", `${id} must resolve through the family prefix`);
+		assert.equal(generated.mode, "subscription");
+	}
+	const byHost = resolveAccountSpec({ id: "my-cc-relay", displayName: "My Command Code", apiKeyEnv: "MY_CC_KEY", baseURL: "https://api.commandcode.ai/provider/v1" }, configured);
+	assert.equal(byHost.adapter, "commandcode-goat", "a commandcode.ai host is enough to select the adapter");
+	assert.equal(byHost.apiKeyRef, "MY_CC_KEY", "a custom route keeps its own credential reference");
+	// The route registry names a route without its connection facts, so a
+	// plugin-published Command Code route arrives with no apiKeyEnv. Without a
+	// fallback such a route stays "not-configured" and is never queried.
+	const published = resolveAccountSpec({ id: "commandcode", displayName: "Command Code" }, configured);
+	assert.equal(published.adapter, "commandcode-goat");
+	assert.equal(published.apiKeyRef, "COMMANDCODE_API_KEY", "a plugin-published route falls back to the provider plugin's credential name");
+	const explicitRef = resolveAccountSpec({ id: "commandcode", displayName: "Command Code" }, validateAccountConfig({ monitors: { commandcode: { adapter: "commandcode-goat", credentialRef: "MY_CC_KEY" } } }));
+	assert.equal(explicitRef.apiKeyRef, "MY_CC_KEY", "an explicit monitor credentialRef still wins");
+	console.log("Command Code identity and adapter resolution ok");
+}
+
+{
+	// The claimed client version is a monitor field: valid values pass through,
+	// and a blank or free-form string is refused instead of being sent as-is.
+	for (const version of ["1.72.1", "1.72", "1.72.1-beta.2"]) {
+		const spec = resolveAccountSpec({ id: "commandcode", displayName: "Command Code" }, validateAccountConfig({ monitors: { commandcode: { adapter: "commandcode-goat", commandCodeVersion: version } } }));
+		assert.equal(spec.monitor.commandCodeVersion, version);
+	}
+	for (const notVersion of ["", " ", "latest", "v1.72.1"]) {
+		assert.throws(() => validateAccountConfig({ monitors: { commandcode: { adapter: "commandcode-goat", commandCodeVersion: notVersion } } }), /commandCodeVersion/, `${JSON.stringify(notVersion)} must be refused`);
+	}
+	console.log("Command Code client version validation ok");
+}
+
+{
+	// Command Code: the live account shape — credits pool plus the 5-hour and
+	// weekly money caps — becomes a subscription snapshot that also carries the
+	// monetary balance, so one card can show both.
+	const spec = resolveAccountSpec({ id: "commandcode", displayName: "Command Code", apiKeyEnv: "COMMANDCODE_API_KEY", baseURL: "https://api.commandcode.ai/provider/v1" }, validateAccountConfig({ monitors: { commandcode: { adapter: "commandcode-goat", commandCodeVersion: "9.9.9" } } }));
+	const calls = [];
+	const secret = "user_commandcode_secret";
+	const account = await queryAccount(spec, credentials({ COMMANDCODE_API_KEY: secret }), {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			if (String(url).endsWith("/alpha/billing/credits")) {
+				return jsonResponse({
+					credits: { belowThreshold: false, creditThreshold: 0, monthlyCredits: 69.716263802, purchasedCredits: 0, freeCredits: 0 },
+					windowLimits: {
+						limited: true,
+						exceeded: null,
+						fiveHour: { used: 0.283736198, cap: 14, exceeded: false, resetAt: now + 5 * 3600000 },
+						weekly: { used: 0.283736198, cap: 35, exceeded: false, resetAt: now + 7 * 86400000 }
+					},
+					sandboxAccess: false
+				});
+			}
+			if (String(url).endsWith("/alpha/usage/summary")) {
+				return jsonResponse({ totalCount: 75, totalCost: 0.235832552, totalCredits: 0.235832552, totalMonthlyCredits: 0.235832552, totalTokens: 4679269 });
+			}
+			return jsonResponse({ success: true, data: { planId: "individual-goat", status: "active", currentPeriodEnd: "2026-10-01T00:00:00.000Z" } });
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.mode, "subscription");
+	assert.equal(account.adapter, "commandcode-goat");
+	assert.equal(account.plan, "GOAT");
+	assert.deepEqual(calls.map((call) => call.url), [
+		"https://api.commandcode.ai/alpha/billing/credits",
+		"https://api.commandcode.ai/alpha/usage/summary",
+		"https://api.commandcode.ai/alpha/billing/subscriptions"
+	]);
+	assert.ok(calls.every((call) => call.init.headers.authorization === `Bearer ${secret}`));
+	assert.ok(calls.every((call) => call.init.headers["x-command-code-version"] === "9.9.9"), "the monitor's claimed client version reaches the live query path");
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent]), [
+		["session", 2],
+		["weekly", 0.8],
+		["monthly", 0.3]
+	]);
+	assert.deepEqual(account.windows.map((window) => window.resetsAt), [
+		new Date(now + 5 * 3600000).toISOString(),
+		new Date(now + 7 * 86400000).toISOString(),
+		"2026-10-01T00:00:00.000Z"
+	]);
+	assert.equal(account.balance.remaining, 69.716263802);
+	assert.equal(account.balance.used, 0.235832552);
+	assert.equal(account.balance.currency, "USD");
+	assert.deepEqual(account.balance.breakdown, { granted: 0, toppedUp: 0 });
+	closeTo(account.balance.total, 69.952096354, "credits pool denominator");
+	// The tightest rolling window decides the alert, not the credit pool: here
+	// the 5-hour cap is 2% consumed, so 98% remains.
+	assert.deepEqual(account.alert, { level: "normal", metric: "remaining-percent", value: 98 });
+	assert.equal(JSON.stringify(account).includes(secret), false, "API key must never cross the account snapshot boundary");
+	console.log("Command Code account snapshot ok");
+}
+
+{
+	// Command Code: the plan label and the period spend are detail. Losing them
+	// must leave the credits and windows the card already read fully usable.
+	const spec = resolveAccountSpec({ id: "commandcode", displayName: "Command Code", apiKeyEnv: "COMMANDCODE_API_KEY", baseURL: "https://api.commandcode.ai/provider/v1" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ COMMANDCODE_API_KEY: "user_x" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/alpha/billing/credits")) {
+				return jsonResponse({ credits: { monthlyCredits: 12.5, purchasedCredits: 4, freeCredits: 1 }, windowLimits: { limited: true, fiveHour: { used: 7, cap: 14 }, weekly: { used: 35, cap: 35 } } });
+			}
+			return jsonResponse({ error: "upstream exploded" }, 500);
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.plan, void 0);
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 50, 50],
+		["weekly", 100, 0]
+	]);
+	assert.equal(account.balance.remaining, 17.5);
+	assert.equal(account.balance.used, void 0);
+	assert.equal(account.balance.total, void 0);
+	assert.deepEqual(account.balance.breakdown, { granted: 1, toppedUp: 4 });
+	assert.equal(account.alert.level, "critical");
+	console.log("Command Code partial-endpoint degradation ok");
+}
+
+{
+	// Command Code: an account with no active throttling keeps its credits and
+	// reports no windows, and the alert then follows the balance instead.
+	const spec = resolveAccountSpec({ id: "commandcode", displayName: "Command Code", apiKeyEnv: "COMMANDCODE_API_KEY", baseURL: "https://api.commandcode.ai/provider/v1" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ COMMANDCODE_API_KEY: "user_x" }), {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/alpha/billing/credits")) return jsonResponse({ credits: { monthlyCredits: 3, purchasedCredits: 0, freeCredits: 0 }, windowLimits: { limited: false } });
+			return jsonResponse({}, 500);
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(account.windows, []);
+	assert.equal(account.balance.remaining, 3);
+	assert.deepEqual(account.alert, { level: "unknown", metric: "balance", value: 3 });
+	console.log("Command Code unlimited-window fallback ok");
+}
+
+{
+	// Command Code: a credits payload with no readable numbers is a failed query,
+	// not a zero balance, and says so with a safe diagnostic reason.
+	const spec = resolveAccountSpec({ id: "commandcode", displayName: "Command Code", apiKeyEnv: "COMMANDCODE_API_KEY", baseURL: "https://api.commandcode.ai/provider/v1" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({ COMMANDCODE_API_KEY: "user_x" }), {
+		now: () => now,
+		fetch: async () => jsonResponse({ credits: { monthlyCredits: null }, windowLimits: { limited: true } })
+	});
+	assert.equal(account.status, "invalid-response");
+	assert.deepEqual(account.windows, []);
+	assert.equal(account.balance ?? null, null);
+	assert.equal(account.reason, "commandcode-billing-shape-unrecognized");
+	console.log("Command Code unrecognized billing shape ok");
+}
+
+{
+	// Command Code: without a credential the card is "not configured" and no
+	// request is attempted.
+	const spec = resolveAccountSpec({ id: "commandcode", displayName: "Command Code", apiKeyEnv: "COMMANDCODE_API_KEY", baseURL: "https://api.commandcode.ai/provider/v1" }, validateAccountConfig());
+	const account = await queryAccount(spec, credentials({}), {
+		now: () => now,
+		fetch: async () => { throw new Error("must not fetch without a credential"); }
+	});
+	assert.equal(account.status, "not-configured");
+	assert.deepEqual(account.missingCredentials, ["COMMANDCODE_API_KEY"]);
+	assert.deepEqual(account.windows, []);
+	console.log("Command Code missing credential state ok");
+}
+
+{
+	// Command Code: the family placeholder keeps the account reachable on an
+	// install that never configured a route, while a real route wins over it.
+	const service = createAccountService({
+		credentials: credentials({}),
+		getProviders: async () => [{ id: "deepseek-official", displayName: "DeepSeek", apiKeyEnv: "DEEPSEEK_API_KEY", baseURL: "https://api.deepseek.com" }],
+		config: validateAccountConfig(),
+		deps: { includeLegacyProviders: true, now: () => now }
+	});
+	const views = await service.providerViews();
+	const placeholder = views.find((view) => view.id === "commandcode");
+	assert.equal(placeholder?.adapter, "commandcode-goat");
+	assert.equal(placeholder?.accountMode, "subscription");
+	assert.equal(placeholder?.configured, false);
+
+	const configuredService = createAccountService({
+		credentials: credentials({}),
+		getProviders: async () => [
+			{ id: "deepseek-official", displayName: "DeepSeek", apiKeyEnv: "DEEPSEEK_API_KEY", baseURL: "https://api.deepseek.com" },
+			{ id: "commandcode-goat-autosync", displayName: "Command Code GOAT", apiKeyEnv: "COMMANDCODE_API_KEY", baseURL: "https://api.commandcode.ai/provider/v1" }
+		],
+		config: validateAccountConfig(),
+		deps: { includeLegacyProviders: true, now: () => now }
+	});
+	const configuredViews = await configuredService.providerViews();
+	assert.deepEqual(configuredViews.filter((view) => view.adapter === "commandcode-goat").map((view) => view.id), ["commandcode-goat-autosync"]);
+	console.log("Command Code placeholder provider policy ok");
+}
+
+console.log("ACCOUNT TESTS PASSED");

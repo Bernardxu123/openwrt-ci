@@ -1,0 +1,156 @@
+# PR #34（GPY211C PHY ID）是否已进入发布包 · 证据链
+
+问题：CT 版 sysupgrade 包（v2026.10.18，包内 revision `r0-5b12fdb`）里，
+是否已经包含 PR #34 的 GPY211C 修复？
+
+结论：**是，已包含**。以下为四条互相独立的证据（A/B/C 为本地/包内，D 为外部资料）。
+
+---
+
+## A. git：发布 commit 在 PR #34 合并之后，且该文件内容一路未变
+
+```
+$ git log --oneline --graph -8          # 仓库 firmware\ponwrt-hg5585f（浅克隆）
+* 0d2b2a4 2026-10-21 09:50  tempinfo: 补光模块四项 + JSON/短格式 + 修两个 bug   (HEAD)
+* ffd1dd6 2026-10-20 22:16  hg5585f: 硬件卸载恒开 + packet_steering=2 + 绑核/温度服务
+* e585ae8 2026-10-18 13:35  fix(ci): 清理残包误删 Go 模块元数据…                (origin/master)
+* 96ff7a3 2026-10-18 09:52  ci: 工具链缓存 + 缓存 key 周号化 + 下载重试
+* 5b12fdb 2026-10-17 21:56  hg5585f: 分流内核改为编译时三选一，默认 Passwall   ← 发布包 commit
+* 5afb8e7 2026-10-17 20:59  hg5585f: 修复 miniupnpd 构建失败，改为 PPPoE 主路由形态
+* ef99ae5 2026-10-17 17:32  hg5585f: 收敛到 CT/CU 两个 profile，预置联通 10G-EPON 桥接
+* edaeeb3 2026-10-16 23:01  Merge pull request #34                            (grafted ← 浅克隆边界)
+```
+
+```
+$ git merge-base --is-ancestor edaeeb3 5b12fdb   → exit 0   （PR#34 合并是发布 commit 的祖先）
+$ git merge-base --is-ancestor 5b12fdb HEAD      → exit 0
+$ git diff --stat edaeeb3 5b12fdb -- target/linux/airoha/dts   → 空（无差异）
+$ git diff --stat 5b12fdb HEAD    -- target/linux/airoha/dts   → 空（无差异）
+```
+
+`git show 5b12fdb:target/linux/airoha/dts/an7581-fiberhome-hg5585f-ct-common.dtsi`
+在发布 commit 上已经是：
+
+```dts
+&mdio {
+	/*
+	 * The explicit GPY211C ID lets phylib register GPIO34 before the first
+	 * MDIO transaction, so warm boots cannot probe the PHY while it is reset.
+	 */
+	gpy211: ethernet-phy@7 {
+		compatible = "ethernet-phy-id67c9.de10";
+		reg = <7>;
+		reset-gpios = <&en7581_pinctrl 34 GPIO_ACTIVE_LOW>;
+		reset-assert-us = <100000>;
+		reset-deassert-us = <100000>;
+	};
+};
+&eth_pcs { status = "okay"; };
+&gdm4 {
+	nvmem-cells = <&fiberhome_base_mac>;
+	nvmem-cell-names = "mac-address";
+	status = "okay";
+	phy-handle = <&gpy211>;
+	phy-mode = "2500base-x";
+	openwrt,netdev-name = "lan1";
+};
+```
+
+⚠️ 局限：本地仓库是**浅克隆**，`.git/shallow` 的 graft 根就是 `edaeeb3`，
+因此**看不到 PR #34 之前的父提交**，无法用 `git show edaeeb3` 直接看该次合并的 patch
+（`git show --stat edaeeb3` 会把整棵树列为新增）。上面的"包含关系"靠 B/C/D 补足。
+
+## B. 包内：DTB 里逐字存在 PR #34 后的 compatible
+
+从 CT sysupgrade 包 FIT 的 `fdt-1`（23,281 字节）解析出的节点：
+
+```
+/soc/switch@1fb58000/mdio/ethernet-phy@7
+    compatible = "ethernet-phy-id67c9.de10"     ← PR #34 之后的写法
+    reg = <7>
+    reset-gpios = <&{/soc/system-controller@1fbf0200/pinctrl} 0x22 0x1>   ← pin 34, ACTIVE_LOW
+    reset-assert-us = 100000
+    reset-deassert-us = 100000
+/soc/ethernet@1fb50000/ethernet@4
+    openwrt,netdev-name = "lan1"
+    phy-handle = <0x3d>            ← 指向上面这个 phy@7
+    phy-mode = "2500base-x"
+    status = "okay"
+/soc/pcs@1fa09000  status = "okay"   ← 2500base-x PCS 使能
+/soc/switch@1fb58000/ports/port@1  status = "disabled"   ← 内建 PHY1 关闭
+/soc/switch@1fb58000/mdio/ethernet-phy@9  status = "disabled"
+```
+
+同版本 CU 包 DTB 中：`ethernet-phy@7` 节点**不存在**，`ethernet@4` 为 `disabled`，
+`port@1`（lan1）`status = "okay"` + `ethernet-phy@9` `okay`（内建 PHY1 接管 lan1）。
+
+## C. 包元数据：revision 与 profiles.json 都指向 5b12fdb
+
+- 包尾 sysupgrade-metadata：`"revision":"r0-5b12fdb"`，`"board":"fiberhome_hg5585f-ct"`
+- 同目录 `profiles.json`：`"git_commit":"5b12fdbce807a10b2c2ef5480fcfc2a8e82c696f"`
+
+## D. 外部资料（官网 PR，未在本机复现）
+
+- PR 页面：<https://github.com/pbs05/ponwrt/pull/34>
+  标题：**`airoha/an7581: pin the GPY211C PHY ID on FiberHome HG5585F-CT`**（作者 jzhou404gmail）
+- PR diff（外部原文，2026-10-21 取）：
+  <https://patch-diff.githubusercontent.com/raw/pbs05/ponwrt/pull/34.diff>
+
+```diff
+--- a/target/linux/airoha/dts/an7581-fiberhome-hg5585f-ct-common.dtsi
++++ b/target/linux/airoha/dts/an7581-fiberhome-hg5585f-ct-common.dtsi
+@@ -4,10 +4,23 @@
+ &mdio {
+-	/* The CT variant connects GPY211 over HSGMII with active-low GPIO34 reset. */
++	/*
++	 * The CT variant connects a MaxLinear GPY211C over HSGMII with an
++	 * active-low GPIO34 reset.
++	 *
++	 * The PHY ID is spelled out in the compatible on purpose. With a string
++	 * compatible - or with any "ethernet-phy-ieee802.3-c45" entry in the
++	 * list - the core reads the C45 ID over MDIO while scanning the bus,
++	 * which happens before mdio_probe() releases the reset GPIO. After a
++	 * warm reboot the PHY can still be held in reset at that moment, the ID
++	 * scan returns 0xffffffff and the kernel binds the non-negotiating
++	 * "Generic Clause 45 PHY" instead, leaving lan1 at NO-CARRIER until the
++	 * next cold boot. With the explicit ID the device is created from the
++	 * device tree, so the reset-ordering race cannot happen.
++	 * GPY211B would be 67c9.de08, the GPY2xx family ID is 67c9.dc00.
++	 */
+ 	gpy211: ethernet-phy@7 {
+-		compatible = "maxlinear,gpy211",
+-			     "ethernet-phy-ieee802.3-c45";
++		compatible = "ethernet-phy-id67c9.de10";
+ 		reg = <7>;
+ 		reset-gpios = <&en7581_pinctrl 34 GPIO_ACTIVE_LOW>;
+ 		reset-assert-us = <100000>;
+```
+
+- 上游 PR head commit：`git ls-remote upstream refs/pull/34/head` →
+  `0bfa4c42683a3c5d30a1f05798990ec6ddde5d38`
+- 本仓 `README-HG5585F.md` 也把该 PR 标为「PR #34 HG5585F-CT PHY」。
+
+## E. 反面对照：QWRT CT 包里的 DTB 是"修复前"状态
+
+从 QWRT CT 包内 `fdt-1`（14,698 字节）解析：
+
+```
+/mdio@1fb5f01c/ethernet-phy@7
+    compatible = "ethernet-phy-ieee802.3-c45"     ← 旧写法（无显式 PHY ID）
+    reg = <7>
+    reset-gpios = <&{/syscon@1fbf0200} 0x22 0x1>   ← pin 34
+    reset-assert-us = 100000
+    reset-deassert-us = 800000                     ← 800 ms（ponwrt 为 100 ms）
+```
+
+→ QWRT 这个 CT 包构建于更早的 BSP/时点，**没有 PR #34 的显式 ID 修复**；
+反过来说明"包内有无 `ethernet-phy-id67c9.de10` 字符串"确实能区分修复前后。
+
+---
+
+## 推断（不是包内证据）
+
+PR #34 的动机（"warm reboot 后 C45 ID 探测遇到 PHY 仍在复位 → 绑定 Generic C45 PHY
+→ lan1 NO-CARRIER 直到冷启动"）出自 PR 描述与 dtsi 注释本身；本机**没有做过**
+CT 硬件上的 warm/cold reboot 对比实验，因此"该修复在真机上消除了 lan1 冷启动才通的问题"
+属于**未在本机复现**的结论。

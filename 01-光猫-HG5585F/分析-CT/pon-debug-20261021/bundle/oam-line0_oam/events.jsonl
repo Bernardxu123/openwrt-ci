@@ -1,0 +1,7 @@
+# command: /usr/bin/pondctl events --line line0 --after 0
+{"sequence":1,"timestamp_ms":1792308574857,"kind":"lifecycle","message":"OAM daemon started"}
+{"sequence":2,"timestamp_ms":1792308576567,"kind":"ieee-oam","message":"IEEE OAM discovery completed"}
+{"sequence":3,"timestamp_ms":1792308576570,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":4,"timestamp_ms":1792308579257,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":5,"timestamp_ms":1792308583620,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":6,"timestamp_ms":1792308586057,"kind":"parse-error","message":"information TLV has an invalid length"}

@@ -1,0 +1,114 @@
+# WAN 连接配置 · FiberHome HG5585F (联通 CU)
+# 来源：Telnet cat /tmp/wanconf/veip0_*_wan_conf
+# 采集 2026-10-16
+
+########################################################################
+# veip0_28_wan_conf  (1541 B, 修改时间 2026-03-11 05:32)
+#   ↓ 原文
+########################################################################
+config key 'url'
+        option value 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.'
+        option encryflag '0'
+
+config key 'service_list'
+        option value 'TR069'
+
+config key 'dev_name'
+        option value 'veip0.28'
+
+config key 'vlanid'
+        option value '28'
+
+config key 'iptype'
+        option value '1'
+
+config key 'connection_type'
+        option value 'router'
+
+config key 'mark'
+        option value '0x04000000'
+
+config key 'mark_mask'
+        option value '0xFC000000'
+
+config key 'wan_up_time'
+        option value '5952746'
+
+config key 'index'
+        option value '1'
+
+config key 'intf'
+        option value 'veip0.28'
+
+config key 'ip'
+        option value '10.38.184.245'
+
+config key 'mask'
+        option value '255.255.240.0'
+
+config key 'dns1'
+        option value '255.255.255.255'
+
+config key 'dns2'
+        option value '255.255.255.255'
+
+config key 'gateway'
+        option value '10.38.176.1'
+
+config key 'servicelist'
+        option value 'TR069'
+
+config key 'ipv4_route_table'
+        option value '100'
+
+config key 'snid_v4'
+        option value '746'
+
+
+########################################################################
+# veip0_995_wan_conf  (618 B)
+#   ↓ 原文（只列出存在的 key）
+########################################################################
+config key 'url'
+        option value 'InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.1.'
+
+config key 'service_list'
+        option value 'INTERNET'
+
+config key 'dev_name'
+        option value 'veip0.995'
+
+config key 'vlanid'
+        option value '995'
+
+config key 'iptype'
+        option value '3'
+
+config key 'connection_type'
+        option value 'bridge'
+
+config key 'mark'
+        option value '0x00000000'
+
+config key 'mark_mask'
+        option value '0x00000000'
+
+
+########################################################################
+# 解读
+########################################################################
+# veip0.995 = INTERNET，VLAN 995，connection_type = bridge
+#   → 上网业务 VLAN 是 995，光猫侧已解标签后桥接出去
+#   → LibWrt 的 wan 设备上【不需要】再配 .995 之类的 VLAN 子接口
+#     （实测吻合：ip -d link 显示 `6: wan` 上只有裸 pppoe-wan，无 VLAN 子接口）
+#
+# veip0.28 = TR069 运营商纳管，VLAN 28，router 模式，静态 10.38.184.245/20
+#
+# 物理绑定：光猫 LAN1 → LibWrt WAN 口
+#   （Web 页「用户侧以太网口信息」网口1 = dc:d8:7c:21:69:80 = LibWrt wan 口 MAC；
+#     网口2 / 网口3 未连接）
+#
+# PPPoE 账号不在光猫：光猫是 bridge，拨号在 LibWrt
+#   uci show network.wan
+#   network.wan.username='02105250448'
+#   network.wan.password='052356'

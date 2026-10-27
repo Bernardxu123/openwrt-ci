@@ -1,0 +1,38 @@
+config key 'UnifiedSoftwareVersion'
+        option value 'V2R2.0'
+		option encryflag '0'
+		
+config key 'SoftwareVersion'
+        option value 'V1.0.0'
+		option encryflag '0'
+		
+config key 'HardwareVersion'
+        option value 'V1.0.0'
+		option encryflag '0'
+		
+config key 'AdditionalSoftwareVersion'
+        option value 'RP00001'
+		option encryflag '0'
+		
+config key 'area_code'
+        option value 'Temp'
+		option encryflag '0'
+		
+config key 'operators_code'
+        option value 'CT'
+		option encryflag '0'
+		
+config key 'SmartSwitch'
+        option value '1'
+		option encryflag '0'
+
+config key 'operator_name'
+        option value 'CH_CT'
+		option encryflag '0'
+
+config key 'FlashMonitorSwitch'
+		option value '0'
+		option encryflag '0'
+		
+
+

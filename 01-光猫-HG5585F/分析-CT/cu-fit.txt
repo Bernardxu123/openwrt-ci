@@ -1,0 +1,40 @@
+==============================================================================
+FILE      光猫-HG5585F\downloads\ponwrt-v2026.10.18\ponwrt-airoha-an7581-fiberhome_hg5585f-cu-squashfs-sysupgrade.itb
+SIZE      60723501 bytes (0x39e912d)
+SHA256    192270bd8db11eb49d7c8be1f87395182da26f2a72151d8ff0d224bb4043d1ab
+FIT magic 0xd00dfeed  totalsize 4096 (0x1000)
+  off_dt_struct=0x38 size=0x4b8  off_dt_strings=0x4f0 size=0x8e  version=17
+  NOTE: FIT totalsize covers the FIT structure block only when the
+        sub-images use absolute data-position offsets and are
+        concatenated after it (size on disk is much larger).
+
+IMAGES (3)
+  kernel-1   type=kernel     comp=gzip   pos=0x00001000 size=5900203 desc='ARM64 OpenWrt Linux-6.18.55'
+             load=0x8a000000 entry=0x8a000000
+             hash-1 algo=crc32  value=9cde829b
+             hash-2 algo=sha1   value=89049378c188a83595b8f2c74c636882f1ed3482
+  fdt-1      type=flat_dt    comp=none   pos=0x005a2000 size=22959 desc='ARM64 OpenWrt fiberhome_hg5585f-cu device tree blob'
+             hash-1 algo=crc32  value=18a77549
+             hash-2 algo=sha1   value=12f8e9f4148a087efe4fe3a9391a931b226576ce
+  rootfs-1   type=filesystem comp=none   pos=0x005a8000 size=54792192 desc='ARM64 OpenWrt fiberhome_hg5585f-cu rootfs'
+             hash-1 algo=crc32  value=78e4d296
+             hash-2 algo=sha1   value=b61dbd85aa580d033db92c1581e8f699439cc75f
+
+CONFIGURATIONS (1)
+  config-1 kernel=kernel-1 fdt=fdt-1 loadables=rootfs-1 desc='OpenWrt fiberhome_hg5585f-cu'
+
+EXTRACT / HASH VERIFY
+  fdt-1      -> 光猫-CT-HG5585F\分析\extracted\cu\fdt-1.bin  22959 bytes  sha256=1a3408d5d303dfa4...
+      crc32  OK   18a77549
+      sha1   OK   12f8e9f4148a087efe4fe3a9391a931b226576ce
+
+APPENDED SYSUPGRADE METADATA SCAN
+  found JSON at file offset 0x39e9008 (tail 293 bytes from end)
+  JSON parsed OK, 276 bytes
+
+  metadata_version : 1.1
+  compat_version   : 1.0
+  supported_devices: ["fiberhome,hg5585f-cu", "fiberhome,hg5585f-cu-usb-sfp"]
+  version          : dist=PonWrt ver=SNAPSHOT rev=r0-5b12fdb target=airoha/an7581 board=fiberhome_hg5585f-cu
+
+WROTE JSON 光猫-CT-HG5585F\分析\cu-fit.json

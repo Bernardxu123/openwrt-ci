@@ -1,0 +1,2 @@
+# command: awk '/^[0-9a-fA-F]+ / { count[$2]++ } END { printf "UNB=%u\nBND=%u\nFIN=%u\nTOTAL=%u\n", count["UNB"], count["BND"], count["FIN"], count["UNB"] + count["BND"] + count["FIN"] }' /sys/kernel/debug/ppe/entries
+awk: /sys/kernel/debug/ppe/entries: No such file or directory

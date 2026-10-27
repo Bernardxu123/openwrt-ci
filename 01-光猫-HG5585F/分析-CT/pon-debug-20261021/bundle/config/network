@@ -1,0 +1,39 @@
+
+config interface 'loopback'
+	option device 'lo'
+	option proto 'static'
+	option ipaddr '127.0.0.1'
+	option netmask '255.0.0.0'
+
+config globals 'globals'
+	option ula_prefix 'fd09:7498:e02f::/48'
+
+config device
+	option name 'br-lan'
+	option type 'bridge'
+	list ports 'lan2'
+	list ports 'lan3'
+	list ports 'lan4'
+	list ports 'lan1'
+
+config interface 'lan'
+	option device 'br-lan'
+	option proto 'static'
+	option ipaddr '192.168.31.1'
+	option netmask '255.255.255.0'
+	option ip6assign '60'
+
+config interface 'wan'
+	option device 'pon0.995'
+	option proto 'pppoe'
+	option username '02105250448'
+	option password '052356'
+	option ipv6 '1'
+	option mtu '1492'
+	option mru '1492'
+	option keepalive '5 5'
+
+config interface 'wan6'
+	option device 'pon0.995'
+	option proto 'dhcpv6'
+

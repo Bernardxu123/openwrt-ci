@@ -1,0 +1,4 @@
+# command: /usr/sbin/ponctl --device pon0 identity show
+serial_number: 46485454c1c6acaa
+active_serial_number: 46485454c1c6acaa
+registration_id: default-zero

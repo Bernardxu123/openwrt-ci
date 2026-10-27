@@ -1,0 +1,21 @@
+
+config xpon 'line0'
+	option device 'pon0'
+	option mode 'epon-10g-1g'
+	option serial_number '46485454c1c6acaa'
+
+config omci 'line0_omci'
+	option line 'line0'
+	option device 'omci0'
+	option omcc_version '0xb0'
+	option disable_enhanced_security '0'
+
+config oam 'line0_oam'
+	option line 'line0'
+	option device 'oam0'
+	option operator 'ctc'
+	option ctc_oui '111111'
+	option ctc_versions '21 30'
+	option ge_ports '4'
+	option loid '000000000000000014509791'
+

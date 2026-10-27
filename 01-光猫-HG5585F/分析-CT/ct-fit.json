@@ -1,0 +1,142 @@
+{
+  "path": "D:\\AI\\路由\\光猫-CT-HG5585F\\物料\\固件\\ponwrt-airoha-an7581-fiberhome_hg5585f-ct-squashfs-sysupgrade.itb",
+  "file_size": 60727597,
+  "file_sha256": "7d04c755584bccb8c5a9606327abd1ce21da95207479cb6a1df981b7253c65f9",
+  "fit_header": {
+    "magic": "0xd00dfeed",
+    "totalsize": 4096,
+    "off_dt_struct": 56,
+    "off_dt_strings": 1264,
+    "off_mem_rsvmap": 40,
+    "version": 17,
+    "last_comp_version": 16,
+    "boot_cpuid_phys": 0,
+    "size_dt_strings": 142,
+    "size_dt_struct": 1208
+  },
+  "images": [
+    {
+      "node": "kernel-1",
+      "description": "ARM64 OpenWrt Linux-6.18.55",
+      "type": "kernel",
+      "arch": "arm64",
+      "os": "linux",
+      "compression": "gzip",
+      "data-position": 4096,
+      "data-size": 5900203,
+      "load": 2315255808,
+      "entry": 2315255808,
+      "hashes": [
+        {
+          "node": "hash-1",
+          "algo": "crc32",
+          "value_hex": "9cde829b",
+          "computed": "9cde829b",
+          "match": true
+        },
+        {
+          "node": "hash-2",
+          "algo": "sha1",
+          "value_hex": "89049378c188a83595b8f2c74c636882f1ed3482",
+          "computed": "89049378c188a83595b8f2c74c636882f1ed3482",
+          "match": true
+        }
+      ],
+      "data_position_resolved": 4096,
+      "actual_bytes": 5900203,
+      "sha256": "aae993ddec925f3a2d1888509821b3b768af522e54d44e44b26a5a1740ce0213",
+      "crc32": "9cde829b"
+    },
+    {
+      "node": "fdt-1",
+      "description": "ARM64 OpenWrt fiberhome_hg5585f-ct device tree blob",
+      "type": "flat_dt",
+      "arch": "arm64",
+      "os": "",
+      "compression": "none",
+      "data-position": 5906432,
+      "data-size": 23281,
+      "hashes": [
+        {
+          "node": "hash-1",
+          "algo": "crc32",
+          "value_hex": "2445d569",
+          "computed": "2445d569",
+          "match": true
+        },
+        {
+          "node": "hash-2",
+          "algo": "sha1",
+          "value_hex": "cfd9ba2fb4f1ab2a4c5b46e4682c4936751653ff",
+          "computed": "cfd9ba2fb4f1ab2a4c5b46e4682c4936751653ff",
+          "match": true
+        }
+      ],
+      "data_position_resolved": 5906432,
+      "actual_bytes": 23281,
+      "sha256": "50f1934455915417f61d78f911e29f789275ab14ba7806d0b877555a565eecb3",
+      "crc32": "2445d569",
+      "extracted_to": "光猫-CT-HG5585F\\分析\\extracted\\ct\\fdt-1.bin"
+    },
+    {
+      "node": "rootfs-1",
+      "description": "ARM64 OpenWrt fiberhome_hg5585f-ct rootfs",
+      "type": "filesystem",
+      "arch": "arm64",
+      "os": "",
+      "compression": "none",
+      "data-position": 5931008,
+      "data-size": 54796288,
+      "hashes": [
+        {
+          "node": "hash-1",
+          "algo": "crc32",
+          "value_hex": "39f9d998",
+          "computed": "39f9d998",
+          "match": true
+        },
+        {
+          "node": "hash-2",
+          "algo": "sha1",
+          "value_hex": "9ac359209bb5431612e219b971632abe6978c207",
+          "computed": "9ac359209bb5431612e219b971632abe6978c207",
+          "match": true
+        }
+      ],
+      "data_position_resolved": 5931008,
+      "actual_bytes": 54796288,
+      "sha256": "49decd149a8dd45ae68cbd5c74a678fcd4e0a96c5b429bdd40224c3c68f2c92c",
+      "crc32": "39f9d998"
+    }
+  ],
+  "configurations": [
+    {
+      "node": "config-1",
+      "description": "OpenWrt fiberhome_hg5585f-ct",
+      "kernel": "kernel-1",
+      "fdt": "fdt-1",
+      "loadables": "rootfs-1"
+    }
+  ],
+  "sysupgrade_metadata": {
+    "metadata_version": "1.1",
+    "compat_version": "1.0",
+    "supported_devices": [
+      "fiberhome,hg5585f-ct",
+      "fiberhome,hg5585f-ct-usb-sfp"
+    ],
+    "version": {
+      "dist": "PonWrt",
+      "version": "SNAPSHOT",
+      "revision": "r0-5b12fdb",
+      "target": "airoha/an7581",
+      "board": "fiberhome_hg5585f-ct"
+    },
+    "_file_offset": 60727304,
+    "_tail_bytes": 293,
+    "_ucert": {
+      "tail_bytes_after_json": 17,
+      "tail_sha256": "2a0a0653c39695c097520d72b308e3da9f59c4936042d9f44511efeb410ccd8b"
+    }
+  }
+}

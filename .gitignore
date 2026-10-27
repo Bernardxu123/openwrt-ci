@@ -1,0 +1,25 @@
+# 工具缓存
+.playwright-mcp/
+.workbuddy-ai/
+.zcode/
+.openwrt-ci-work/
+.codegraph/
+.reasonix/
+__pycache__/
+*.pyc
+
+# 临时/备份
+*.bak.local
+.tmp/
+
+# ── 大体积二进制（本地保留，不入库）──
+# 固件镜像与设备 NAND 备份合计约 1GB，进 git 会让仓库无法使用
+*.itb
+*.img
+*.squashfs
+*.tar.gz
+01-光猫-HG5585F/原厂备份-CU/
+01-光猫-HG5585F/原厂备份-CT/
+01-光猫-HG5585F/固件/
+02-主路由-AN7581-QWRT/固件与镜像/
+plugins/*/node_modules/

@@ -1,0 +1,4 @@
+# command: /usr/sbin/ponctl --device pon0 mode show
+configured=epon-10g-1g
+active=epon-10g-1g
+controls=oam0,omci0

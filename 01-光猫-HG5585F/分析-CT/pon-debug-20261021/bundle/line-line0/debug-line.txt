@@ -1,0 +1,12 @@
+# command: cat /sys/kernel/debug/airoha-xpon-pon0/line
+configured_mode: epon-10g-1g
+active_mode: epon-10g-1g
+lifecycle: operational
+last_start_error: 0
+optical_signal: 1
+rx_active: 1
+upstream_tx_armed: 1
+data_path_configured: 1
+service_ready: 0
+rx_start_count: 2
+pcs_profile: epon-10g-1g

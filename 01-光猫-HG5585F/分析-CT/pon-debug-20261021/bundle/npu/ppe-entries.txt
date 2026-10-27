@@ -1,0 +1,2 @@
+# command: cat /sys/kernel/debug/ppe/entries
+cat: can't open '/sys/kernel/debug/ppe/entries': No such file or directory

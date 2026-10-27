@@ -1,0 +1,95 @@
+# =========================
+# 系统服务直连
+# =========================
+
+pname(NetworkManager,systemd-resolved,dnsmasq)->must_direct
+pname(ntpd,chronyd)->must_direct
+
+
+# =========================
+# 私网直连
+# =========================
+
+dip(geoip:private)->direct
+domain(geosite:private)->direct
+
+
+# =========================
+# UDP协议治理
+# 禁止QUIC，强制TCP代理
+# =========================
+
+l4proto(udp)&&dport(443)->block
+
+# NTP校时
+l4proto(udp)&&dport(123)->direct
+
+
+# =========================
+# 自建服务
+# =========================
+
+domain(290490.xyz)->direct
+
+
+# =========================
+# Google IPv6 精准分流
+# 华为IPv6 PD
+# =========================
+
+# Google Video CDN
+sip("2408:820c::/16")&&dip("2404:6800::/32")->Media
+
+
+# Google API / youtubei / Gemini相关
+# 固定出口IP
+sip("2408:820c::/16")&&dip("2001:4860::/32")->Stable
+
+
+# =========================
+# AI服务
+# =========================
+
+domain(generativelanguage.googleapis.com,ai.google.dev,gemini.google.com,bard.google.com)->AI
+
+domain(geosite:openai,geosite:anthropic)->AI
+
+domain(opencode.ai,oracle.com,oraclecloud.com,oci.oraclecloud.com,nvidia.com,workbuddy.ai)->AI
+
+
+# =========================
+# 流媒体
+# =========================
+
+domain(geosite:youtube,youtu.be,geosite:netflix,geosite:disney,geosite:spotify)->Media
+
+
+# =========================
+# Google IPv6兜底
+# 无SNI情况
+# =========================
+
+dip("2404:6800::/32")->Media
+
+
+# =========================
+# 指定海外服务
+# =========================
+
+domain(stripo.email,justuno.com,mailchimp.com,freepik.com,joeyblog.net,googleapis.cn,services.googleapis.cn,xn--ngstr-lra8j.com,dl.google.com)->proxy
+
+
+# =========================
+# 中国大陆直连
+# =========================
+
+domain(geosite:cn)->direct
+
+dip(geoip:cn)->direct
+
+
+# =========================
+# 默认代理
+# =========================
+
+fallback: proxy

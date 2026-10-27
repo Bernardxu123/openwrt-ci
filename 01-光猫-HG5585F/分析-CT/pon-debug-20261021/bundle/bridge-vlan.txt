@@ -1,0 +1,9 @@
+# command: bridge vlan show
+port              vlan-id  
+lan1              1 PVID Egress Untagged
+lan2              1 PVID Egress Untagged
+lan3              1 PVID Egress Untagged
+lan4              1 PVID Egress Untagged
+ra0               1 PVID Egress Untagged
+br-lan            1 PVID Egress Untagged
+rai0              1 PVID Egress Untagged

@@ -1,0 +1,2 @@
+config interface 'fileid'
+        option deviceinfo '10gpon'

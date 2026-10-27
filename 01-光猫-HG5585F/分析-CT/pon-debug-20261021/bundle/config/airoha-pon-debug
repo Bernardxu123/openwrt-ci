@@ -1,0 +1,4 @@
+
+config capture 'capture'
+	option enabled '1'
+

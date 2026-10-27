@@ -1,0 +1,14 @@
+# command: dmesg | grep -Ei 'airoha-npu|mailbox|ppe'
+[    0.008924] Calibrating delay loop (skipped), value calculated using timer frequency.. 50.00 BogoMIPS (lpj=100000)
+[    7.213564] block ubiblock0_4: mapped 1 uImage.FIT filesystem sub-image as /dev/fit0
+[    9.532214] an7581-bsp-npu 1e900000.npu: NPU firmware 0.0, mailbox ready
+[   13.564413] block: attempting to load /tmp/overlay/upper/etc/config/fstab
+[   13.801210] block: attempting to load /tmp/ubifs_cfg/upper/etc/config/fstab
+[   13.960657] kmodloader: loading kernel modules from /tmp/overlay/upper/etc/modules-boot.d/*
+[   13.969628] kmodloader: done loading kernel modules from /tmp/overlay/upper/etc/modules-boot.d/*
+[   14.017828] block: attempting to load /tmp/overlay/upper/etc/config/fstab
+[   14.032234] block: attempting to load /tmp/ubifs_cfg/upper/etc/config/fstab
+[   15.648991] device-mapper: ioctl: 4.41.0-ioctl (2019-09-16) initialised: dm-devel@redhat.com
+[   15.809358] an7581-bsp-ppe an7581-bsp-ppe.0.auto: using legacy MT7916 PPE register initialization
+[   15.842903] an7581-bsp-ppe an7581-bsp-ppe.0.auto: PPE engines 0x3, flow admission ready, stats 0x0
+[   17.639771] PPP MPPE Compression module registered

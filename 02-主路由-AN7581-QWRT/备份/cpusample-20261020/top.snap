@@ -1,0 +1,21 @@
+Mem: 297732K used, 140744K free, 2808K shrd, 360K buff, 99368K cached
+CPU:   2% usr   4% sys   0% nic  91% idle   0% io   0% irq   2% sirq
+Load average: 0.55 0.51 0.28 2/213 22562
+  PID  PPID USER     STAT   RSS %RSS %CPU COMMAND
+27730     1 root     S    41176   9%   0% /tmp/etc/passwall/bin/xray run -c /tmp/etc/passwall/acl/default/global.json
+ 2251  2217 network  S     7800   2%   0% /usr/sbin/hostapd -s -g /var/run/hostapd/global
+ 2250  2218 network  S     3924   1%   0% /usr/sbin/wpa_supplicant -n -s -g /var/run/wpa_supplicant/global
+27830     1 root     S     3244   1%   0% /tmp/etc/passwall/bin/chinadns-ng -C /tmp/etc/passwall/acl/default/chinadns_ng.conf
+27062 27036 dnsmasq  S     2256   1%   0% /usr/sbin/dnsmasq -C /var/etc/dnsmasq.conf.cfg01411c -k -x /var/run/dnsmasq/dnsmasq.cfg01411c.pid
+27877     1 dnsmasq  S     2228   1%   0% /tmp/etc/passwall/bin/dnsmasq_default -k -C /tmp/etc/passwall/acl/default/dnsmasq.conf -x /tmp/etc/passwall/acl/default/dnsmasq.pid
+23769     1 root     S     2184   0%   0% /sbin/rpcd -s /var/run/ubus/ubus.sock -t 30
+ 2286     1 root     S     1940   0%   0% /sbin/netifd -l 2
+ 3428     1 root     S     1300   0%   0% {ntpd} /sbin/ujail -t 5 -n ntpd -U ntp -G ntp -C /etc/capabilities/ntpd.json -c -u -A 15 -r /bin/ubus -r /usr/bin/env -r /usr/bin/jshn -r /usr/sbin/ntpd-hotplug -r /usr/share/libubox/jshn.sh -- /usr/sbin/ntpd -n -N -S /usr/sbin/ntpd-hotplug -p ntp.aliyun.com -p ntp.tencent.com -p cn.pool.ntp.org
+27036     1 root     S     1188   0%   0% {dnsmasq} /sbin/ujail -t 5 -n dnsmasq -u -l -A 99 -r /bin/ubus -r /etc/TZ -r /etc/dnsmasq.conf -r /etc/ethers -r /etc/group -r /etc/hosts -r /etc/passwd -w /tmp/dhcp.leases -r /tmp/dnsmasq.cfg01411c.d -r /tmp/hosts -r /tmp/resolv.conf.d -r /usr/bin/env -r /usr/bin/jshn -r /usr/lib/dnsmasq/dhcp-script.sh -r /usr/share/dnsmasq/dhcpbogushostname.conf -r /usr/share/dnsmasq/rfc6761.conf -r /usr/share/dnsm
+ 2217     1 root     S     1172   0%   0% {hostapd} /sbin/ujail -t 5 -n hostapd -U network -G network -C /etc/capabilities/wpad.json -c -A 7 -- /usr/sbin/hostapd -s -g /var/run/hostapd/global
+27908     1 root     S     1136   0%   0% {lease2hosts.sh} /bin/sh /usr/share/passwall/lease2hosts.sh
+ 2448     1 root     S     1116   0%   0% /usr/sbin/odhcpd
+27751     1 root     S     1112   0%   0% /usr/sbin/airoha-pond --line line0
+28956     1 root     S     1080   0%   0% {pon-watchdog} /bin/sh /usr/sbin/pon-watchdog
+ 1578     1 logd     S     1076   0%   0% /sbin/logd -S 128
+=== END ===

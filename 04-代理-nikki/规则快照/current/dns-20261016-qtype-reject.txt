@@ -1,0 +1,18 @@
+upstream {
+  unicom: 'udp://210.22.70.3:53'
+  cf: 'tls://1.1.1.1:853'
+}
+
+routing {
+  request {
+    qname(geosite:private) -> unicom
+    qname(geosite:cn) -> unicom
+    # 外网（非 cn）AAAA 一律拒绝 -> 客户端只拿 A，外网走 IPv4；国内保留 v6。此行必须在 qname(geosite:cn) 之后
+    qtype(aaaa) -> reject
+    fallback: cf
+  }
+  response {
+    upstream(cf) -> accept
+    fallback: accept
+  }
+}

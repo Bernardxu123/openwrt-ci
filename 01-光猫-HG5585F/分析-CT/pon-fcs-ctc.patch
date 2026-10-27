@@ -1,0 +1,62 @@
+diff --git a/airoha-pon-daemons/src/src/oam/ctc.rs b/airoha-pon-daemons/src/src/oam/ctc.rs
+index b029304..2d64b0c 100644
+--- a/airoha-pon-daemons/src/src/oam/ctc.rs
++++ b/airoha-pon-daemons/src/src/oam/ctc.rs
+@@ -128,6 +128,31 @@ impl CtcSession {
+ 
+         let has_version_list = length > 7;
+         if has_version_list {
++            // Some OLTs encode the selected version as a one-entry version
++            // list: OUI, 0x01, 0x01, OUI, version (length 11). Treat that as
++            // the selection instead of offering our list again forever.
++            if self.state == DiscoveryState::Offered
++                && length == 11
++                && tlv.get(2..5) == Some(&config.ctc_oui[..])
++                && tlv[5] == 1
++                && tlv[6] == 1
++                && tlv.get(7..10) == Some(&config.ctc_oui[..])
++            {
++                let version = tlv[10];
++                if config.ctc_versions.contains(&version) {
++                    self.state = DiscoveryState::Operational;
++                    self.selected_version = Some(version);
++                    return Ok(Some(vec![
++                        INFO_TYPE_ORGANIZATION_SPECIFIC,
++                        7,
++                        config.ctc_oui[0],
++                        config.ctc_oui[1],
++                        config.ctc_oui[2],
++                        1,
++                        version,
++                    ]));
++                }
++            }
+             self.state = DiscoveryState::Offered;
+             self.selected_version = None;
+             let mut response = Writer::with_capacity(7 + config.ctc_versions.len() * 4);
+diff --git a/airoha-pon-daemons/src/src/oam/ieee.rs b/airoha-pon-daemons/src/src/oam/ieee.rs
+index 1f56252..a9302cc 100644
+--- a/airoha-pon-daemons/src/src/oam/ieee.rs
++++ b/airoha-pon-daemons/src/src/oam/ieee.rs
+@@ -36,17 +36,16 @@ impl IeeeSession {
+         let mut remote_information = None;
+         let mut ctc_response = None;
+ 
+-        while offset < payload.len() {
++        while offset + 2 <= payload.len() {
+             let info_type = payload[offset];
+             if info_type == INFO_END {
+                 break;
+             }
+-            if offset + 2 > payload.len() {
+-                return Err("information TLV header is truncated");
+-            }
+             let length = payload[offset + 1] as usize;
+             if length < 2 || offset + length > payload.len() {
+-                return Err("information TLV has an invalid length");
++                // Some PON MACs deliver the Ethernet FCS (and padding) to the
++                // OAM socket. It is not a TLV; ignore the trailing bytes.
++                break;
+             }
+             let tlv = &payload[offset..offset + length];
+ 

@@ -1,0 +1,9 @@
+# command: cat /sys/kernel/debug/airoha-xpon-pon0/frontend
+error: 0
+calibration: ready
+tx_gate_enabled: 1
+temperature_8472: 0x2d9f
+voltage_8472: 0x7cd7
+tx_bias_8472: 0x1437
+tx_power_8472: 0x56cc
+rx_power_8472: 0x00c1

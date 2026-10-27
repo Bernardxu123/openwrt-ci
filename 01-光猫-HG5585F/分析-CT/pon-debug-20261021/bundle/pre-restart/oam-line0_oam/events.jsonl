@@ -1,0 +1,28 @@
+# command: /usr/bin/pondctl events --line line0 --after 0
+{"sequence":1,"timestamp_ms":1792308477968,"kind":"lifecycle","message":"OAM daemon started"}
+{"sequence":2,"timestamp_ms":1792308484506,"kind":"ieee-oam","message":"IEEE OAM discovery completed"}
+{"sequence":3,"timestamp_ms":1792308484510,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":4,"timestamp_ms":1792308487249,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":5,"timestamp_ms":1792308490052,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":6,"timestamp_ms":1792308492849,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":7,"timestamp_ms":1792308495649,"kind":"parse-error","message":"CTC organization PDU has an unexpected OUI"}
+{"sequence":8,"timestamp_ms":1792308498452,"kind":"parse-error","message":"CTC organization PDU has an unexpected OUI"}
+{"sequence":9,"timestamp_ms":1792308501252,"kind":"parse-error","message":"CTC organization PDU arrived before version negotiation"}
+{"sequence":10,"timestamp_ms":1792308503250,"kind":"parse-error","message":"CTC organization PDU arrived before version negotiation"}
+{"sequence":11,"timestamp_ms":1792308505250,"kind":"parse-error","message":"CTC organization PDU arrived before version negotiation"}
+{"sequence":12,"timestamp_ms":1792308507250,"kind":"parse-error","message":"CTC organization PDU has an unexpected OUI"}
+{"sequence":13,"timestamp_ms":1792308509251,"kind":"parse-error","message":"CTC organization PDU arrived before version negotiation"}
+{"sequence":14,"timestamp_ms":1792308534576,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":15,"timestamp_ms":1792308537253,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":16,"timestamp_ms":1792308540053,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":17,"timestamp_ms":1792308542853,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":18,"timestamp_ms":1792308545654,"kind":"parse-error","message":"CTC organization PDU has an unexpected OUI"}
+{"sequence":19,"timestamp_ms":1792308550516,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":20,"timestamp_ms":1792308553254,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":21,"timestamp_ms":1792308556055,"kind":"parse-error","message":"CTC organization PDU has an unexpected OUI"}
+{"sequence":22,"timestamp_ms":1792308558855,"kind":"parse-error","message":"CTC organization PDU has an unexpected OUI"}
+{"sequence":23,"timestamp_ms":1792308561657,"kind":"parse-error","message":"CTC organization PDU arrived before version negotiation"}
+{"sequence":24,"timestamp_ms":1792308563655,"kind":"parse-error","message":"CTC organization PDU arrived before version negotiation"}
+{"sequence":25,"timestamp_ms":1792308566557,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":26,"timestamp_ms":1792308569256,"kind":"parse-error","message":"information TLV has an invalid length"}
+{"sequence":27,"timestamp_ms":1792308572056,"kind":"parse-error","message":"information TLV has an invalid length"}

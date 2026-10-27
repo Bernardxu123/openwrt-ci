@@ -1,0 +1,135 @@
+# ============================================================
+# routing-20261008-post4-test.txt
+# 第一轮单变量测试：唯一变量 =「YouTube 的出口组 Media -> Stable」
+# 回滚文件：routing-20261008-post4.bak
+# ============================================================
+#
+# 本版相对 post4.bak 只有 2 处改动，其余逐字不动：
+#
+# 【改动1】Google IPv6 精准分流 · Video CDN 段
+#   - sip("2408:820c::/16") && dip("2404:6800::/32") -> Media
+#   + sip("2408:820c::/16") && dip("2404:6800::/32") -> Stable
+#   理由：平板 v6 的无 SNI 视频段原本走 Media（轮换池），
+#         与「有 SNI 时 geosite:youtube 也走 Media」虽是同一组名，
+#         但 Media 是轮换池、出口 IP 不恒定 —— 这是 403 的候选根因。
+#         改成 Stable 后与 API 段（已是 Stable）对齐。
+#
+# 【改动2】流媒体段拆成两行
+#   - domain(geosite:youtube,youtu.be,geosite:netflix,geosite:disney,geosite:spotify) -> Media
+#   + domain(geosite:youtube,youtu.be) -> Stable
+#   + domain(geosite:netflix,geosite:disney,geosite:spotify) -> Media
+#   理由：需要把 YouTube 单独摘出来才能只改它的出口组；
+#         Netflix/Disney/Spotify 留在 Media 不动。
+#
+# ------------------------------------------------------------
+# 本轮刻意「未」修改的一处（保留作判别信号）：
+#   dip("2404:6800::/32") -> Media
+# 平板 IPv4 的无 SNI 流量目标为 142.250.x / 172.217.x，
+# 匹配不上这条 IPv6 前缀，会从 fallback 漏到 proxy 组（轮换池）。
+# 本轮先不动，结果如何直接反推根因：
+#   · 403 消失            -> v6 双出口就是根因，生产版只需按设备收窄锁定
+#   · 403 仍在但现象变化  -> 是「平板 v4 漏到 proxy」在作祟，
+#                           第二轮补 sip(192.168.31.122) && dip("172.217.0.0/16",
+#                           "142.250.0.0/15","173.194.0.0/16","74.125.0.0/16") -> Stable
+#   · 完全无变化          -> 与出口无关，转 QUIC 对照测试
+# ------------------------------------------------------------
+
+# =========================
+# 系统服务直连
+# =========================
+
+pname(NetworkManager,systemd-resolved,dnsmasq)->must_direct
+pname(ntpd,chronyd)->must_direct
+
+
+# =========================
+# 私网直连
+# =========================
+
+dip(geoip:private)->direct
+domain(geosite:private)->direct
+
+
+# =========================
+# UDP协议治理
+# 禁止QUIC，强制TCP代理
+# =========================
+
+l4proto(udp)&&dport(443)->block
+
+# NTP校时
+l4proto(udp)&&dport(123)->direct
+
+
+# =========================
+# 自建服务
+# =========================
+
+domain(290490.xyz)->direct
+
+
+# =========================
+# Google IPv6 精准分流
+# 华为IPv6 PD
+# =========================
+
+# Google Video CDN
+# 【改动1】Media -> Stable
+sip("2408:820c::/16")&&dip("2404:6800::/32")->Stable
+
+
+# Google API / youtubei / Gemini相关
+# 固定出口IP
+sip("2408:820c::/16")&&dip("2001:4860::/32")->Stable
+
+
+# =========================
+# AI服务
+# =========================
+
+domain(generativelanguage.googleapis.com,ai.google.dev,gemini.google.com,bard.google.com)->AI
+
+domain(geosite:openai,geosite:anthropic)->AI
+
+domain(opencode.ai,oracle.com,oraclecloud.com,oci.oraclecloud.com,nvidia.com,workbuddy.ai)->AI
+
+
+# =========================
+# 流媒体
+# =========================
+
+# 【改动2】原单行拆为两行
+domain(geosite:youtube,youtu.be)->Stable
+
+domain(geosite:netflix,geosite:disney,geosite:spotify)->Media
+
+
+# =========================
+# Google IPv6兜底
+# 无SNI情况
+# =========================
+
+dip("2404:6800::/32")->Media
+
+
+# =========================
+# 指定海外服务
+# =========================
+
+domain(stripo.email,justuno.com,mailchimp.com,freepik.com,joeyblog.net,googleapis.cn,services.googleapis.cn,xn--ngstr-lra8j.com,dl.google.com)->proxy
+
+
+# =========================
+# 中国大陆直连
+# =========================
+
+domain(geosite:cn)->direct
+
+dip(geoip:cn)->direct
+
+
+# =========================
+# 默认代理
+# =========================
+
+fallback: proxy

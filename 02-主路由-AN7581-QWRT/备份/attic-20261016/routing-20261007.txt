@@ -1,0 +1,21 @@
+pname(NetworkManager, systemd-resolved, dnsmasq) -> must_direct
+dip(geoip:private) -> direct
+domain(geosite:private) -> direct
+# 华为平板 DMG-W00（静态租约钉 .122；v6 源放宽到家宽 pd 段 2408:820c::/16 防前缀滚动）：禁 QUIC 强制 TCP
+sip(192.168.31.122) && l4proto(udp) && dport(443) -> block
+sip("2408:820c::/16") && l4proto(udp) && dport(443) -> block
+# 华为平板：无 SNI 时按 IPv6 字面量直拨，HK anytls 连不上这些 Google IPv6 → 改走 AI（甲骨文已通 IPv6）
+sip("2408:820c::/16") && dip("2001:4860::/32") -> AI
+sip("2408:820c::/16") && dip("2404:6800::/32") -> AI
+sip(192.168.31.122) && dip("2001:4860::/32") -> AI
+sip(192.168.31.122) && dip("2404:6800::/32") -> AI
+domain(oracle.com, oraclecloud.com, oci.oraclecloud.com) -> AI
+domain(stripo.email, justuno.com, mailchimp.com, freepik.com, joeyblog.net, googleapis.cn, services.googleapis.cn, xn--ngstr-lra8j.com, dl.google.com, nvidia.com, workbuddy.ai) -> proxy
+domain(geosite:cn) -> direct
+dip(geoip:cn) -> direct
+domain(geosite:openai) -> AI
+domain(geosite:anthropic) -> AI
+domain(geosite:google-gemini) -> AI
+domain(opencode.ai) -> AI
+domain(xx.290490.xyz) -> direct
+fallback: proxy

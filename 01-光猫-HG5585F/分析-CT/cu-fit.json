@@ -1,0 +1,142 @@
+{
+  "path": "D:\\AI\\路由\\光猫-HG5585F\\downloads\\ponwrt-v2026.10.18\\ponwrt-airoha-an7581-fiberhome_hg5585f-cu-squashfs-sysupgrade.itb",
+  "file_size": 60723501,
+  "file_sha256": "192270bd8db11eb49d7c8be1f87395182da26f2a72151d8ff0d224bb4043d1ab",
+  "fit_header": {
+    "magic": "0xd00dfeed",
+    "totalsize": 4096,
+    "off_dt_struct": 56,
+    "off_dt_strings": 1264,
+    "off_mem_rsvmap": 40,
+    "version": 17,
+    "last_comp_version": 16,
+    "boot_cpuid_phys": 0,
+    "size_dt_strings": 142,
+    "size_dt_struct": 1208
+  },
+  "images": [
+    {
+      "node": "kernel-1",
+      "description": "ARM64 OpenWrt Linux-6.18.55",
+      "type": "kernel",
+      "arch": "arm64",
+      "os": "linux",
+      "compression": "gzip",
+      "data-position": 4096,
+      "data-size": 5900203,
+      "load": 2315255808,
+      "entry": 2315255808,
+      "hashes": [
+        {
+          "node": "hash-1",
+          "algo": "crc32",
+          "value_hex": "9cde829b",
+          "computed": "9cde829b",
+          "match": true
+        },
+        {
+          "node": "hash-2",
+          "algo": "sha1",
+          "value_hex": "89049378c188a83595b8f2c74c636882f1ed3482",
+          "computed": "89049378c188a83595b8f2c74c636882f1ed3482",
+          "match": true
+        }
+      ],
+      "data_position_resolved": 4096,
+      "actual_bytes": 5900203,
+      "sha256": "aae993ddec925f3a2d1888509821b3b768af522e54d44e44b26a5a1740ce0213",
+      "crc32": "9cde829b"
+    },
+    {
+      "node": "fdt-1",
+      "description": "ARM64 OpenWrt fiberhome_hg5585f-cu device tree blob",
+      "type": "flat_dt",
+      "arch": "arm64",
+      "os": "",
+      "compression": "none",
+      "data-position": 5906432,
+      "data-size": 22959,
+      "hashes": [
+        {
+          "node": "hash-1",
+          "algo": "crc32",
+          "value_hex": "18a77549",
+          "computed": "18a77549",
+          "match": true
+        },
+        {
+          "node": "hash-2",
+          "algo": "sha1",
+          "value_hex": "12f8e9f4148a087efe4fe3a9391a931b226576ce",
+          "computed": "12f8e9f4148a087efe4fe3a9391a931b226576ce",
+          "match": true
+        }
+      ],
+      "data_position_resolved": 5906432,
+      "actual_bytes": 22959,
+      "sha256": "1a3408d5d303dfa4387f7704cce1837df3eaa67f47d87950d5aebb3d155ccb16",
+      "crc32": "18a77549",
+      "extracted_to": "光猫-CT-HG5585F\\分析\\extracted\\cu\\fdt-1.bin"
+    },
+    {
+      "node": "rootfs-1",
+      "description": "ARM64 OpenWrt fiberhome_hg5585f-cu rootfs",
+      "type": "filesystem",
+      "arch": "arm64",
+      "os": "",
+      "compression": "none",
+      "data-position": 5931008,
+      "data-size": 54792192,
+      "hashes": [
+        {
+          "node": "hash-1",
+          "algo": "crc32",
+          "value_hex": "78e4d296",
+          "computed": "78e4d296",
+          "match": true
+        },
+        {
+          "node": "hash-2",
+          "algo": "sha1",
+          "value_hex": "b61dbd85aa580d033db92c1581e8f699439cc75f",
+          "computed": "b61dbd85aa580d033db92c1581e8f699439cc75f",
+          "match": true
+        }
+      ],
+      "data_position_resolved": 5931008,
+      "actual_bytes": 54792192,
+      "sha256": "ae59337bb634c810a0b1f9f8024109a404de1d41bc957ad53b4df4c05a170aef",
+      "crc32": "78e4d296"
+    }
+  ],
+  "configurations": [
+    {
+      "node": "config-1",
+      "description": "OpenWrt fiberhome_hg5585f-cu",
+      "kernel": "kernel-1",
+      "fdt": "fdt-1",
+      "loadables": "rootfs-1"
+    }
+  ],
+  "sysupgrade_metadata": {
+    "metadata_version": "1.1",
+    "compat_version": "1.0",
+    "supported_devices": [
+      "fiberhome,hg5585f-cu",
+      "fiberhome,hg5585f-cu-usb-sfp"
+    ],
+    "version": {
+      "dist": "PonWrt",
+      "version": "SNAPSHOT",
+      "revision": "r0-5b12fdb",
+      "target": "airoha/an7581",
+      "board": "fiberhome_hg5585f-cu"
+    },
+    "_file_offset": 60723208,
+    "_tail_bytes": 293,
+    "_ucert": {
+      "tail_bytes_after_json": 17,
+      "tail_sha256": "c5e6dcab3ce3675946a21c2b8b1edddf080509b9cbe8d1b5460941c59260e503"
+    }
+  }
+}

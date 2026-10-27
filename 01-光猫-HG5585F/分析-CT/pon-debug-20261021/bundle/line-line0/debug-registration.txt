@@ -1,0 +1,17 @@
+# command: cat /sys/kernel/debug/airoha-xpon-pon0/registration
+mpcp_state: 4
+llid_valid: 1
+llid: 164
+register_requests: 6
+register_messages: 6
+register_acks: 6
+register_nacks: 0
+reregisters: 0
+deregisters: 0
+mpcp_timeouts: 4
+sync_losses: 0
+recoveries: 0
+full_reinitializations: 0
+registered_lifetime_ms: 5296
+last_registration_lifetime_ms: 4332
+last_register_status: 0x420100a4

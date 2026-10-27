@@ -1,0 +1,2 @@
+# command: grep -Ei 'pon|xgpon|epon|airoha' /proc/interrupts || true
+ 10:          2          0          0          0     GICv3  75 Level     airoha-xpon-phy

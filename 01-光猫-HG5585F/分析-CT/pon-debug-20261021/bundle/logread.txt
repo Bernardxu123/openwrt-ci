@@ -1,0 +1,679 @@
+# command: logread
+Sun Oct 18 15:27:57 2026 kern.info kernel: [    9.160056]    32regs    :  2721.000 MB/sec
+Sun Oct 18 15:27:57 2026 kern.info kernel: [    9.204057]    arm64_neon:  2389.000 MB/sec
+Sun Oct 18 15:27:57 2026 kern.info kernel: [    9.208242] xor: using function: 32regs (2721.000 MB/sec)
+Sun Oct 18 15:27:57 2026 kern.info kernel: [    9.242076] Btrfs loaded, crc32c=crc32c-generic
+Sun Oct 18 15:27:57 2026 kern.info kernel: [    9.268162] usbcore: registered new interface driver usb-storage
+Sun Oct 18 15:27:57 2026 kern.info kernel: [    9.275345] usbcore: registered new interface driver uas
+Sun Oct 18 15:27:57 2026 user.info kernel: [    9.280955] kmodloader: done loading kernel modules from /etc/modules-boot.d/*
+Sun Oct 18 15:27:57 2026 user.info kernel: [    9.298572] init: - preinit -
+Sun Oct 18 15:27:57 2026 kern.info kernel: [    9.532214] an7581-bsp-npu 1e900000.npu: NPU firmware 0.0, mailbox ready
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [    9.539426] random: procd: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   10.858186] random: jshn: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   10.885671] random: jshn: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   10.909169] random: jshn: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   11.067821] an7581-bsp-eth 1fb50000.ethernet lan2: Link is Down
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.234377] mount_root: loading kmods from internal overlay
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.255319] kmodloader: loading kernel modules from //etc/modules-boot.d/*
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.264256] kmodloader: done loading kernel modules from //etc/modules-boot.d/*
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.564413] block: attempting to load /tmp/overlay/upper/etc/config/fstab
+Sun Oct 18 15:27:57 2026 user.err kernel: [   13.571949] block: unable to load configuration (fstab: Entry not found)
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.578695] block: attempting to load /tmp/overlay/etc/config/fstab
+Sun Oct 18 15:27:57 2026 user.err kernel: [   13.585024] block: unable to load configuration (fstab: Entry not found)
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.591760] block: attempting to load /etc/config/fstab
+Sun Oct 18 15:27:57 2026 user.err kernel: [   13.597579] block: unable to load configuration (fstab: Entry not found)
+Sun Oct 18 15:27:57 2026 user.err kernel: [   13.604310] block: no usable configuration
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.611444] UBIFS (ubi0:5): Mounting in unauthenticated mode
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.617202] UBIFS (ubi0:5): background thread "ubifs_bgt0_5" started, PID 955
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.643894] UBIFS (ubi0:5): recovery needed
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.749390] UBIFS (ubi0:5): recovery completed
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.753888] UBIFS (ubi0:5): UBIFS: mounted UBI device 0, volume 5, name "rootfs_data"
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.761719] UBIFS (ubi0:5): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.771633] UBIFS (ubi0:5): FS size: 207859712 bytes (198 MiB, 1637 LEBs), journal size 10412032 bytes (9 MiB, 82 LEBs)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.782411] UBIFS (ubi0:5): reserved for root: 4952683 bytes (4836 KiB)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.789027] UBIFS (ubi0:5): media format: w5/r0 (latest is w5/r0), UUID E6B7470B-955B-49FF-B44A-2381B2DBA1FD, small LPT model
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.801210] block: attempting to load /tmp/ubifs_cfg/upper/etc/config/fstab
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.810539] block: extroot: not configured
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.814750] UBIFS (ubi0:5): un-mount UBI device 0
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.819463] UBIFS (ubi0:5): background thread "ubifs_bgt0_5" stops
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.828510] UBIFS (ubi0:5): Mounting in unauthenticated mode
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.834256] UBIFS (ubi0:5): background thread "ubifs_bgt0_5" started, PID 958
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.894149] UBIFS (ubi0:5): UBIFS: mounted UBI device 0, volume 5, name "rootfs_data"
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.901986] UBIFS (ubi0:5): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.911902] UBIFS (ubi0:5): FS size: 207859712 bytes (198 MiB, 1637 LEBs), journal size 10412032 bytes (9 MiB, 82 LEBs)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.922680] UBIFS (ubi0:5): reserved for root: 4952683 bytes (4836 KiB)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   13.929305] UBIFS (ubi0:5): media format: w5/r0 (latest is w5/r0), UUID E6B7470B-955B-49FF-B44A-2381B2DBA1FD, small LPT model
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.942079] mount_root: loading kmods from internal overlay
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.960657] kmodloader: loading kernel modules from /tmp/overlay/upper/etc/modules-boot.d/*
+Sun Oct 18 15:27:57 2026 user.info kernel: [   13.969628] kmodloader: done loading kernel modules from /tmp/overlay/upper/etc/modules-boot.d/*
+Sun Oct 18 15:27:57 2026 user.info kernel: [   14.017828] block: attempting to load /tmp/overlay/upper/etc/config/fstab
+Sun Oct 18 15:27:57 2026 user.info kernel: [   14.026033] block: extroot: not configured
+Sun Oct 18 15:27:57 2026 user.info kernel: [   14.032234] block: attempting to load /tmp/ubifs_cfg/upper/etc/config/fstab
+Sun Oct 18 15:27:57 2026 user.info kernel: [   14.039386] block: extroot: not configured
+Sun Oct 18 15:27:57 2026 user.info kernel: [   14.044842] mount_root: switching to ubifs overlay
+Sun Oct 18 15:27:57 2026 user.debug kernel: [   14.055761] urandom-seed: Seeding with /etc/urandom.seed
+Sun Oct 18 15:27:57 2026 user.info kernel: [   14.137078] procd: - early -
+Sun Oct 18 15:27:57 2026 user.info kernel: [   14.746544] procd: - ubus -
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   14.854268] random: ubusd: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   14.898271] random: ubusd: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   14.904820] random: ubusd: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 user.info kernel: [   14.914513] procd: - init -
+Sun Oct 18 15:27:57 2026 user.info kernel: [   15.563734] kmodloader: loading kernel modules from /etc/modules.d/*
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.629428] NET: Registered protocol family 38
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.648991] device-mapper: ioctl: 4.41.0-ioctl (2019-09-16) initialised: dm-devel@redhat.com
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.667415] ntfs3: Max link count 4000
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.671182] ntfs3: Enabled Linux POSIX ACLs support
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   15.676065] ntfs3: Warning: Activated 64 bits per cluster. Windows does not support this
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.684155] ntfs3: Read-only LZX/Xpress compression included
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.698848] tun: Universal TUN/TAP device driver, 1.6
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.713122] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.790263] cryptodev: driver 1.14 loaded.
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   15.795659] Bridge firewalling registered
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.809358] an7581-bsp-ppe an7581-bsp-ppe.0.auto: using legacy MT7916 PPE register initialization
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.842903] an7581-bsp-ppe an7581-bsp-ppe.0.auto: PPE engines 0x3, flow admission ready, stats 0x0
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.853915] GACT probability on
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.857883] Mirror/redirect action on
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.866696] u32 classifier
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.869414]     input device check on
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.873077]     Actions configured
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.887345] Simple TC action Loaded
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   15.905604] fuse: init (API version 7.31)
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.144946] WiFi@C12L1,get_dbg_setting_by_profile() 4377: debug level setting=INDEX0_debug_level not found!!
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.154812] WiFi@C12L1,get_dbg_setting_by_profile() 4400: debug option setting=INDEX0_debug_option not found!!
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.164916] mt_pci_slave 0000:01:00.0: assign IRQ: got 38
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.170324] mt_pci_slave 0000:01:00.0: enabling device (0000 -> 0002)
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.176810] mt_pci_slave 0000:01:00.0: enabling bus mastering
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.182667] !!HIF_RX_EVENT Only
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.186458] mt_drv 0001:01:00.0: assign IRQ: got 40
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.191413] mt_drv 0001:01:00.0: enabling device (0000 -> 0002)
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.197371] mt_drv 0001:01:00.0: enabling bus mastering
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.210174] mt7916_init()-->
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.213061] Use the default iPAiLNA bin image!
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.217535] <--mt7916_init()
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.220444] RtmpRaDevCtrlInit(): MCS_LUT not used becasue MacTb size(544) > 128!
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.227956] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX1
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.235283] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX2
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.242607] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX3
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.249933] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX4
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.257251] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX5
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.264569] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX6
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.271887] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX7
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.279205] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX8
+Sun Oct 18 15:27:57 2026 kern.err kernel: [   17.286531] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX9
+Sun Oct 18 15:27:57 2026 kern.warn kernel: [   17.293835] WiFi@C12L2,match_index_by_chipname() 518: Not find slot id, back to old rule.
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.302114] msta_ifname not found
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.305754] !!HIF_RX_EVENT Only
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.308959] !!HIF_RX_EVENT Only
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.312552] !!HIF_RX_EVENT Only
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.316184] !!HIF_RX_EVENT Only
+Sun Oct 18 15:27:57 2026 kern.debug kernel: [   17.320289] !!HIF_RX_EVENT Only
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.334366] whnat_module_init(): module init and register callback for whnat
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.341471] create whnat_ctrl ok!!!
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.345121] wed_slot_map_get(): assign slot_id:0 for entry: 0!
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.351019] wed_slot_map_get(): assign slot_id:1 for entry: 1!
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.368225] an7581-bsp-pon 1fb56000.ethernet: PON WAN QDMA registered as pon0, 8192 forwarding buffers
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.465767] usbcore: registered new interface driver ums-alauda
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.473014] usbcore: registered new interface driver ums-cypress
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.480482] usbcore: registered new interface driver ums-datafab
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.487758] usbcore: registered new interface driver ums-freecom
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.495107] usbcore: registered new interface driver ums-isd200
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.502483] usbcore: registered new interface driver ums-jumpshot
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.509854] usbcore: registered new interface driver ums-karma
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.517416] usbcore: registered new interface driver ums-sddr09
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.524777] usbcore: registered new interface driver ums-sddr55
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.532295] usbcore: registered new interface driver ums-usbat
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.565842] xt_time: kernel timezone is -0000
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.574467] airoha-paged-bosa 0-0051: GN28L95 frontend registered, ID 0xa1, calibration ready
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.583686] airoha-xpon 1fb64000.ethernet: PON LED triggers registered: pon0-registration, pon0-los, pon0-online
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.594389] airoha-xpon 1fb64000.ethernet: OMCI raw-PDU interface omci0 registered; carrier remains off until O5
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.605097] airoha-xpon 1fb64000.ethernet: OAM raw-PDU interface oam0 registered; carrier remains off until an LLID is active
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.617407] airoha-xpon 1fb64000.ethernet: PON resources bound to pon0; mode=xgpon, MAC irq=9, PHY irq=10
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.634374] PPP generic driver version 2.4.2
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.639771] PPP MPPE Compression module registered
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.646113] NET: Registered protocol family 24
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.655081] wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   17.662973] wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+Sun Oct 18 15:27:57 2026 user.info kernel: [   17.674940] kmodloader: done loading kernel modules from /etc/modules.d/*
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   17.949805] random: jshn: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   17.959276] random: ubusd: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 kern.notice kernel: [   17.965793] random: ubus: uninitialized urandom read (4 bytes read)
+Sun Oct 18 15:27:57 2026 daemon.notice procd: /etc/rc.d/S13openssl: Generating engines.cnf
+Sun Oct 18 15:27:57 2026 daemon.notice procd: /etc/rc.d/S13openssl: [Builtin] Enabling devcrypto
+Sun Oct 18 15:27:57 2026 daemon.notice procd: /etc/rc.d/S13openssl: Generating providers.cnf
+Sun Oct 18 15:27:57 2026 daemon.notice procd: /etc/rc.d/S18pon: configured=epon-10g-1g
+Sun Oct 18 15:27:57 2026 daemon.notice procd: /etc/rc.d/S18pon: active=none
+Sun Oct 18 15:27:57 2026 daemon.notice procd: /etc/rc.d/S18pon: controls=oam0,omci0
+Sun Oct 18 15:27:57 2026 kern.info kernel: [   18.718913] airoha-xpon 1fb64000.ethernet: PON line mode set to epon-10g-1g
+Sun Oct 18 15:27:57 2026 daemon.notice procd: /etc/rc.d/S18pon: serial_number: 46485454c1c6acaa
+Sun Oct 18 15:27:57 2026 daemon.notice procd: /etc/rc.d/S18pon: active_serial_number: none
+Sun Oct 18 15:27:57 2026 daemon.notice procd: /etc/rc.d/S18pon: registration_id: default-zero
+Sun Oct 18 15:27:57 2026 daemon.info airoha-pond[2128]: PON agent selected OAM: line=line0 interface=oam0 mode=epon-10g-1g
+Sun Oct 18 15:27:57 2026 daemon.info airoha-pond[2128]: OAM agent started: interface=oam0 operator=ctc control_socket=/var/run/airoha-pond.line0.sock
+Sun Oct 18 15:27:58 2026 user.notice dnsmasq: DNS rebinding protection is active, will discard upstream RFC1918 responses!
+Sun Oct 18 15:27:58 2026 user.notice dnsmasq: Allowing 127.0.0.0/8 responses
+Sun Oct 18 15:28:01 2026 kern.notice kernel: [   22.188068] random: crng init done
+Sun Oct 18 15:28:01 2026 kern.notice kernel: [   22.191478] random: 128 urandom warning(s) missed due to ratelimiting
+Sun Oct 18 15:28:01 2026 authpriv.info dropbear[2341]: Not backgrounding
+Sun Oct 18 15:28:02 2026 user.notice : Added device handler type: bonding
+Sun Oct 18 15:28:02 2026 user.notice : Added device handler type: 8021ad
+Sun Oct 18 15:28:02 2026 user.notice : Added device handler type: 8021q
+Sun Oct 18 15:28:02 2026 user.notice : Added device handler type: macvlan
+Sun Oct 18 15:28:02 2026 user.notice : Added device handler type: veth
+Sun Oct 18 15:28:02 2026 user.notice : Added device handler type: bridge
+Sun Oct 18 15:28:02 2026 user.notice : Added device handler type: Network device
+Sun Oct 18 15:28:02 2026 user.notice : Added device handler type: tunnel
+Sun Oct 18 15:28:02 2026 cron.err crond[2716]: crond (busybox 1.35.0) started, log level 5
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   23.976819] an7581-bsp-eth 1fb50000.ethernet lan2: Link is Down
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   23.982891] br-lan: port 1(lan2) entered blocking state
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   23.988169] br-lan: port 1(lan2) entered disabled state
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   23.993719] device lan2 entered promiscuous mode
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Interface 'lan' is enabled
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Interface 'lan' is setting up now
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Interface 'lan' is now up
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.005797] an7581-bsp-eth 1fb50000.ethernet lan3: Link is Down
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.012203] br-lan: port 2(lan3) entered blocking state
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.017498] br-lan: port 2(lan3) entered disabled state
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.023009] device lan3 entered promiscuous mode
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.032620] an7581-bsp-eth 1fb50000.ethernet lan4: Link is Down
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.038597] br-lan: port 3(lan4) entered blocking state
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.043866] br-lan: port 3(lan4) entered disabled state
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.049349] device lan4 entered promiscuous mode
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.057143] br-lan: port 4(lan1) entered blocking state
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.061616] an7581-bsp-eth 1fb50000.ethernet lan1: Link is Down
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.062408] br-lan: port 4(lan1) entered disabled state
+Sun Oct 18 15:28:02 2026 kern.info kernel: [   24.073766] device lan1 entered promiscuous mode
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Interface 'loopback' is enabled
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Interface 'loopback' is setting up now
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Interface 'loopback' is now up
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Interface 'wan' is enabled
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Interface 'wan6' is enabled
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Network device 'lo' link is up
+Sun Oct 18 15:28:02 2026 daemon.notice netifd: Interface 'loopback' has link connectivity
+Sun Oct 18 15:28:03 2026 user.notice firewall: Reloading firewall due to ifup of lan (br-lan)
+Sun Oct 18 15:28:03 2026 kern.info kernel: [   24.448148] an7581-bsp-pon-pcs 1fa08000.pcs: PON PrCal: mode=4 attempt=1 idac=0x4f2 lock=1 fl=0x9ed3 target=0x9edf
+Sun Oct 18 15:28:03 2026 kern.info kernel: [   24.526641] an7581-bsp-pon-pcs 1fa08000.pcs: PON PMA sequence finished: mode=4 lock=1 fl=0x9ede prcal=0 eo(gain=1 peak=0 fom=449)
+Sun Oct 18 15:28:03 2026 kern.info kernel: [   24.538313] an7581-bsp-pon-pcs 1fa08000.pcs: PON line configured: mode=4, WAN_SEL=6, full SerDes analog init
+Sun Oct 18 15:28:03 2026 kern.info kernel: [   24.549423] airoha-xpon 1fb64000.ethernet: EPON PCS synchronized: PHY events=0x80000000
+Sun Oct 18 15:28:03 2026 kern.info kernel: [   24.562486] airoha-xpon 1fb64000.ethernet: epon-10g-1g MAC started; LLID0 is waiting for a Discovery Gate
+Sun Oct 18 15:28:04 2026 user.notice ucitrack: Setting up /etc/config/luci-splash reload dependency on /etc/config/firewall
+Sun Oct 18 15:28:04 2026 user.notice ucitrack: Setting up /etc/config/qos reload dependency on /etc/config/firewall
+Sun Oct 18 15:28:04 2026 user.notice ucitrack: Setting up /etc/config/miniupnpd reload dependency on /etc/config/firewall
+Sun Oct 18 15:28:04 2026 kern.info kernel: [   25.586146] airoha-xpon 1fb64000.ethernet: EPON first Discovery Gate received: sync_time=0x0020, tx_armed=1
+Sun Oct 18 15:28:04 2026 kern.warn kernel: [   25.596013] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:28:04 2026 kern.info kernel: [   25.603061] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=1
+Sun Oct 18 15:28:04 2026 kern.warn kernel: [   25.611062] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:28:04 2026 kern.info kernel: [   25.618117] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+Sun Oct 18 15:28:04 2026 kern.info kernel: [   25.618181] IPv6: ADDRCONF(NETDEV_CHANGE): oam0: link becomes ready
+Sun Oct 18 15:28:04 2026 kern.info kernel: [   25.631770] IPv6: ADDRCONF(NETDEV_CHANGE): pon0: link becomes ready
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: Network device 'pon0' link is up
+Sun Oct 18 15:28:04 2026 kern.info kernel: [   25.639495] IPv6: ADDRCONF(NETDEV_CHANGE): pon0.995: link becomes ready
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: VLAN 'pon0.995' link is up
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: Interface 'wan' has link connectivity
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: Interface 'wan' is setting up now
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: Interface 'wan6' has link connectivity
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: Interface 'wan6' is setting up now
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: wan (3496): /sbin/modprobe: unrecognized option: a
+Sun Oct 18 15:28:04 2026 daemon.info modprobe: Usage: 	modprobe [-q] filename
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: wan (3496): uci: Entry not found
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: wan (3496): sh: out of range
+Sun Oct 18 15:28:04 2026 daemon.info pppd[3504]: Plugin pppoe.so loaded.
+Sun Oct 18 15:28:04 2026 daemon.info pppd[3504]: PPPoE plugin from pppd 2.5.2
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: wan6 (3536): Failed to send RS (Address not available)
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: wan6 (3536): pon0.995: error connecting LLA socket
+Sun Oct 18 15:28:04 2026 daemon.notice netifd: wan6 (3536): Failed to send SOLICIT message to ff02::1:2 (Address not available)
+Sun Oct 18 15:28:05 2026 user.notice mtwifi: Reloading wapp due to ifup of lan (br-lan)
+Sun Oct 18 15:28:05 2026 daemon.notice pppd[3504]: pppd 2.5.2 started by root, uid 0
+Sun Oct 18 15:28:05 2026 daemon.err pppd[3504]: Interface pon0.995 has MTU of 1492 -- should be at least 1500.
+Sun Oct 18 15:28:05 2026 daemon.err pppd[3504]: This may cause serious connection problems.
+Sun Oct 18 15:28:05 2026 user.notice ucitrack: Setting up /etc/config/shadowsocksr reload trigger for non-procd /etc/init.d/shadowsocksr
+Sun Oct 18 15:28:05 2026 user.notice ucitrack: Setting up /etc/config/odhcpd reload dependency on /etc/config/dhcp
+Sun Oct 18 15:28:05 2026 user.notice ucitrack: Setting up /etc/config/dhcp reload dependency on /etc/config/network
+Sun Oct 18 15:28:05 2026 user.notice ucitrack: Setting up /etc/config/network reload dependency on /etc/config/wireless
+Sun Oct 18 15:28:06 2026 user.notice ucitrack: Setting up non-init /etc/config/fstab reload handler: /sbin/block mount
+Sun Oct 18 15:28:06 2026 user.notice ucitrack: Setting up /etc/config/system reload trigger for non-procd /etc/init.d/led
+Sun Oct 18 15:28:06 2026 user.notice ucitrack: Setting up /etc/config/luci_statistics reload dependency on /etc/config/system
+Sun Oct 18 15:28:06 2026 user.notice ucitrack: Setting up /etc/config/dhcp reload dependency on /etc/config/system
+Sun Oct 18 15:28:07 2026 kern.info kernel: [   28.165668] an7581-bsp-eth 1fb50000.ethernet lan1: Link is Up - 2.5Gbps/Full - flow control off
+Sun Oct 18 15:28:07 2026 kern.info kernel: [   28.174432] br-lan: port 4(lan1) entered blocking state
+Sun Oct 18 15:28:07 2026 kern.info kernel: [   28.179706] br-lan: port 4(lan1) entered forwarding state
+Sun Oct 18 15:28:07 2026 daemon.notice netifd: Network device 'lan1' link is up
+Sun Oct 18 15:28:07 2026 kern.info kernel: [   28.185775] IPv6: ADDRCONF(NETDEV_CHANGE): br-lan: link becomes ready
+Sun Oct 18 15:28:07 2026 daemon.notice netifd: bridge 'br-lan' link is up
+Sun Oct 18 15:28:07 2026 daemon.notice netifd: Interface 'lan' has link connectivity
+Sun Oct 18 15:28:08 2026 user.notice mtwifi: Reloading wapp due to ifup of loopback (lo)
+Sun Oct 18 15:28:08 2026 user.notice ddns-scripts[4170]: myddns_ipv4: PID '4170' started at 2026-10-18 15:28
+Sun Oct 18 15:28:08 2026 user.notice ddns-scripts[4171]: myddns_ipv6: PID '4171' started at 2026-10-18 15:28
+Sun Oct 18 15:28:08 2026 user.warn ddns-scripts[4170]: myddns_ipv4: Service section disabled! - TERMINATE
+Sun Oct 18 15:28:08 2026 user.warn ddns-scripts[4170]: myddns_ipv4: PID '4170' exit WITH ERROR '1' at 2026-10-18 15:28
+Sun Oct 18 15:28:08 2026 user.warn ddns-scripts[4171]: myddns_ipv6: Service section disabled! - TERMINATE
+Sun Oct 18 15:28:08 2026 user.warn ddns-scripts[4171]: myddns_ipv6: PID '4171' exit WITH ERROR '1' at 2026-10-18 15:28
+Sun Oct 18 15:28:08 2026 daemon.notice procd: /etc/rc.d/S96led: setting up led Wi-Fi
+Sun Oct 18 15:28:09 2026 daemon.notice procd: /etc/rc.d/S96led: setting up led USB
+Sun Oct 18 15:28:09 2026 daemon.notice procd: /etc/rc.d/S96led: Skipping trigger 'usbport' for led 'USB' due to missing kernel module
+Sun Oct 18 15:28:09 2026 daemon.notice procd: /etc/rc.d/S96led: setting up led PON
+Sun Oct 18 15:28:09 2026 daemon.notice procd: /etc/rc.d/S96led: setting up led LOS
+Sun Oct 18 15:28:09 2026 user.notice root: IPv6 Setting Started
+Sun Oct 18 15:28:09 2026 kern.warn kernel: [   30.256352] WiFi@C01L2,RTMP_COM_IoctlHandle() 1504: -> CMD_RTPRIV_IOCTL_VIRTUAL_INF_INIT
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.266211] msta_ifname not found
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.270277] whnat_cap_support(): chip_id=7906 is in WHNAT support list
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.276861] wifi_slot_get(): get slot id=1
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.280971] whnat_entry_acquire(): PCIE SLOT:1, hook to WHNAT,entry id=1
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.287929] wed_init(1): irq=37,base_addr=0xffffffc0129bd000
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.295293] wed_ring_init(): wed ring init result = 0
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.317140] create wed ok!!!
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.320228] wdma_init(): wdma(1) base addr=ffffffc0129c5400
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.325877] wdma_init(): wdma(1) irq[0]=33
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.330018] wdma_init(): wdma(1) irq[1]=34
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.334164] wdma_init(): wdma(1) irq[2]=35
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.339046] wifi_chip_probe(): Chang CHIP IRQ: 40 to WHNAT IRQ: 37
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.345278] wifi_slot_get(): get slot id=1
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.349400] wifi_pcie_match wifi->wpdma_base: 241d7000
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.354562] whnat_hal_pcie_map(): pcie_base===1fc20000=====
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.360147] whnat_hal_pcie_map(): whnat->idx===1=====
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.365210] whnat_hal_pcie_map(): WED_PCIE_INT_CTRL value===1000=====
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.371666] whnat_hal_pcie_map(): WED_PCIE_INT_CTRL value===101000=====
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.378292] whnat_hal_pcie_map(): WED_WPDMA_CFG_BASE value===241d7000=====
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.393950] WiFi@C02L1,HwCtrlInit() 604: ser_init() return NDIS_STATUS_FAILURE
+Sun Oct 18 15:28:09 2026 kern.crit kernel: [   30.406625] WiFi@C00L0,multi_profile_merge_increase() 726: parm is SSID, no need trim space
+Sun Oct 18 15:28:09 2026 kern.crit kernel: [   30.419129] WiFi@C00L0,multi_profile_merge_increase() 721: parm is WPAPSK, no need trim space
+Sun Oct 18 15:28:09 2026 kern.warn kernel: [   30.486758] WiFi@C08L2,profile_wds_reg() 1333: WdsEnable is unknow()
+Sun Oct 18 15:28:09 2026 kern.warn kernel: [   30.493296] WiFi@C08L2,profile_wds_reg() 1333: WdsEnable is unknow()
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.514881] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS0 PhyMode=78
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.521561] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS1 PhyMode=78
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.528206] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS2 PhyMode=78
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.534856] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS3 PhyMode=78
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.541497] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS4 PhyMode=78
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.548140] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS5 PhyMode=177
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.554860] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS6 PhyMode=177
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.561590] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS7 PhyMode=177
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.568311] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS8 PhyMode=177
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.575029] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS9 PhyMode=177
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.582071] WiFi@C23L1,auto_ch_select_set_cfg() 3372: Invalid argument!
+Sun Oct 18 15:28:09 2026 kern.notice kernel: [   30.588706] WiFi@C23L3,auto_ch_select_set_cfg() 3402: BandIdx0, AutoChannelAtBootup=0, AutoChannelAlg = 1466068026
+Sun Oct 18 15:28:09 2026 kern.notice kernel: [   30.599069] WiFi@C23L3,auto_ch_select_set_cfg() 3402: BandIdx1, AutoChannelAtBootup=0, AutoChannelAlg = 0
+Sun Oct 18 15:28:09 2026 daemon.notice procd: /etc/rc.d/S99openclash: OpenClash Restart...
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.676951] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=0, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.684367] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=1, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.691781] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=2, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.699201] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=3, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.706621] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=4, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.714034] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=5, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.721444] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=6, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.728859] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=7, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.736272] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=8, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.743694] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=9, Desired MFPC=0
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.838503] !!!! do phy and virtual address mapping
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.843932] PciePortType=3
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.846756] mt7916: NPU band 0 RX ring 2 MMIO=0x241d4540
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.852181] mt7916: NPU band 1 RX ring 0 MMIO=0x201d8550
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.860169] AllocSize 3000 AllocVa 1690c000,  .AllocPa 1e818000
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.866998] AllocSize 3000 AllocVa 16910020,  .AllocPa 1e826020
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.875022] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_0[0xd8430]: Attr:0, Base=0x98200000, Cnt=2048!
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.885236] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_1[0xd7300]: Attr:0, Base=0x97180000, Cnt=2048!
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.895419] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_2[0xd7310]: Attr:0, Base=0x97188000, Cnt=2048!
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.905605] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_3[0xd4400]: Attr:3, Base=0x97161000, Cnt=128!
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.915705] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_4[0xd4410]: Attr:2, Base=0x97162000, Cnt=256!
+Sun Oct 18 15:28:09 2026 kern.err kernel: [   30.925822] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_5[0xd4440]: Attr:1, Base=0x97163000, Cnt=256!
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.935945] wdma_dma_ctrl(): WDMA_GLO_CFG=40000450
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.940746] =========whnat_hal_wdma_init :ECNT WED_WDMA_CFG_BASE = 1fa00000
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.947799] whnat_hal_int_ctrl():WED_PCIE_INTS_TRIG  1000000
+Sun Oct 18 15:28:09 2026 kern.info kernel: [   30.953460] whnat_hal_int_ctrl():WED_PCIE_OFST  1800184
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.958821] using E1 ROM patch
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.961881] using E1 RAM
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.964433] current sync CR = 0x1
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.967745] 	Built date: 20220928174644a
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.971674] 	Platform: ALPS
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.974466] 	HW/SW version: 0x8a108a10
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.978216] 	Patch version: 0xffffffff
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.987678] current sync CR = 0x1
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.991031] 	Chip ID: 0x13
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.993754] 	Eco version: 0x00
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   30.996812] 	Region number: 0x09
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.000034] 	Format version: 0x02
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.003352] 	Format flag: 0x01
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.006414] 	Ram version: ____000000
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.009999] 	Built date: 20220928174705
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.013844] 	Common crc: 0xd5dc7cdf
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.017338] 	Release info: header tag = 0, total length = 80
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.023008] 	tag 1, padding length = 1, tag length = 75
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.028241] 	payload: t-neptune-main-2111-7916-imp-MT7916_E1_ASIC_ROM_RAM_REBB_IMP-20220928174602
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.066771] 	Chip ID: 0x00
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.069503] 	Eco version: 0x00
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.072579] 	Region number: 0x03
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.075806] 	Format version: 0x02
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.079131] 	Format flag: 0x01
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.082199] 	Ram version: DEV_000000
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.085803] 	Built date: 20220819115652
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.089666] 	Common crc: 0x7fee377a
+Sun Oct 18 15:28:09 2026 kern.debug kernel: [   31.093166] 	Release info: header tag = 0, total length = 0
+Sun Oct 18 15:28:10 2026 kern.debug kernel: [   31.199157] current sync CR = 0x7
+Sun Oct 18 15:28:10 2026 kern.debug kernel: [   31.202540] efuse_probe: efuse = 100002
+Sun Oct 18 15:28:10 2026 kern.debug kernel: [   31.206905] MT7916: runtime EEPROM power override 2G 0x441-0x444=0x2b, 5G 0x445-0x458=0x2b
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.160459] WiFi@C17L1,RTMPReadTxPwrPerRate() 450: (450): Don't Support this now!
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.167988] WiFi@C01L1,AntCfgInit() 3101: Not support for HIF_MT yet!
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.198968] WiFi@C17L1,tx_pwr_comp_init() 641: NotSupportYet!
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.204783] WiFi@C12L1,SCS_init() 879: INIT SCSEnable [0]= 1
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.210474] WiFi@C12L1,SCS_init() 886: INIT SCSEnable [1]= 0
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.216271] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.221796] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.227453] WiFi@C14L1,IPMacTable_init() 348: IPMacTable already inited!
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.234584] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.240101] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.254008] WiFi@C00L2,dump_ht_cap() 29: Caller: dump_ht_cap+0x10/0x20 [mt7916_ap]
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.263287] WiFi@C00L2,dump_ht_cap() 29: Caller: dump_ht_cap+0x10/0x20 [mt7916_ap]
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.511951] WiFi@C00L2,red_tail_drop_init() 82: red_tail_drop_init: available token:7680, whnat_en:1
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.521427] WiFi@C00L1,MtCmdCr4RedSet() 916: MtCmdCr4RedSet: (ret = 0)
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.528012] WiFi@C00L1,SendRedCmd() 1051: SendRedCmd:(ret = 1)
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.534252] WiFi@C01L2,RTMP_COM_IoctlHandle() 1481:  -> CMD_RTPRIV_IOCTL_VIRTUAL_INF_UP
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.542536] WiFi@C01L3,wifi_sys_open() 844: wdev idx = 0
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.548804] WiFi@C08L3,wifi_sys_op_lock() 792: wifi_sys_open+0xdc/0x370 [mt7916_ap](0): get wdev_op_lock.
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.558795] WiFi@C00L3,BuildChannelList() 517: BandIdx = 0, PhyMode = 78, ChListNum = 13:
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.567050] WiFi@C23L1,DfsBuildChannelList() 3426: [RDM]: wdev is not 5G.
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.573898] WiFi@C23L3,RadarStateCheck() 243: Bw160 Zero Wait State: 0, phy_bw=1, band_bw[band_idx]=0
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.583957] WiFi@C03L3,MtCmdChannelSwitch() 2526: ctrl_chl=6, ctrl_ch2=0, cent_ch=4 DBDCIdx=0, ChBand=0, BW=1, TXStream=2, RXStream=2, scan(0)
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.747750] WiFi@C03L3,MtCmdSetTxRxPath() 2778: ctrl_chl=6, ctrl_ch2=0, cent_ch=4, RxPath=3, BandIdx=0, ChBand=0, BW=1,TXStream=2, RXStream=3, scan(0)
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.761789] WiFi@C00L2,dump_ht_cap() 29: Caller: wlan_operate_init+0xac/0x110 [mt7916_ap]
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   34.769994] wdev_attr_update(): wdevId0 = 70:d5:1e:06:9c:7e
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.775594] WiFi@C12L1,wifi_sys_open() 891: wifi_sys_open():band0 group_idx[0]=0, bw_grp=16 omac=0
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.784718] WiFi@C08L3,hw_ctrl_flow_v2_open() 13: wdev_idx=0
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.790530] WiFi@C08L3,wifi_sys_op_unlock() 815: release wdev_op_lock.
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.797109] WiFi@C02L2,AsicRadioOnOffCtrl() 2209: DbdcIdx=0 RadioOn
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.803978] WiFi@C00L2,ApAutoChannelAtBootUp() 339: ----------------->
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.810635] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.816208] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.821652] WiFi@C00L1,ApAutoChannelAtBootUp() 506: not A band
+Sun Oct 18 15:28:13 2026 kern.err kernel: [   34.827596] WiFi@C08L1,ap_run_at_boot() 631: [41m ACS is disable !![m
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.834460] WiFi@C08L2,APStartUpForMbss() 986: ===>(caller:ap_inf_open+0x114/0x4a0 [mt7916_ap]), mbss_idx:0, CfgMode:0
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.845470] WiFi@C15L2,APPMFInit() 130: [PMF] apidx=0, MFPC=0, MFPR=0, SHA256=0
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.853067] WiFi@C00L2,dump_ht_cap() 29: Caller: dump_ht_cap+0x10/0x20 [mt7916_ap]
+Sun Oct 18 15:28:13 2026 kern.warn kernel: [   34.861122] WiFi@C08L2,ap_link_up() 7117: (caller:wdev_do_linkup+0x20/0x34 [mt7916_ap]), wdev(0)
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.869926] WiFi@C01L3,wifi_sys_linkup() 1155: wdev idx = 0
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.875813] WiFi@C08L3,wifi_sys_op_lock() 792: wifi_sys_linkup+0x84/0x408 [mt7916_ap](0): get wdev_op_lock.
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.965292] WiFi@C08L3,hw_ctrl_flow_v2_link_up() 72: wdev_idx=0
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.975048] WiFi@C08L3,UpdateBeaconHandler() 1899: BCN_UPDATE_INIT, OmacIdx = 0 (ra0)
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.982894] WiFi@C08L3,UpdateBeaconHandler() 1912: 	Band0 BcnInitedRnd = 4
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   34.989783] WiFi@C08L3,wifi_sys_op_unlock() 815: release wdev_op_lock.
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.008989] PrintSrCmd:
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.008989] u1CmdSubId = 1, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.008989] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.023090] PrintSrCmd:
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.023090] u1CmdSubId = 5, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.023090] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.037248] PrintSrCmd:
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.037248] u1CmdSubId = 3, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.037248] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.051274] PrintSrCmd:
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.051274] u1CmdSubId = 23, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.051274] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.065645] PrintSrCmd:
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.065645] u1CmdSubId = 31, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.065645] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.079841] PrintSrCmd:
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.079841] u1CmdSubId = 33, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.079841] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   35.094068] WiFi@C03L3,MtCmdTxPwrShowInfo() 13775: ucTxPowerInfoCatg: 2, BandIdx: 0
+Sun Oct 18 15:28:13 2026 kern.notice kernel: [   35.101834] WiFi@C03L3,MtCmdTxPwrShowInfo() 13804: (ret = 0)
+Sun Oct 18 15:28:13 2026 kern.debug kernel: [   35.107508] [mtf_txpower_all_rate_info] band_idx:0 pwr:49 ChBand:2G ePAGain:0
+Sun Oct 18 15:28:13 2026 kern.info kernel: [   35.118722] br-lan: port 5(ra0) entered blocking state
+Sun Oct 18 15:28:13 2026 kern.info kernel: [   35.123902] br-lan: port 5(ra0) entered disabled state
+Sun Oct 18 15:28:13 2026 kern.info kernel: [   35.129515] device ra0 entered promiscuous mode
+Sun Oct 18 15:28:13 2026 kern.info kernel: [   35.134365] br-lan: port 5(ra0) entered blocking state
+Sun Oct 18 15:28:13 2026 kern.info kernel: [   35.139540] br-lan: port 5(ra0) entered forwarding state
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.145493] 7906@C12L2,Set_ACLClearAll_Proc() 17042: The Access Control List is empty!
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.153456] 7906@C12L2,Set_ACLClearAll_Proc() 17043: No need to clear the Access Control List!
+Sun Oct 18 15:28:14 2026 daemon.notice netifd: Wireless device 'ra' is now up
+Sun Oct 18 15:28:14 2026 daemon.notice netifd: Network device 'ra0' link is up
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.185399] 7906@C08L2,mbss_virtual_if_open() 141:  ===> rai0
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.191219] 7906@C01L2,RTMP_COM_IoctlHandle() 1504: -> CMD_RTPRIV_IOCTL_VIRTUAL_INF_INIT
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.199362] 7906@C01L2,RTMP_COM_IoctlHandle() 1481:  -> CMD_RTPRIV_IOCTL_VIRTUAL_INF_UP
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.207407] WiFi@C01L3,wifi_sys_open() 844: wdev idx = 5
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.213290] 7906@C08L3,wifi_sys_op_lock() 792: wifi_sys_open+0xdc/0x370 [mt7916_ap](5): get wdev_op_lock.
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.222979] 7906@C00L3,BuildChannelList() 517: BandIdx = 1, PhyMode = 177, ChListNum = 13:
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.231347] 7906@C23L3,DfsBuildChannelList() 3471: Done
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.236628] 7906@C23L3,RadarStateCheck() 243: Bw160 Zero Wait State: 0, phy_bw=3, band_bw[band_idx]=0
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.245877] 7906@C23L3,RadarStateCheck() 287: [1;33m RD_NORMAL_MODE [m
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.252831] 7906@C03L3,MtCmdChannelSwitch() 2526: ctrl_chl=36, ctrl_ch2=0, cent_ch=50 DBDCIdx=1, ChBand=1, BW=3, TXStream=3, RXStream=3, scan(0)
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.761673] 7906@C03L3,MtCmdSetTxRxPath() 2778: ctrl_chl=36, ctrl_ch2=0, cent_ch=50, RxPath=7, BandIdx=1, ChBand=1, BW=3,TXStream=3, RXStream=7, scan(0)
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.780948] WiFi@C00L2,dump_ht_cap() 29: Caller: wlan_operate_init+0xac/0x110 [mt7916_ap]
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   35.789198] wdev_attr_update(): wdevId5 = 70:d5:1e:06:9c:7f
+Sun Oct 18 15:28:14 2026 kern.err kernel: [   35.794846] WiFi@C12L1,wifi_sys_open() 891: wifi_sys_open():band1 group_idx[5]=4, bw_grp=16 omac=0
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.803902] 7906@C08L3,hw_ctrl_flow_v2_open() 13: wdev_idx=5
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.810846] 7906@C08L3,wifi_sys_op_unlock() 815: release wdev_op_lock.
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.818073] 7906@C02L2,AsicRadioOnOffCtrl() 2209: DbdcIdx=1 RadioOn
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.825121] 7906@C00L2,ApAutoChannelAtBootUp() 339: ----------------->
+Sun Oct 18 15:28:14 2026 kern.err kernel: [   35.831868] 7906@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+Sun Oct 18 15:28:14 2026 kern.err kernel: [   35.837471] 7906@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+Sun Oct 18 15:28:14 2026 kern.err kernel: [   35.842945] 7906@C00L1,ApAutoChannelAtBootUp() 499: zero-wait DFS is not enabled
+Sun Oct 18 15:28:14 2026 kern.err kernel: [   35.850393] 7906@C08L1,ap_run_at_boot() 631: [41m ACS is disable !![m
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.857337] 7906@C08L2,APStartUpForMbss() 986: ===>(caller:ap_inf_open+0x114/0x4a0 [mt7916_ap]), mbss_idx:5, CfgMode:0
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.868130] 7906@C15L2,APPMFInit() 130: [PMF] apidx=5, MFPC=0, MFPR=0, SHA256=0
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.875891] WiFi@C00L2,dump_ht_cap() 29: Caller: dump_ht_cap+0x10/0x20 [mt7916_ap]
+Sun Oct 18 15:28:14 2026 kern.warn kernel: [   35.883833] WiFi@C08L2,ap_link_up() 7117: (caller:wdev_do_linkup+0x20/0x34 [mt7916_ap]), wdev(5)
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.892652] 7906@C01L3,wifi_sys_linkup() 1155: wdev idx = 5
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.898687] 7906@C08L3,wifi_sys_op_lock() 792: wifi_sys_linkup+0x84/0x408 [mt7916_ap](5): get wdev_op_lock.
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.986962] 7906@C08L3,hw_ctrl_flow_v2_link_up() 72: wdev_idx=5
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   35.996756] 7906@C08L3,UpdateBeaconHandler() 1899: BCN_UPDATE_INIT, OmacIdx = 0 (rai0)
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   36.004781] 7906@C08L3,UpdateBeaconHandler() 1912: 	Band1 BcnInitedRnd = 13
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   36.011883] 7906@C08L3,wifi_sys_op_unlock() 815: release wdev_op_lock.
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.032019] PrintSrCmd:
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.032019] u1CmdSubId = 1, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.032019] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.046092] PrintSrCmd:
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.046092] u1CmdSubId = 5, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.046092] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.060150] PrintSrCmd:
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.060150] u1CmdSubId = 3, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.060150] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.074187] PrintSrCmd:
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.074187] u1CmdSubId = 23, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.074187] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.088519] PrintSrCmd:
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.088519] u1CmdSubId = 31, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.088519] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.102652] PrintSrCmd:
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.102652] u1CmdSubId = 33, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.102652] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   36.116792] 7906@C03L3,MtCmdTxPwrShowInfo() 13775: ucTxPowerInfoCatg: 2, BandIdx: 1
+Sun Oct 18 15:28:14 2026 kern.notice kernel: [   36.124555] 7906@C03L3,MtCmdTxPwrShowInfo() 13804: (ret = 0)
+Sun Oct 18 15:28:14 2026 kern.debug kernel: [   36.124674] [mtf_txpower_all_rate_info] band_idx:1 pwr:51 ChBand:5G ePAGain:0
+Sun Oct 18 15:28:15 2026 kern.info kernel: [   36.133846] br-lan: port 6(rai0) entered blocking state
+Sun Oct 18 15:28:15 2026 kern.info kernel: [   36.142620] br-lan: port 6(rai0) entered disabled state
+Sun Oct 18 15:28:15 2026 kern.info kernel: [   36.148218] device rai0 entered promiscuous mode
+Sun Oct 18 15:28:15 2026 kern.info kernel: [   36.153069] br-lan: port 6(rai0) entered blocking state
+Sun Oct 18 15:28:15 2026 kern.info kernel: [   36.158303] br-lan: port 6(rai0) entered forwarding state
+Sun Oct 18 15:28:15 2026 kern.warn kernel: [   36.165732] 7906@C12L2,Set_ACLClearAll_Proc() 17042: The Access Control List is empty!
+Sun Oct 18 15:28:15 2026 kern.warn kernel: [   36.173695] 7906@C12L2,Set_ACLClearAll_Proc() 17043: No need to clear the Access Control List!
+Sun Oct 18 15:28:15 2026 daemon.notice netifd: Wireless device 'rai' is now up
+Sun Oct 18 15:28:15 2026 daemon.notice netifd: Network device 'rai0' link is up
+Sun Oct 18 15:28:16 2026 daemon.notice procd: /etc/rc.d/S99openclash: OpenClash Already Stop!
+Sun Oct 18 15:28:16 2026 daemon.info procd: - init complete -
+Sun Oct 18 15:28:16 2026 kern.debug kernel: [   37.240106] BcnCheck start after 2900 ms (ra0)
+Sun Oct 18 15:28:16 2026 kern.debug kernel: [   37.244582] BcnCheck start after 3800 ms (ra0)
+Sun Oct 18 15:28:17 2026 daemon.warn odhcpd[2597]: rfc9096: br-lan: piofile updated
+Sun Oct 18 15:28:18 2026 kern.debug kernel: [   39.848069] BcnCheck start after 400 ms (ra0)
+Sun Oct 18 15:28:18 2026 kern.debug kernel: [   39.852441] BcnCheck start after 1300 ms (ra0)
+Sun Oct 18 15:28:26 2026 authpriv.info dropbear[6587]: Child connection from 192.168.31.218:55234
+Sun Oct 18 15:28:26 2026 authpriv.info dropbear[6587]: Exit before auth from <192.168.31.218:55234>: Exited normally
+Sun Oct 18 15:28:40 2026 daemon.warn pppd[3504]: Timeout waiting for PADO packets
+Sun Oct 18 15:28:40 2026 daemon.err pppd[3504]: Unable to complete PPPoE Discovery phase 1
+Sun Oct 18 15:28:40 2026 daemon.info pppd[3504]: Exit.
+Sun Oct 18 15:28:40 2026 daemon.notice netifd: Interface 'wan' is now down
+Sun Oct 18 15:28:40 2026 daemon.notice netifd: Interface 'wan' is setting up now
+Sun Oct 18 15:28:40 2026 daemon.notice netifd: wan (6603): /sbin/modprobe: unrecognized option: a
+Sun Oct 18 15:28:40 2026 daemon.info modprobe: Usage: 	modprobe [-q] filename
+Sun Oct 18 15:28:40 2026 daemon.notice netifd: wan (6603): uci: Entry not found
+Sun Oct 18 15:28:40 2026 daemon.notice netifd: wan (6603): sh: out of range
+Sun Oct 18 15:28:40 2026 daemon.info pppd[6633]: Plugin pppoe.so loaded.
+Sun Oct 18 15:28:40 2026 daemon.info pppd[6633]: PPPoE plugin from pppd 2.5.2
+Sun Oct 18 15:28:40 2026 daemon.notice pppd[6633]: pppd 2.5.2 started by root, uid 0
+Sun Oct 18 15:28:40 2026 daemon.err pppd[6633]: Interface pon0.995 has MTU of 1492 -- should be at least 1500.
+Sun Oct 18 15:28:40 2026 daemon.err pppd[6633]: This may cause serious connection problems.
+Sun Oct 18 15:28:52 2026 auth.info login[6996]: root login on 'pts/0'
+Sun Oct 18 15:28:52 2026 kern.warn kernel: [   73.917438] airoha-xpon 1fb64000.ethernet: EPON MPCP timeout: state=4 llid_valid=1
+Sun Oct 18 15:28:52 2026 daemon.notice netifd: Network device 'pon0' link is down
+Sun Oct 18 15:28:52 2026 daemon.notice netifd: VLAN 'pon0.995' link is down
+Sun Oct 18 15:28:52 2026 daemon.notice netifd: Interface 'wan' has link connectivity loss
+Sun Oct 18 15:28:52 2026 daemon.notice netifd: Interface 'wan6' has link connectivity loss
+Sun Oct 18 15:28:52 2026 daemon.notice netifd: Interface 'wan6' is now down
+Sun Oct 18 15:28:52 2026 daemon.err pppd[6633]: select (waitForPADO): Interrupted system call
+Sun Oct 18 15:28:52 2026 daemon.warn pppd[6633]: Timeout waiting for PADO packets
+Sun Oct 18 15:28:52 2026 daemon.err pppd[6633]: Unable to complete PPPoE Discovery phase 1
+Sun Oct 18 15:28:52 2026 daemon.info pppd[6633]: Exit.
+Sun Oct 18 15:28:52 2026 daemon.notice netifd: Interface 'wan' is now down
+Sun Oct 18 15:28:54 2026 kern.info kernel: [   75.603655] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=2
+Sun Oct 18 15:28:54 2026 kern.warn kernel: [   75.611723] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:28:54 2026 kern.warn kernel: [   75.618744] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:28:54 2026 daemon.notice netifd: Network device 'pon0' link is up
+Sun Oct 18 15:28:54 2026 daemon.notice netifd: VLAN 'pon0.995' link is up
+Sun Oct 18 15:28:54 2026 daemon.notice netifd: Interface 'wan' has link connectivity
+Sun Oct 18 15:28:54 2026 daemon.notice netifd: Interface 'wan' is setting up now
+Sun Oct 18 15:28:54 2026 daemon.notice netifd: Interface 'wan6' has link connectivity
+Sun Oct 18 15:28:54 2026 daemon.notice netifd: Interface 'wan6' is setting up now
+Sun Oct 18 15:28:54 2026 kern.info kernel: [   75.625811] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+Sun Oct 18 15:28:54 2026 daemon.notice netifd: wan (7662): /sbin/modprobe: unrecognized option: a
+Sun Oct 18 15:28:54 2026 daemon.info modprobe: Usage: 	modprobe [-q] filename
+Sun Oct 18 15:28:54 2026 daemon.notice netifd: wan (7662): uci: Entry not found
+Sun Oct 18 15:28:54 2026 daemon.notice netifd: wan (7662): sh: out of range
+Sun Oct 18 15:28:54 2026 daemon.info pppd[7675]: Plugin pppoe.so loaded.
+Sun Oct 18 15:28:54 2026 daemon.info pppd[7675]: PPPoE plugin from pppd 2.5.2
+Sun Oct 18 15:28:54 2026 daemon.notice pppd[7675]: pppd 2.5.2 started by root, uid 0
+Sun Oct 18 15:28:54 2026 daemon.err pppd[7675]: Interface pon0.995 has MTU of 1492 -- should be at least 1500.
+Sun Oct 18 15:28:54 2026 daemon.err pppd[7675]: This may cause serious connection problems.
+Sun Oct 18 15:29:08 2026 kern.warn kernel: [   89.935242] airoha-xpon 1fb64000.ethernet: EPON MPCP timeout: state=4 llid_valid=1
+Sun Oct 18 15:29:08 2026 daemon.notice netifd: Network device 'pon0' link is down
+Sun Oct 18 15:29:08 2026 daemon.notice netifd: VLAN 'pon0.995' link is down
+Sun Oct 18 15:29:08 2026 daemon.notice netifd: Interface 'wan' has link connectivity loss
+Sun Oct 18 15:29:08 2026 daemon.notice netifd: Interface 'wan6' has link connectivity loss
+Sun Oct 18 15:29:08 2026 daemon.notice netifd: Interface 'wan6' is now down
+Sun Oct 18 15:29:08 2026 daemon.err pppd[7675]: select (waitForPADO): Interrupted system call
+Sun Oct 18 15:29:08 2026 daemon.warn pppd[7675]: Timeout waiting for PADO packets
+Sun Oct 18 15:29:08 2026 daemon.err pppd[7675]: Unable to complete PPPoE Discovery phase 1
+Sun Oct 18 15:29:08 2026 daemon.info pppd[7675]: Exit.
+Sun Oct 18 15:29:08 2026 daemon.notice netifd: Interface 'wan' is now down
+Sun Oct 18 15:29:10 2026 kern.info kernel: [   91.608868] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=3
+Sun Oct 18 15:29:10 2026 kern.warn kernel: [   91.616879] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:29:10 2026 kern.warn kernel: [   91.624025] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:29:10 2026 daemon.notice netifd: Network device 'pon0' link is up
+Sun Oct 18 15:29:10 2026 daemon.notice netifd: VLAN 'pon0.995' link is up
+Sun Oct 18 15:29:10 2026 daemon.notice netifd: Interface 'wan' has link connectivity
+Sun Oct 18 15:29:10 2026 daemon.notice netifd: Interface 'wan' is setting up now
+Sun Oct 18 15:29:10 2026 daemon.notice netifd: Interface 'wan6' has link connectivity
+Sun Oct 18 15:29:10 2026 daemon.notice netifd: Interface 'wan6' is setting up now
+Sun Oct 18 15:29:10 2026 kern.info kernel: [   91.631091] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+Sun Oct 18 15:29:10 2026 daemon.notice netifd: wan (8349): /sbin/modprobe: unrecognized option: a
+Sun Oct 18 15:29:10 2026 daemon.info modprobe: Usage: 	modprobe [-q] filename
+Sun Oct 18 15:29:10 2026 daemon.notice netifd: wan (8349): uci: Entry not found
+Sun Oct 18 15:29:10 2026 daemon.notice netifd: wan (8349): sh: out of range
+Sun Oct 18 15:29:10 2026 daemon.info pppd[8362]: Plugin pppoe.so loaded.
+Sun Oct 18 15:29:10 2026 daemon.info pppd[8362]: PPPoE plugin from pppd 2.5.2
+Sun Oct 18 15:29:10 2026 daemon.notice pppd[8362]: pppd 2.5.2 started by root, uid 0
+Sun Oct 18 15:29:10 2026 daemon.err pppd[8362]: Interface pon0.995 has MTU of 1492 -- should be at least 1500.
+Sun Oct 18 15:29:10 2026 daemon.err pppd[8362]: This may cause serious connection problems.
+Sun Oct 18 15:29:24 2026 kern.warn kernel: [  105.955065] airoha-xpon 1fb64000.ethernet: EPON MPCP timeout: state=4 llid_valid=1
+Sun Oct 18 15:29:24 2026 daemon.notice netifd: Network device 'pon0' link is down
+Sun Oct 18 15:29:24 2026 daemon.notice netifd: VLAN 'pon0.995' link is down
+Sun Oct 18 15:29:24 2026 daemon.notice netifd: Interface 'wan' has link connectivity loss
+Sun Oct 18 15:29:24 2026 daemon.notice netifd: Interface 'wan6' has link connectivity loss
+Sun Oct 18 15:29:24 2026 daemon.notice netifd: Interface 'wan6' is now down
+Sun Oct 18 15:29:24 2026 daemon.err pppd[8362]: select (waitForPADO): Interrupted system call
+Sun Oct 18 15:29:24 2026 daemon.warn pppd[8362]: Timeout waiting for PADO packets
+Sun Oct 18 15:29:24 2026 daemon.err pppd[8362]: Unable to complete PPPoE Discovery phase 1
+Sun Oct 18 15:29:24 2026 daemon.info pppd[8362]: Exit.
+Sun Oct 18 15:29:24 2026 daemon.notice netifd: Interface 'wan' is now down
+Sun Oct 18 15:29:26 2026 kern.info kernel: [  107.614078] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=4
+Sun Oct 18 15:29:26 2026 kern.warn kernel: [  107.622037] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:29:26 2026 kern.warn kernel: [  107.629062] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:29:26 2026 daemon.notice netifd: Network device 'pon0' link is up
+Sun Oct 18 15:29:26 2026 daemon.notice netifd: VLAN 'pon0.995' link is up
+Sun Oct 18 15:29:26 2026 daemon.notice netifd: Interface 'wan' has link connectivity
+Sun Oct 18 15:29:26 2026 daemon.notice netifd: Interface 'wan' is setting up now
+Sun Oct 18 15:29:26 2026 daemon.notice netifd: Interface 'wan6' has link connectivity
+Sun Oct 18 15:29:26 2026 daemon.notice netifd: Interface 'wan6' is setting up now
+Sun Oct 18 15:29:26 2026 kern.info kernel: [  107.636087] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+Sun Oct 18 15:29:26 2026 daemon.notice netifd: wan (9026): /sbin/modprobe: unrecognized option: a
+Sun Oct 18 15:29:26 2026 daemon.info modprobe: Usage: 	modprobe [-q] filename
+Sun Oct 18 15:29:26 2026 daemon.notice netifd: wan (9026): uci: Entry not found
+Sun Oct 18 15:29:26 2026 daemon.notice netifd: wan (9026): sh: out of range
+Sun Oct 18 15:29:26 2026 daemon.info pppd[9039]: Plugin pppoe.so loaded.
+Sun Oct 18 15:29:26 2026 daemon.info pppd[9039]: PPPoE plugin from pppd 2.5.2
+Sun Oct 18 15:29:26 2026 daemon.notice pppd[9039]: pppd 2.5.2 started by root, uid 0
+Sun Oct 18 15:29:26 2026 daemon.err pppd[9039]: Interface pon0.995 has MTU of 1492 -- should be at least 1500.
+Sun Oct 18 15:29:26 2026 daemon.err pppd[9039]: This may cause serious connection problems.
+Sun Oct 18 15:29:31 2026 auth.info login[9054]: root login on 'pts/0'
+Sun Oct 18 15:29:33 2026 user.notice airoha-pon-debug: PON line restart requested
+Sun Oct 18 15:29:33 2026 kern.info kernel: [  114.389656] device oam0 entered promiscuous mode
+Sun Oct 18 15:29:33 2026 kern.info kernel: [  114.394452] device pon0 entered promiscuous mode
+Sun Oct 18 15:29:33 2026 daemon.notice netifd: Network device 'pon0' link is down
+Sun Oct 18 15:29:33 2026 daemon.notice netifd: VLAN 'pon0.995' link is down
+Sun Oct 18 15:29:33 2026 daemon.notice netifd: Interface 'wan' has link connectivity loss
+Sun Oct 18 15:29:33 2026 daemon.err pppd[9039]: error receiving pppoe packet: Network is down
+Sun Oct 18 15:29:33 2026 daemon.notice netifd: Interface 'wan6' has link connectivity loss
+Sun Oct 18 15:29:33 2026 daemon.notice netifd: Interface 'wan6' is now down
+Sun Oct 18 15:29:33 2026 daemon.err pppd[9039]: select (waitForPADO): Interrupted system call
+Sun Oct 18 15:29:33 2026 daemon.warn pppd[9039]: Timeout waiting for PADO packets
+Sun Oct 18 15:29:33 2026 daemon.err pppd[9039]: Unable to complete PPPoE Discovery phase 1
+Sun Oct 18 15:29:33 2026 daemon.info pppd[9039]: Exit.
+Sun Oct 18 15:29:33 2026 daemon.notice netifd: Interface 'wan' is now down
+Sun Oct 18 15:29:34 2026 daemon.info airoha-pond[9737]: PON agent selected OAM: line=line0 interface=oam0 mode=epon-10g-1g
+Sun Oct 18 15:29:34 2026 user.notice airoha-pon-debug: PON line restart complete
+Sun Oct 18 15:29:34 2026 daemon.info airoha-pond[9737]: OAM agent started: interface=oam0 operator=ctc control_socket=/var/run/airoha-pond.line0.sock
+Sun Oct 18 15:29:34 2026 kern.info kernel: [  116.005915] airoha-xpon 1fb64000.ethernet: EPON PCS synchronized: PHY events=0x80000000
+Sun Oct 18 15:29:34 2026 kern.info kernel: [  116.020155] airoha-xpon 1fb64000.ethernet: epon-10g-1g MAC started; LLID0 is waiting for a Discovery Gate
+Sun Oct 18 15:29:36 2026 kern.info kernel: [  117.616082] airoha-xpon 1fb64000.ethernet: EPON first Discovery Gate received: sync_time=0x0020, tx_armed=1
+Sun Oct 18 15:29:36 2026 kern.warn kernel: [  117.625872] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:29:36 2026 kern.info kernel: [  117.632864] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=5
+Sun Oct 18 15:29:36 2026 kern.warn kernel: [  117.641083] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:29:36 2026 kern.info kernel: [  117.648110] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+Sun Oct 18 15:29:36 2026 kern.info kernel: [  117.648116] IPv6: ADDRCONF(NETDEV_CHANGE): oam0: link becomes ready
+Sun Oct 18 15:29:36 2026 kern.info kernel: [  117.661694] IPv6: ADDRCONF(NETDEV_CHANGE): pon0: link becomes ready
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: Network device 'pon0' link is up
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: VLAN 'pon0.995' link is up
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: Interface 'wan' has link connectivity
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: Interface 'wan' is setting up now
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: Interface 'wan6' has link connectivity
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: Interface 'wan6' is setting up now
+Sun Oct 18 15:29:36 2026 kern.info kernel: [  117.668258] IPv6: ADDRCONF(NETDEV_CHANGE): pon0.995: link becomes ready
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: wan (10049): /sbin/modprobe: unrecognized option: a
+Sun Oct 18 15:29:36 2026 daemon.info modprobe: Usage: 	modprobe [-q] filename
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: wan (10049): uci: Entry not found
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: wan (10049): sh: out of range
+Sun Oct 18 15:29:36 2026 daemon.info pppd[10062]: Plugin pppoe.so loaded.
+Sun Oct 18 15:29:36 2026 daemon.info pppd[10062]: PPPoE plugin from pppd 2.5.2
+Sun Oct 18 15:29:36 2026 daemon.notice pppd[10062]: pppd 2.5.2 started by root, uid 0
+Sun Oct 18 15:29:36 2026 daemon.err pppd[10062]: Interface pon0.995 has MTU of 1492 -- should be at least 1500.
+Sun Oct 18 15:29:36 2026 daemon.err pppd[10062]: This may cause serious connection problems.
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: wan6 (10066): Failed to send RS (Address not available)
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: wan6 (10066): pon0.995: error connecting LLA socket
+Sun Oct 18 15:29:36 2026 daemon.notice netifd: wan6 (10066): Failed to send SOLICIT message to ff02::1:2 (Address not available)
+Sun Oct 18 15:29:40 2026 kern.warn kernel: [  121.972607] airoha-xpon 1fb64000.ethernet: EPON MPCP timeout: state=4 llid_valid=1
+Sun Oct 18 15:29:40 2026 daemon.notice netifd: Network device 'pon0' link is down
+Sun Oct 18 15:29:40 2026 daemon.notice netifd: VLAN 'pon0.995' link is down
+Sun Oct 18 15:29:40 2026 daemon.notice netifd: Interface 'wan' has link connectivity loss
+Sun Oct 18 15:29:40 2026 daemon.notice netifd: Interface 'wan6' has link connectivity loss
+Sun Oct 18 15:29:40 2026 daemon.notice netifd: Interface 'wan6' is now down
+Sun Oct 18 15:29:40 2026 daemon.err pppd[10062]: select (waitForPADO): Interrupted system call
+Sun Oct 18 15:29:40 2026 daemon.warn pppd[10062]: Timeout waiting for PADO packets
+Sun Oct 18 15:29:40 2026 daemon.err pppd[10062]: Unable to complete PPPoE Discovery phase 1
+Sun Oct 18 15:29:40 2026 daemon.info pppd[10062]: Exit.
+Sun Oct 18 15:29:40 2026 daemon.notice netifd: Interface 'wan' is now down
+Sun Oct 18 15:29:42 2026 kern.info kernel: [  123.619332] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=6
+Sun Oct 18 15:29:42 2026 kern.warn kernel: [  123.627506] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:29:42 2026 kern.warn kernel: [  123.634575] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+Sun Oct 18 15:29:42 2026 daemon.notice netifd: Network device 'pon0' link is up
+Sun Oct 18 15:29:42 2026 daemon.notice netifd: VLAN 'pon0.995' link is up
+Sun Oct 18 15:29:42 2026 daemon.notice netifd: Interface 'wan' has link connectivity
+Sun Oct 18 15:29:42 2026 daemon.notice netifd: Interface 'wan' is setting up now
+Sun Oct 18 15:29:42 2026 kern.info kernel: [  123.641658] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+Sun Oct 18 15:29:42 2026 daemon.notice netifd: Interface 'wan6' has link connectivity
+Sun Oct 18 15:29:42 2026 daemon.notice netifd: Interface 'wan6' is setting up now
+Sun Oct 18 15:29:42 2026 daemon.notice netifd: wan (10768): /sbin/modprobe: unrecognized option: a
+Sun Oct 18 15:29:42 2026 daemon.info modprobe: Usage: 	modprobe [-q] filename
+Sun Oct 18 15:29:42 2026 daemon.notice netifd: wan (10768): uci: Entry not found
+Sun Oct 18 15:29:42 2026 daemon.notice netifd: wan (10768): sh: out of range
+Sun Oct 18 15:29:42 2026 daemon.info pppd[10781]: Plugin pppoe.so loaded.
+Sun Oct 18 15:29:42 2026 daemon.info pppd[10781]: PPPoE plugin from pppd 2.5.2
+Sun Oct 18 15:29:42 2026 daemon.notice pppd[10781]: pppd 2.5.2 started by root, uid 0
+Sun Oct 18 15:29:42 2026 daemon.err pppd[10781]: Interface pon0.995 has MTU of 1492 -- should be at least 1500.
+Sun Oct 18 15:29:42 2026 daemon.err pppd[10781]: This may cause serious connection problems.
+Sun Oct 18 15:29:46 2026 kern.info kernel: [  127.842421] device oam0 left promiscuous mode
+Sun Oct 18 15:29:46 2026 kern.info kernel: [  127.847185] device pon0 left promiscuous mode

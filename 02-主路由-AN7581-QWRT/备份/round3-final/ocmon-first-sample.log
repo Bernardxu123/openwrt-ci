@@ -1,0 +1,2 @@
+2026-10-24 15:06:16 boot=242708 avail=113548k pids=1 | pid=12698 ppid=1 rss=102820k vdata=157552k cg=/services/openclash/openclash cmd=/etc/openclash/clash -d /etc/openclash -f /etc/openclash/openclash-20261022.yaml 
+2026-10-24 15:10:00 boot=242932 avail=118688k pids=1 | pid=12698 ppid=1 rss=97960k vdata=157552k cg=/services/openclash/openclash cmd=/etc/openclash/clash -d /etc/openclash -f /etc/openclash/openclash-20261022.yaml 

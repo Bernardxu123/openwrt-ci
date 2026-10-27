@@ -1,0 +1,169 @@
+diff --git a/ct-dtb.dts b/cu-dtb.dts
+index 6e4dd34..51700f4 100644
+--- a/ct-dtb.dts
++++ b/cu-dtb.dts
+@@ -3,9 +3,9 @@
+ / {
+     #address-cells = < &{/soc/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/ubi-volume-fit} >;
+     #size-cells = < &{/soc/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/ubi-volume-fit} >;
+-    compatible = "fiberhome,hg5585f-ct", "airoha,an7581", "airoha,en7581";
++    compatible = "fiberhome,hg5585f-cu", "airoha,an7581", "airoha,en7581";
+     interrupt-parent = <0x1>;
+-    model = "FiberHome HG5585F CT";
++    model = "FiberHome HG5585F CU";
+ 
+     chosen {
+         bootargs = "console=ttyS0,115200 earlycon";
+@@ -464,7 +464,6 @@
+             reg-names = [7063735f6d6163006873676d69695f616e006873676d69695f706373006d756c74695f73676d696900757378676d6969006873676d69695f726174655f616470007063735f616e61007063735f706d6100];
+             reset-names = [6d61630070687900];
+             resets = < &{/soc/clock-controller@1fb00000} 0x6 0x1d 0x7 >;
+-            status = "okay";
+         };
+ 
+         pcs@1fa04000 {
+@@ -585,7 +584,7 @@
+                     };
+                 };
+ 
+-                mdio-pins {  /* phandle 0x3e */
++                mdio-pins {  /* phandle 0x3d */
+ 
+                     mux {
+                         function = "mdio";
+@@ -925,7 +924,7 @@
+             resets = < &{/soc/clock-controller@1fb00000} 0x2c 0x1d 0x1e 0x1d 0x1f 0x1d 0x6 0x1d 0xf 0x1d 0x10 0x1d 0x11 0x1d 0x1a >;
+             status = "okay";
+ 
+-            ethernet@1 {  /* phandle 0x43 */
++            ethernet@1 {  /* phandle 0x42 */
+                 compatible = "airoha,eth-mac";
+                 nvmem-cell-names = "mac-address";
+                 nvmem-cells = < &{/soc/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/ubi-volume-factory/nvmem-layout/mac-address@2000} 0x1 >;
+@@ -952,14 +951,9 @@
+ 
+             ethernet@4 {
+                 compatible = "airoha,eth-mac";
+-                nvmem-cell-names = "mac-address";
+-                nvmem-cells = < &{/soc/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/ubi-volume-factory/nvmem-layout/mac-address@2000} >;
+-                openwrt,netdev-name = "lan1";
+                 pcs-handle = <0x3c>;
+-                phy-handle = <0x3d>;
+-                phy-mode = "2500base-x";
+                 reg = < 0x4 >;
+-                status = "okay";
++                status = "disabled";
+             };
+         };
+ 
+@@ -971,7 +965,7 @@
+             interrupt-controller = <>;
+             interrupt-parent = <0x1>;
+             interrupts = < 0x0 0x1f 0x4 >;
+-            pinctrl-0 = <0x3e>;
++            pinctrl-0 = <0x3d>;
+             pinctrl-names = "default";
+             reg = < 0x0 0x1fb58000 0x0 0x8000 >;
+             resets = < &{/soc/clock-controller@1fb00000} 0x2e >;
+@@ -982,15 +976,16 @@
+                 #size-cells = < 0x0 >;
+ 
+                 port@1 {
+-                    phy-handle = <0x3f>;
++                    label = "lan1";
++                    phy-handle = <0x3e>;
+                     phy-mode = "internal";
+                     reg = < 0x1 >;
+-                    status = "disabled";
++                    status = "okay";
+                 };
+ 
+                 port@2 {
+                     label = "lan2";
+-                    phy-handle = <0x40>;
++                    phy-handle = <0x3f>;
+                     phy-mode = "internal";
+                     reg = < 0x2 >;
+                     status = "okay";
+@@ -998,7 +993,7 @@
+ 
+                 port@3 {
+                     label = "lan3";
+-                    phy-handle = <0x41>;
++                    phy-handle = <0x40>;
+                     phy-mode = "internal";
+                     reg = < 0x3 >;
+                     status = "okay";
+@@ -1006,14 +1001,14 @@
+ 
+                 port@4 {
+                     label = "lan4";
+-                    phy-handle = <0x42>;
++                    phy-handle = <0x41>;
+                     phy-mode = "internal";
+                     reg = < 0x4 >;
+                     status = "okay";
+                 };
+ 
+                 port@6 {
+-                    ethernet = <0x43>;
++                    ethernet = <0x42>;
+                     phy-mode = "internal";
+                     reg = < 0x6 >;
+ 
+@@ -1029,11 +1024,11 @@
+                 #address-cells = < &{/soc/interrupt-controller@9000000} >;
+                 #size-cells = < 0x0 >;
+ 
+-                ethernet-phy@9 {  /* phandle 0x3f */
++                ethernet-phy@9 {  /* phandle 0x3e */
+                     compatible = "ethernet-phy-ieee802.3-c22";
+                     phy-mode = "internal";
+                     reg = < 0x9 >;
+-                    status = "disabled";
++                    status = "okay";
+ 
+                     leds {
+                         #address-cells = < &{/soc/interrupt-controller@9000000} >;
+@@ -1051,7 +1046,7 @@
+                     };
+                 };
+ 
+-                ethernet-phy@a {  /* phandle 0x40 */
++                ethernet-phy@a {  /* phandle 0x3f */
+                     compatible = "ethernet-phy-ieee802.3-c22";
+                     phy-mode = "internal";
+                     reg = < 0xa >;
+@@ -1073,7 +1068,7 @@
+                     };
+                 };
+ 
+-                ethernet-phy@b {  /* phandle 0x41 */
++                ethernet-phy@b {  /* phandle 0x40 */
+                     compatible = "ethernet-phy-ieee802.3-c22";
+                     phy-mode = "internal";
+                     reg = < 0xb >;
+@@ -1095,7 +1090,7 @@
+                     };
+                 };
+ 
+-                ethernet-phy@c {  /* phandle 0x42 */
++                ethernet-phy@c {  /* phandle 0x41 */
+                     compatible = "ethernet-phy-ieee802.3-c22";
+                     phy-mode = "internal";
+                     reg = < 0xc >;
+@@ -1116,14 +1111,6 @@
+                         };
+                     };
+                 };
+-
+-                ethernet-phy@7 {  /* phandle 0x3d */
+-                    compatible = "ethernet-phy-id67c9.de10";
+-                    reg = < 0x7 >;
+-                    reset-assert-us = <0x186a0>;
+-                    reset-deassert-us = <0x186a0>;
+-                    reset-gpios = < &{/soc/system-controller@1fbf0200/pinctrl} 0x22 0x1 >;
+-                };
+             };
+         };
+     };

@@ -1,0 +1,18 @@
+pname(NetworkManager,systemd-resolved,dnsmasq,ntpd,chronyd)->must_direct
+dip(geoip:private)->direct
+domain(geosite:private)->direct
+l4proto(udp)&&dport(443)->block
+l4proto(udp)&&dport(123)->direct
+# vlook 走代理：CF 从中国落地 LAX（吞吐 ~100B/s），走节点则落地 HKG
+domain(vlook.290490.xyz)->proxy
+domain(290490.xyz)->direct
+# 顺序约束1: aistudio 必须在 sip&&dip("2001:4860::/32") 之前，否则被 IP 规则截走
+domain(aistudio.google.com,makersuite.google.com,alkalimakersuite-pa.clients6.google.com,alkalimakersuite-pa.googleapis.com)->Stable
+sip("2408:820c::/16")&&dip("2001:4860::/32")->Stable
+domain(generativelanguage.googleapis.com,ai.google.dev,gemini.google.com,bard.google.com,opencode.ai,oracle.com,oraclecloud.com,oci.oraclecloud.com,nvidia.com,workbuddy.ai)->AI
+domain(geosite:openai,geosite:anthropic)->AI
+# 顺序约束2: 自定义 proxy 必须在 geosite:cn 之前，否则 googleapis.cn 被直连吃掉
+domain(stripo.email,justuno.com,mailchimp.com,freepik.com,joeyblog.net,googleapis.cn,services.googleapis.cn,xn--ngstr-lra8j.com,dl.google.com)->proxy
+domain(geosite:cn)->direct
+dip(geoip:cn)->direct
+fallback: proxy

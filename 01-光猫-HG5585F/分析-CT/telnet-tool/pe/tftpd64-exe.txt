@@ -1,0 +1,98 @@
+# tftpd64-exe
+path      : D:\AI\路由\光猫-CT-HG5585F\下载资料\ftp\tftpd64.exe
+size      : 392704
+sha256    : 34de53b43c32e3ed5231a57683103acad1aebeef08309cf8e770c27acc90e4e7
+sha1      : ea34a6bad04bc5a1fcb494668347cd302557f327
+md5       : 3c1e3215acc69f06f044802ed4695333
+imphash   : 
+
+## PE 头
+machine            : 0x8664 (IMAGE_FILE_MACHINE_AMD64)
+NumberOfSections   : 7
+TimeDateStamp      : 1551269902 (1551269902)
+   -> UTC          : 2019-02-27T12:18:22Z
+Characteristics    : 0x0022
+Subsystem          : 2 (IMAGE_SUBSYSTEM_WINDOWS_GUI)
+ImageBase          : 0x140000000
+AddressOfEntryPoint: 0x19f08
+SizeOfImage        : 0x7c000
+DllCharacteristics : 0x8160  [ASLR=True DEP=True CFG=False HighEntropyVA=True]
+
+## 节表
+  .text      VA=0x00001000 VSize=0x000385f0 RawPtr=0x00000400 RawSize=0x00038600 Entropy=6.462 Chars=0x60000020
+  .rdata     VA=0x0003a000 VSize=0x00011c0e RawPtr=0x00038a00 RawSize=0x00011e00 Entropy=5.344 Chars=0x40000040
+  .data      VA=0x0004c000 VSize=0x0001a280 RawPtr=0x0004a800 RawSize=0x00003000 Entropy=2.740 Chars=0xc0000040
+  .pdata     VA=0x00067000 VSize=0x000025f8 RawPtr=0x0004d800 RawSize=0x00002600 Entropy=5.582 Chars=0x40000040
+  _RDATA     VA=0x0006a000 VSize=0x00000094 RawPtr=0x0004fe00 RawSize=0x00000200 Entropy=1.425 Chars=0x40000040
+  .rsrc      VA=0x0006b000 VSize=0x0000f3b0 RawPtr=0x00050000 RawSize=0x0000f400 Entropy=3.189 Chars=0x40000040
+  .reloc     VA=0x0007b000 VSize=0x00000824 RawPtr=0x0005f400 RawSize=0x00000a00 Entropy=4.944 Chars=0x42000040
+
+## 导入 DLL / 函数
+  SHELL32.dll: SHBrowseForFolderA, DragQueryFileA, DragFinish, DragAcceptFiles, ShellExecuteA, SHGetPathFromIDListA, Shell_NotifyIconA
+  WS2_32.dll: listen, accept, select, getsockname, ntohs, WSACloseEvent, WSACreateEvent, WSAEventSelect, gethostbyname, bind, WSAIoctl, ntohl, inet_ntoa, getservbyname, gethostname, htonl, setsockopt, WSACleanup, WSAStartup, getaddrinfo, socket, connect, recvfrom, recv, freeaddrinfo, sendto, WSAGetLastError, closesocket, WSAAsyncSelect, getpeername, getnameinfo, inet_addr, send, htons, WSASetLastError
+  COMCTL32.dll: InitCommonControlsEx
+  IPHLPAPI.DLL: GetIpNetTable, SendARP, GetAdaptersAddresses, DeleteIpNetEntry
+  KERNEL32.dll: MultiByteToWideChar, GetFullPathNameW, GetCurrentDirectoryW, HeapReAlloc, OutputDebugStringW, SetStdHandle, LCMapStringW, CompareStringW, GetCommandLineA, GetCommandLineW, FindFirstFileExW, FindNextFileW, IsValidCodePage, GetACP, GetOEMCP, GetModuleFileNameA, lstrlenA, lstrcatA, lstrcpyA, lstrcmpiA, lstrcpynA, OutputDebugStringA, GetEnvironmentVariableA, lstrcmpA, SetLastError, GetCurrentProcess, CreateMutexA, ReleaseMutex, Sleep, GetLastError, CloseHandle, SetProcessWorkingSetSize, GetFullPathNameA, GetVersion, GetLocalTime, CreateProcessA, ReadFile, ReleaseSemaphore, WriteFile, WaitForSingleObject, GetCurrentDirectoryA, SetCurrentDirectoryA, GetFileAttributesA, CreateFileA, DeleteFileA, GetFileSize, CreateSemaphoreA, SetEnvironmentVariableA, SetThreadPriority, SetFilePointer, GetCurrentThread, WideCharToMultiByte, FlushFileBuffers, GetCurrentThreadId, GetTickCount, ResetEvent, GetSystemTime, WaitForMultipleObjects, SetEvent, CreateEventA, CreateThread, SetFilePointerEx, GlobalAlloc, GlobalUnlock, GlobalLock, LocalFree, FormatMessageA, GetSystemTimeAsFileTime, FileTimeToLocalFileTime, FindClose, FindFirstFileA, FindNextFileA, FileTimeToSystemTime, GetDateFormatA, GetPrivateProfileStringA, WritePrivateProfileStringA, GetCPInfo, HeapFree, HeapAlloc, GetTimeZoneInformation, ExitProcess, SystemTimeToTzSpecificLocalTime, PeekNamedPipe, GetFileInformationByHandle, GetDriveTypeW, CreateFileW, FreeLibraryAndExitThread, ResumeThread, ExitThread, WriteConsoleW, GetModuleHandleExW, GetModuleFileNameW, GetFileType, GetStdHandle, RaiseException, LoadLibraryExW, GetProcAddress, FreeLibrary, TlsFree, TlsSetValue, TlsGetValue, TlsAlloc, InitializeCriticalSectionAndSpinCount, DeleteCriticalSection, LeaveCriticalSection, EnterCriticalSection, RtlUnwindEx, GetEnvironmentStringsW, GetModuleHandleW, GetStartupInfoW, IsDebuggerPresent, InitializeSListHead, GetCurrentProcessId, QueryPerformanceCounter, IsProcessorFeaturePresent, TerminateProcess, SetUnhandledExceptionFilter, UnhandledExceptionFilter, RtlVirtualUnwind, RtlLookupFunctionEntry, RtlCaptureContext, FreeEnvironmentStringsW, SetEnvironmentVariableW, GetStringTypeW, GetProcessHeap, GetConsoleCP, GetConsoleMode, GetFileSizeEx, HeapSize, ReadConsoleW, SetEndOfFile, GetThreadPriority
+  USER32.dll: GetFocus, GetWindowLongA, SetWindowLongA, EmptyClipboard, SetClipboardData, CloseClipboard, OpenClipboard, DialogBoxParamA, GetClassInfoA, RegisterClassA, GetDesktopWindow, GetClassLongPtrA, DrawIcon, SetFocus, DialogBoxIndirectParamA, CreateWindowExA, SystemParametersInfoA, MessageBeep, wvsprintfA, RedrawWindow, MoveWindow, MapDialogRect, InvalidateRect, GetWindow, GetSystemMetrics, SetDlgItemTextA, SetWindowTextA, IsWindow, SetTimer, DestroyIcon, CallWindowProcA, GetWindowTextA, SetClassLongPtrA, MessageBoxA, GetSysColor, DefWindowProcA, SendDlgItemMessageA, LoadIconA, CheckMenuItem, UnregisterClassA, SetWindowLongPtrA, FindWindowA, SetForegroundWindow, ChildWindowFromPoint, EnableWindow, GetDC, ReleaseDC, GetSystemMenu, GetWindowRect, DestroyWindow, IsWindowVisible, SetWindowPos, ShowWindow, GetTopWindow, GetDialogBaseUnits, CreateDialogParamA, AppendMenuA, GetClientRect, PostMessageA, GetDlgItemTextA, GetDlgItemInt, SetDlgItemInt, LoadMenuA, TrackPopupMenu, wsprintfA, GetSubMenu, DestroyMenu, GetDlgItem, GetWindowLongPtrA, GetParent, GetCursorPos, SendMessageA, EndDialog, KillTimer
+  GDI32.dll: SetBkColor, SetTextColor, LPtoDP, GetTextExtentPoint32A, GetTextMetricsA, ExtTextOutA
+  COMDLG32.dll: GetOpenFileNameA
+  ADVAPI32.dll: RegOpenKeyExA, ReportEventA, RegisterEventSourceA, DeregisterEventSource, RegDeleteKeyA, RegCloseKey, RegSetValueExA, RegCreateKeyExA, RegQueryValueExA
+
+## 延迟导入
+  (无)
+
+## 资源
+  /RT_ICON/1/1033  RVA=0x6d7e8 Size=41064
+  /RT_ICON/2/1033  RVA=0x77850 Size=2664
+  /RT_ICON/3/1033  RVA=0x782b8 Size=744
+  /RT_ICON/4/1033  RVA=0x785a0 Size=1640
+  /RT_ICON/5/1033  RVA=0x78c08 Size=1224
+  /RT_ICON/6/1033  RVA=0x79120 Size=4264
+  /RT_MENU/50/1033  RVA=0x7a1e0 Size=42
+  /RT_MENU/55/1033  RVA=0x7a210 Size=28
+  /RT_DIALOG/101/1033  RVA=0x6b648 Size=2332
+  /RT_DIALOG/103/1033  RVA=0x6bf68 Size=208
+  /RT_DIALOG/107/1033  RVA=0x6c038 Size=5080
+  /RT_DIALOG/108/1033  RVA=0x6d410 Size=238
+  /RT_DIALOG/110/1033  RVA=0x6d500 Size=262
+  /RT_DIALOG/113/1033  RVA=0x6d608 Size=282
+  /RT_DIALOG/10177/1033  RVA=0x6d728 Size=190
+  /RT_GROUP_ICON/102/1033  RVA=0x790d0 Size=76
+  /RT_GROUP_ICON/112/1033  RVA=0x7a1c8 Size=20
+  /RT_VERSION/1/1033  RVA=0x6b430 Size=532
+  /RT_MANIFEST/1/1033  RVA=0x7a230 Size=381
+
+## 版本信息 (VS_VERSIONINFO)
+  CompanyName = Ph. Jounin
+  FileDescription = TFTP server
+  LegalCopyright = see license in about box
+  OriginalFileName = tftpd32
+  ProductVersion = 4.64
+  Var(raw): [Var]
+0x50620    0x0   Length:                        0x24      
+0x50622    0x2   ValueLength:                   0x4       
+0x50624    0x4   Type:                          0x0       
+
+## 嵌入 manifest
+<?xml version='1.0' encoding='UTF-8' standalone='yes'?>
+<assembly xmlns='urn:schemas-microsoft-com:asm.v1' manifestVersion='1.0'>
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges>
+        <requestedExecutionLevel level='asInvoker' uiAccess='false' />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+</assembly>
+
+
+## 签名 (Security Directory / Authenticode)
+  VirtualAddress=0x0 Size=0
+  -> 无 Authenticode 签名
+
+## 调试目录 / PDB
+  type=13
+  type=14
+
+## 尾部/overlay
+  最后节末尾 = 0x5fe00 (392704); 文件 392704 -> overlay 0 B

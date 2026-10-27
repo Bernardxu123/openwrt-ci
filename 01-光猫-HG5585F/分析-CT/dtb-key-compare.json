@@ -1,0 +1,360 @@
+[
+  {
+    "file": "D:\\AI\\路由\\光猫-CT-HG5585F\\分析\\extracted\\ct\\fdt-1.bin",
+    "bytes": 23281,
+    "sha256": "50f1934455915417f61d78f911e29f789275ab14ba7806d0b877555a565eecb3",
+    "fdt_totalsize": 23281,
+    "nodes": 190,
+    "model": "FiberHome HG5585F CT",
+    "compatible": [
+      "fiberhome,hg5585f-ct",
+      "airoha,an7581",
+      "airoha,en7581"
+    ],
+    "chosen/rootdisk_phandle": 2,
+    "eth@4.status": "okay",
+    "eth@4.phy-mode": "2500base-x",
+    "eth@4.netdev": "lan1",
+    "eth@4.phy-handle_phandle": 61,
+    "pcs@1fa09000.status": "okay",
+    "mdio/phy@7.compatible": "ethernet-phy-id67c9.de10",
+    "mdio/phy@7.reg": 7,
+    "mdio/phy@7.reset-gpios": {
+      "phandle": 39,
+      "pin": 34,
+      "flags": 1
+    },
+    "mdio/phy@7.reset-assert-us": 100000,
+    "mdio/phy@7.reset-deassert-us": 100000,
+    "switch/port@1.status": "disabled",
+    "switch/port@1.label": null,
+    "switch/port@1.phy-mode": "internal",
+    "mdio/phy@9.status": "disabled",
+    "keys/reset.label": "reset",
+    "keys/reset.gpios": {
+      "phandle": 39,
+      "pin": 35,
+      "flags": 1
+    },
+    "keys/reset.linux,code": 408,
+    "factory_nvmem_layout": {
+      "calibration@0": [
+        0,
+        2048
+      ],
+      "mac-address@2000": [
+        8192,
+        6
+      ],
+      "pon-serial@2010": [
+        8208,
+        8
+      ],
+      "device-serial@2020": [
+        8224,
+        32
+      ],
+      "eeprom@1000": [
+        4096,
+        4096
+      ]
+    },
+    "ubi_volumes": [
+      {
+        "node": "ubi-volume-fip",
+        "volname": "fip"
+      },
+      {
+        "node": "ubi-volume-ubootenv",
+        "volname": "ubootenv"
+      },
+      {
+        "node": "ubi-volume-ubootenv2",
+        "volname": "ubootenv2"
+      },
+      {
+        "node": "ubi-volume-factory",
+        "volname": "factory"
+      },
+      {
+        "node": "ubi-volume-fit",
+        "volname": "fit"
+      }
+    ],
+    "leds": [
+      {
+        "node": "led-0",
+        "function": "power"
+      },
+      {
+        "node": "led-2",
+        "function": "wan"
+      },
+      {
+        "node": "led-3",
+        "function": "wan"
+      },
+      {
+        "node": "led-internet",
+        "function": "wan-online"
+      },
+      {
+        "node": "led-wlan",
+        "function": "wlan"
+      },
+      {
+        "node": "led-phone",
+        "label": "blue:phone"
+      },
+      {
+        "node": "led-usb1",
+        "function": "usb",
+        "function-enumerator": 1
+      },
+      {
+        "node": "led-usb2",
+        "function": "usb",
+        "function-enumerator": 2
+      },
+      {
+        "node": "led-lan1",
+        "function": "lan",
+        "function-enumerator": 1
+      },
+      {
+        "node": "led-lan2",
+        "function": "lan",
+        "function-enumerator": 2
+      },
+      {
+        "node": "led-lan3",
+        "function": "lan",
+        "function-enumerator": 3
+      },
+      {
+        "node": "led-lan4",
+        "function": "lan",
+        "function-enumerator": 4
+      }
+    ]
+  },
+  {
+    "file": "D:\\AI\\路由\\光猫-CT-HG5585F\\分析\\extracted\\cu\\fdt-1.bin",
+    "bytes": 22959,
+    "sha256": "1a3408d5d303dfa4387f7704cce1837df3eaa67f47d87950d5aebb3d155ccb16",
+    "fdt_totalsize": 22959,
+    "nodes": 189,
+    "model": "FiberHome HG5585F CU",
+    "compatible": [
+      "fiberhome,hg5585f-cu",
+      "airoha,an7581",
+      "airoha,en7581"
+    ],
+    "chosen/rootdisk_phandle": 2,
+    "eth@4.status": "disabled",
+    "eth@4.phy-mode": null,
+    "eth@4.netdev": null,
+    "eth@4.phy-handle_phandle": null,
+    "pcs@1fa09000.status": null,
+    "mdio/phy@7.compatible": null,
+    "mdio/phy@7.reg": null,
+    "mdio/phy@7.reset-gpios": null,
+    "mdio/phy@7.reset-assert-us": null,
+    "mdio/phy@7.reset-deassert-us": null,
+    "switch/port@1.status": "okay",
+    "switch/port@1.label": "lan1",
+    "switch/port@1.phy-mode": "internal",
+    "mdio/phy@9.status": "okay",
+    "keys/reset.label": "reset",
+    "keys/reset.gpios": {
+      "phandle": 39,
+      "pin": 35,
+      "flags": 1
+    },
+    "keys/reset.linux,code": 408,
+    "factory_nvmem_layout": {
+      "calibration@0": [
+        0,
+        2048
+      ],
+      "mac-address@2000": [
+        8192,
+        6
+      ],
+      "pon-serial@2010": [
+        8208,
+        8
+      ],
+      "device-serial@2020": [
+        8224,
+        32
+      ],
+      "eeprom@1000": [
+        4096,
+        4096
+      ]
+    },
+    "ubi_volumes": [
+      {
+        "node": "ubi-volume-fip",
+        "volname": "fip"
+      },
+      {
+        "node": "ubi-volume-ubootenv",
+        "volname": "ubootenv"
+      },
+      {
+        "node": "ubi-volume-ubootenv2",
+        "volname": "ubootenv2"
+      },
+      {
+        "node": "ubi-volume-factory",
+        "volname": "factory"
+      },
+      {
+        "node": "ubi-volume-fit",
+        "volname": "fit"
+      }
+    ],
+    "leds": [
+      {
+        "node": "led-0",
+        "function": "power"
+      },
+      {
+        "node": "led-2",
+        "function": "wan"
+      },
+      {
+        "node": "led-3",
+        "function": "wan"
+      },
+      {
+        "node": "led-internet",
+        "function": "wan-online"
+      },
+      {
+        "node": "led-wlan",
+        "function": "wlan"
+      },
+      {
+        "node": "led-phone",
+        "label": "blue:phone"
+      },
+      {
+        "node": "led-usb1",
+        "function": "usb",
+        "function-enumerator": 1
+      },
+      {
+        "node": "led-usb2",
+        "function": "usb",
+        "function-enumerator": 2
+      },
+      {
+        "node": "led-lan1",
+        "function": "lan",
+        "function-enumerator": 1
+      },
+      {
+        "node": "led-lan2",
+        "function": "lan",
+        "function-enumerator": 2
+      },
+      {
+        "node": "led-lan3",
+        "function": "lan",
+        "function-enumerator": 3
+      },
+      {
+        "node": "led-lan4",
+        "function": "lan",
+        "function-enumerator": 4
+      }
+    ]
+  },
+  {
+    "file": "D:\\AI\\路由\\光猫-CT-HG5585F\\分析\\extracted\\qwrt-ct\\fdt-1.dtb",
+    "bytes": 14698,
+    "sha256": "b56ae8c6de206a36a132e3008f8c37bb4532206d25265c7d19e25b7247b46528",
+    "fdt_totalsize": 14698,
+    "nodes": 113,
+    "model": "FiberHome HG5585F CT",
+    "compatible": [
+      "fiberhome,hg5585f-ct",
+      "airoha,an7581",
+      "airoha,en7581"
+    ],
+    "chosen/rootdisk_phandle": 2,
+    "eth@4.status": null,
+    "eth@4.phy-mode": null,
+    "eth@4.netdev": null,
+    "eth@4.phy-handle_phandle": null,
+    "pcs@1fa09000.status": null,
+    "mdio/phy@7.compatible": "ethernet-phy-ieee802.3-c45",
+    "mdio/phy@7.reg": 7,
+    "mdio/phy@7.reset-gpios": {
+      "phandle": 9,
+      "pin": 34,
+      "flags": 1
+    },
+    "mdio/phy@7.reset-assert-us": 100000,
+    "mdio/phy@7.reset-deassert-us": 800000,
+    "switch/port@1.status": null,
+    "switch/port@1.label": "lan1",
+    "switch/port@1.phy-mode": "2500base-x",
+    "mdio/phy@9.status": null,
+    "keys/reset.label": "reset",
+    "keys/reset.gpios": {
+      "phandle": 9,
+      "pin": 0,
+      "flags": 1
+    },
+    "keys/reset.linux,code": 408,
+    "factory_nvmem_layout": {},
+    "ubi_volumes": [
+      {
+        "node": "fit",
+        "volname": "fit"
+      },
+      {
+        "node": "fip",
+        "volname": "fip"
+      },
+      {
+        "node": "ubootenv",
+        "volname": "ubootenv"
+      },
+      {
+        "node": "ubootenv2",
+        "volname": "ubootenv2"
+      },
+      {
+        "node": "factory",
+        "volname": "factory"
+      }
+    ],
+    "leds": [
+      {
+        "node": "power",
+        "label": "blue:power"
+      },
+      {
+        "node": "pon",
+        "label": "blue:wan"
+      },
+      {
+        "node": "los",
+        "label": "red:wan"
+      },
+      {
+        "node": "usb",
+        "label": "blue:usb-1"
+      },
+      {
+        "node": "wlan",
+        "label": "blue:wlan"
+      }
+    ]
+  }
+]

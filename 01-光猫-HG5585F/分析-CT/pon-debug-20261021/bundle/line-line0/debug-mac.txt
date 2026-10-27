@@ -1,0 +1,16 @@
+# command: cat /sys/kernel/debug/airoha-xpon-pon0/mac
+available: 1
+interrupt_status: 0x00008000
+interrupt_enable: 0x03004003
+error_status: 0x00000000
+error_enable: 0x00001fff
+global_config: 0x00800002
+global_config2: 0x80a08000
+discovery_control: 0xc0011000
+llid0_status: 0x820100a4
+sync_time: 0x0020
+rx_mpcp: 11532
+tx_mpcp: 721410
+rx_oam: 16
+mac_errors: 12
+last_mac_error: 0x00000100

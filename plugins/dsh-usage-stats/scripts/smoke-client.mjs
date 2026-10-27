@@ -1,0 +1,978 @@
+// Smoke-test the hand-written client bundle outside the browser:
+// 1. feed it to a fake __ModuleLoader__ (captures the factory)
+// 2. run the factory with a fake require (real react, stubbed primitives)
+// 3. render <UsageStatsPanel wide t> with react-dom/server
+// 4. run apply(ctx) against a stub client context
+import { createRequire } from "node:module";
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+// Clean clones resolve declared devDependencies locally. An explicit override
+// remains useful for checking against the exact modules bundled with dsh.
+const require = process.env.SMOKE_NODE_MODULES === void 0
+	? createRequire(import.meta.url)
+	: createRequire(join(process.env.SMOKE_NODE_MODULES, "_anchor.js"));
+const react = require("react");
+const jsxRuntime = require("react/jsx-runtime");
+const { renderToStaticMarkup } = require("react-dom/server");
+const TestRenderer = require("react-test-renderer");
+const { act } = TestRenderer;
+
+// Fake primitives: every named export is a no-op component (returns its props as children is not needed).
+const Stub = () => null;
+const PassThrough = ({ children }) => children;
+/** Distinguishable icon stub, so a render can prove the harness glyph was used. */
+const IconStub = () => react.createElement("span", { "data-icon-stub": "" });
+// The real package exports a fixed surface, so an unknown name is `undefined`
+// rather than a stub. Mirroring that is what catches a primitive the host
+// renamed or dropped: 0.1.7 moved the icon size out of the export name
+// (`IconCloseOutline16` → `IconCloseOutlineRegular`) and removed several glyphs.
+const legacyIcons = {
+	IconChevronLeftOutline14: IconStub,
+	IconChevronRightOutline14: IconStub,
+	IconCloseOutline16: IconStub,
+	IconDataOutline16: IconStub,
+	IconRefreshOutline14: IconStub
+};
+const currentIcons = {
+	IconChevronLeftOutlineRegular: IconStub,
+	IconChevronRightOutlineRegular: IconStub,
+	IconCloseOutlineRegular: IconStub,
+	IconDataOutlineRegular: IconStub,
+	IconRefreshOutlineRegular: IconStub
+};
+const primitivesSurface = (icons) => new Proxy({ ...icons, Tooltip: PassThrough }, {
+	get: (target, key) => (typeof key === "string" && key in target ? target[key] : undefined)
+});
+const primitives = primitivesSurface(legacyIcons);
+
+let captured = null;
+const storedValues = new Map();
+const storedWrites = [];
+const localStorage = {
+	getItem: (key) => storedValues.get(key) ?? null,
+	setItem: (key, value) => {
+		storedValues.set(key, String(value));
+		storedWrites.push([key, String(value)]);
+	},
+	removeItem: (key) => { storedValues.delete(key); }
+};
+globalThis.window = { __ModuleLoader__: { load: (entry) => { captured = entry; } }, localStorage };
+globalThis.document = { querySelector: () => null, createElement: () => ({ dataset: {}, appendChild: () => {} }), head: { appendChild: () => {} } };
+
+const source = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "lib", "client.js"), "utf8");
+if (!source.includes("/api/usage-stats/account")) throw new Error("client must use the unified account endpoint");
+if (source.includes('fetchJson("/api/usage-stats/subscriptions")')) throw new Error("client must not bulk-fetch every subscription provider");
+if (/host\.style\.flexDirection\s*=\s*["']column["']/.test(source)) throw new Error("client must not change the shared footer host flex direction (#82)");
+if (!/host\.style\.flexWrap\s*=\s*["']wrap["']/.test(source)) throw new Error("client must wrap row-oriented footer actions (#21/#82)");
+if (!source.includes('document.addEventListener("pointerdown"')) throw new Error("open panel must listen for outside pointerdown");
+if (!source.includes('event.key === "Escape"')) throw new Error("open panel must dismiss on Escape");
+if (!source.includes("ref: panelRef")) throw new Error("portaled panel must expose a ref for outside-click detection");
+// Badge layout regression: the collapsed badge must keep the 「用量/余额」label,
+// render the account value as a separate middle element, and keep today's token
+// count on the right — the label must never be replaced by the amount.
+if (!source.includes('translate("panel.badge")')) throw new Error("badge must keep the label text");
+if (!source.includes("badgeAmountText !== null &&")) throw new Error("badge amount must be a separate middle element");
+if (!source.includes("S.badgeAmount")) throw new Error("badge amount element is missing its class");
+if (!source.includes("badgeCount !== null && react_jsx_runtime.jsx(\"span\", { className: S.badgeCount")) throw new Error("badge must keep the today token count on the right");
+if (source.includes("data-orcarouter-integration") || source.includes("OrcaRouterIntegrationCard")) throw new Error("OrcaRouter must stay a compact provider choice, not a standalone panel card");
+for (const forbidden of [
+	"conversation.input",
+	"CurrentSessionInline",
+	"CurrentSessionPill",
+	"data-current-session-inline",
+	"data-current-session-pill",
+	"usg_sessionInline",
+	"usg_sessionPill",
+	"usageStatsPanelOpeners",
+	"subscribeUsageStatsPanel",
+	"requestUsageStatsPanel",
+	"modelDirectories",
+	"loadSessionPillSnapshot",
+	"sessionPillViewOf"
+]) {
+	if (source.includes(forbidden)) throw new Error(`composer UI/runtime must be absent from the client bundle: ${forbidden}`);
+}
+const dayTokensRule = /\.usg_dayTokens\{([^}]*)\}/.exec(source)?.[1] ?? "";
+if (!dayTokensRule.includes("min-width:84px")) throw new Error("Last 14 days token column must retain an 84px minimum width (#75)");
+if (!dayTokensRule.includes("text-align:right")) throw new Error("Last 14 days token column must be right aligned (#75)");
+if (!dayTokensRule.includes("flex:none") || !dayTokensRule.includes("font-variant-numeric:tabular-nums")) throw new Error("Last 14 days token alignment must preserve the existing flex and numeric typography");
+if (/(?:^|;)width:84px(?:;|$)/.test(dayTokensRule)) throw new Error("Last 14 days token column must use min-width rather than a fixed width in narrow layouts");
+const dayDateRule = /\.usg_dayDate\{([^}]*)\}/.exec(source)?.[1] ?? "";
+if (!dayDateRule.includes("flex:0 1 104px") || !dayDateRule.includes("min-width:0") || !dayDateRule.includes("overflow:hidden")) throw new Error("the date column must shrink before the aligned token column can overflow a narrow panel");
+// The sidebar action sits directly above the shell's Settings key and keeps that
+// key's geometry: a 42px row with 10/8px side padding and the same `4px -2px`
+// row margin, so the two buttons line up on both axes (#108). The collapsed
+// action keeps the 36px rail circle.
+const badgeRule = /\.usg_badge\{([^}]*)\}/.exec(source)?.[1] ?? "";
+const layerRule = /\.usg_layer\{([^}]*)\}/.exec(source)?.[1] ?? "";
+const railBadgeRule = /\.usg_layer\.usg_rail \.usg_badge\{([^}]*)\}/.exec(source)?.[1] ?? "";
+if (!badgeRule.includes("height:42px") || !badgeRule.includes("padding:0 10px 0 8px")) throw new Error("the expanded sidebar action must match the Settings key geometry (42px, 10/8px padding)");
+if (!layerRule.includes("width:calc(100% + 4px)") || !layerRule.includes("margin:4px -2px")) throw new Error("the sidebar action row must mirror the Settings row box (width calc(100% + 4px) with margin 4px -2px), never a one-sided top margin");
+if (!badgeRule.includes("box-sizing:border-box")) throw new Error("the sidebar action must size its padding inside the row box, like the Settings key");
+if (!railBadgeRule.includes("height:36px")) throw new Error("the collapsed sidebar action must match the Settings rail key (36px)");
+// Keyboard focus must be visible on the action and on the panel's controls.
+const focusRule = new RegExp("\\.usg_badge:focus-visible[^{]*\\{([^}]*)\\}").exec(source)?.[1] ?? "";
+if (!focusRule.includes("2px solid var(--dsw-alias-brand-primary)")) throw new Error("the sidebar action needs the host brand focus outline");
+// Hover uses the same translucent token as the Settings key; the opaque
+// `-hover-solid` fill is the shell's surface variant, not a row hover.
+const badgeHoverRule = /\.usg_badge:hover\{([^}]*)\}/.exec(source)?.[1] ?? "";
+if (!badgeHoverRule.includes("background:var(--dsw-alias-interactive-bg-hover)")) throw new Error("the sidebar action hover must match the Settings key hover token");
+// Panel surface: the official elevated-menu recipe. The blur token is absent
+// before 0.1.7, where the declaration drops out and the opaque menu colour
+// remains — that fallback is why no version check is needed.
+const panelRule = /\.usg_panel\{([^}]*)\}/.exec(source)?.[1] ?? "";
+const headerRule = /\.usg_header\{([^}]*)\}/.exec(source)?.[1] ?? "";
+if (!panelRule.includes("background:var(--dsw-specific-menu,var(--dsw-alias-bg-overlay,var(--dsw-alias-bg-base)))")) throw new Error("the panel must use the official menu surface colour");
+if (!panelRule.includes("backdrop-filter:var(--dsw-menu-backdrop-filter)")) throw new Error("the panel must pair the translucent menu surface with the official backdrop blur");
+if (!panelRule.includes("box-shadow:var(--dsw-elevation-prominent,var(--dsw-shadow-lv2))")) throw new Error("the panel must take the official prominent elevation with the legacy shadow as fallback");
+if (panelRule.includes("border:1px solid")) throw new Error("the official menu surface draws its hairline through the elevation stroke, not a 1px border");
+if (headerRule.includes("background:")) throw new Error("the panel header must stay transparent so the glass surface is continuous");
+// A control on the translucent panel takes the shell's glass-menu pattern
+// (transparent fill + hairline ring + shared hover fill); only the native popup
+// list stays opaque, because it draws over the page.
+const selectRule = /\.usg_providerSelect\{([^}]*)\}/.exec(source)?.[1] ?? "";
+const selectHoverRule = /\.usg_providerSelect:hover\{([^}]*)\}/.exec(source)?.[1] ?? "";
+const selectOptionRule = /\.usg_providerSelect option\{([^}]*)\}/.exec(source)?.[1] ?? "";
+if (!selectRule.includes("background:transparent")) throw new Error("a control on the translucent panel must not paint an opaque fill");
+if (!selectRule.includes("border:0.5px solid var(--dsw-alias-border-l3")) throw new Error("the provider select must take the shell hairline ring");
+if (!selectHoverRule.includes("background:var(--dsw-alias-interactive-bg-hover)")) throw new Error("the provider select hover must use the shared interactive fill");
+if (!selectOptionRule.includes("background:var(--dsw-alias-bg-layer-3")) throw new Error("the native option list must stay opaque over the page");
+for (const selector of [".usg_iconButton:focus-visible", ".usg_navButton:focus-visible", ".usg_cell:focus-visible", ".usg_day:focus-visible"]) {
+	if (!source.includes(selector)) throw new Error(`panel control ${selector} must join the focus outline rule`);
+}
+new Function(source)(); // executes the window.__ModuleLoader__.load call
+
+if (captured === null) throw new Error("loader did not capture the bundle");
+const packageName = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "..", "package.json"), "utf8")).name;
+if (captured.id !== packageName) throw new Error(`unexpected id ${captured.id}; expected package name ${packageName}`);
+if (!source.includes(`tag.dataset.plugin = "${packageName}"`)) throw new Error(`style ownership id must match package name ${packageName}`);
+
+const exports_ = captured.factory((spec) => {
+	if (spec === "react") return react;
+	if (spec === "react/jsx-runtime") return jsxRuntime;
+	// react-dom/server cannot render portals; the panel portals to document.body
+	// only for theme-token scoping, so the smoke harness inlines it instead.
+	if (spec === "react-dom") return { createPortal: (node) => node };
+	if (spec === "@deepseek-ai/dsh-client-ui-primitives") return primitives;
+	throw new Error(`unexpected require: ${spec}`);
+});
+
+if (typeof exports_.apply !== "function") throw new Error("missing apply export");
+
+const { enableFooterActionWrapping } = exports_;
+if (typeof enableFooterActionWrapping !== "function") throw new Error("footer action wrapping policy must be testable");
+const originalGetComputedStyle = window.getComputedStyle;
+window.getComputedStyle = (node) => node.computedStyle;
+const fullWidthSibling = () => ({ style: { flex: "0 0 100%" } });
+const rowHost = {
+	style: { flexDirection: "", flexWrap: "" },
+	computedStyle: { display: "flex", flexDirection: "row", flexWrap: "nowrap" },
+	children: [fullWidthSibling(), fullWidthSibling()]
+};
+const restoreRowHost = enableFooterActionWrapping(rowHost);
+assert.equal(rowHost.style.flexWrap, "wrap", "row + nowrap must wrap full-width footer actions onto separate lines");
+assert.equal(rowHost.style.flexDirection, "", "the shared host row direction must remain untouched");
+assert.deepEqual(rowHost.children.map((node) => node.style.flex), ["0 0 100%", "0 0 100%"], "sibling full-width flex semantics must remain untouched");
+assert.equal(typeof restoreRowHost, "function");
+restoreRowHost();
+assert.equal(rowHost.style.flexWrap, "", "unmount cleanup must restore the previous inline flexWrap");
+
+const wrappedHost = {
+	style: { flexDirection: "", flexWrap: "wrap" },
+	computedStyle: { display: "flex", flexDirection: "row", flexWrap: "wrap" }
+};
+assert.equal(enableFooterActionWrapping(wrappedHost), undefined, "an already wrapped host must not be modified");
+assert.equal(wrappedHost.style.flexWrap, "wrap");
+
+const columnHost = {
+	style: { flexDirection: "column", flexWrap: "nowrap" },
+	computedStyle: { display: "flex", flexDirection: "column", flexWrap: "nowrap" }
+};
+assert.equal(enableFooterActionWrapping(columnHost), undefined, "a column host must be left untouched");
+assert.equal(columnHost.style.flexDirection, "column");
+assert.equal(columnHost.style.flexWrap, "nowrap");
+window.getComputedStyle = originalGetComputedStyle;
+console.log("shared footer action row/wrap policy ok");
+
+const {
+	ORCAROUTER_ADD_SENTINEL,
+	SELECTED_PROVIDER_STORAGE_KEY,
+	authoritativeProviderList,
+	readSelectedProvider,
+	reconcileSelectedProvider,
+	writeSelectedProvider
+} = exports_;
+assert.equal(ORCAROUTER_ADD_SENTINEL, "__add_orcarouter__");
+assert.equal(SELECTED_PROVIDER_STORAGE_KEY, "@ychris12138/dsh-usage-stats:selected-provider:v1");
+assert.equal(authoritativeProviderList({ ok: false, providers: [] }), null, "a transient provider error must not become an authoritative empty list");
+assert.equal(authoritativeProviderList(null), null);
+writeSelectedProvider("opencode-go", localStorage);
+assert.equal(readSelectedProvider(localStorage), "opencode-go");
+const providerChoicesForStorage = [
+	{ id: "deepseek-account", configured: true },
+	{ id: "deepseek-official", configured: true },
+	{ id: "opencode-go", configured: true }
+];
+assert.deepEqual(authoritativeProviderList({ ok: true, providers: providerChoicesForStorage }), providerChoicesForStorage);
+assert.equal(reconcileSelectedProvider("opencode-go", providerChoicesForStorage, localStorage), "opencode-go", "a valid persisted provider must be restored");
+assert.equal(reconcileSelectedProvider("opencode-go", [], localStorage), "opencode-go", "an empty/transient provider list must not erase the current selection");
+assert.equal(readSelectedProvider(localStorage), "opencode-go", "a transient empty provider list must not clear persisted selection");
+writeSelectedProvider("removed-provider", localStorage);
+assert.equal(reconcileSelectedProvider("removed-provider", providerChoicesForStorage, localStorage), "deepseek-account", "a removed provider must prefer the signed-in DeepSeek Account route");
+assert.equal(readSelectedProvider(localStorage), null, "a removed provider must be cleared from storage");
+writeSelectedProvider("deepseek-official", localStorage);
+const sentinelWriteStart = storedWrites.length;
+writeSelectedProvider(ORCAROUTER_ADD_SENTINEL, localStorage);
+assert.equal(readSelectedProvider(localStorage), "deepseek-official", "the synthetic action must not replace or clear the persisted provider");
+assert.equal(storedWrites.slice(sentinelWriteStart).some(([, value]) => value === ORCAROUTER_ADD_SENTINEL), false, "the synthetic action sentinel must never reach localStorage");
+storedValues.set(SELECTED_PROVIDER_STORAGE_KEY, ORCAROUTER_ADD_SENTINEL);
+assert.equal(readSelectedProvider(localStorage), null, "a legacy/corrupt synthetic sentinel must be removed when read");
+writeSelectedProvider("bad\0provider", localStorage);
+assert.equal(readSelectedProvider(localStorage), null, "malformed provider ids must not be persisted");
+const deniedStorage = { getItem: () => { throw new Error("denied"); }, setItem: () => { throw new Error("denied"); }, removeItem: () => { throw new Error("denied"); } };
+assert.equal(readSelectedProvider(deniedStorage), null);
+writeSelectedProvider("deepseek-official", deniedStorage);
+console.log("provider persistence policy ok");
+
+const { shouldDismissPanel, safeDiagnosticReason } = exports_;
+const panelNode = { contains: (target) => target === "panel-child" };
+const layerNode = { contains: (target) => target === "badge-child" };
+if (shouldDismissPanel([panelNode], "panel-child", layerNode, panelNode)) throw new Error("panel click must stay open");
+if (shouldDismissPanel([layerNode], "badge-child", layerNode, panelNode)) throw new Error("badge click must stay inside");
+if (!shouldDismissPanel([], "page-content", layerNode, panelNode)) throw new Error("outside click must dismiss");
+if (!shouldDismissPanel([], "page-content", null, null)) throw new Error("missing refs must fail safe as outside");
+if (safeDiagnosticReason("all-addresses-unreachable") !== "all-addresses-unreachable") throw new Error("safe reason should pass");
+if (safeDiagnosticReason("Authorization: Bearer secret") !== null) throw new Error("secret-like reason must be rejected");
+if (safeDiagnosticReason("x".repeat(161)) !== null) throw new Error("oversized reason must be rejected");
+console.log("panel dismissal and diagnostic guards ok");
+
+// Render the panel (closed state) to static markup.
+const { UsageStatsPanel } = exports_;
+const markup = renderToStaticMarkup(react.createElement(UsageStatsPanel, { wide: true, t: (key) => key }));
+if (!markup.includes("用量/余额") && !markup.includes("panel.badge")) throw new Error("badge label missing from markup");
+const railMarkup = renderToStaticMarkup(react.createElement(UsageStatsPanel, { wide: false, t: (key) => key }));
+if (!railMarkup.includes("usg_rail") || !railMarkup.includes("data-usage-stats-badge")) throw new Error("collapsed rail must retain the sidebar Usage Stats action");
+console.log("sidebar render ok, wide/rail markup:", markup.length, railMarkup.length);
+
+// The same panel against the other supported primitive surfaces: the 0.1.7 icon
+// spelling must resolve, and a host that exports no icon at all must still render
+// through the inline fallback instead of throwing the sidebar action away.
+const renderBadgeWith = (surface) => {
+	const surfaceExports = captured.factory((spec) => {
+		if (spec === "react") return react;
+		if (spec === "react/jsx-runtime") return jsxRuntime;
+		if (spec === "react-dom") return { createPortal: (node) => node };
+		if (spec === "@deepseek-ai/dsh-client-ui-primitives") return surface;
+		throw new Error(`unexpected require: ${spec}`);
+	});
+	return renderToStaticMarkup(react.createElement(surfaceExports.UsageStatsPanel, { wide: false, t: (key) => key }));
+};
+if (!markup.includes("data-icon-stub")) throw new Error("the legacy icon exports must be used when the host provides them");
+const currentMarkup = renderBadgeWith(primitivesSurface(currentIcons));
+if (!currentMarkup.includes("data-usage-stats-badge")) throw new Error("the panel must render against the 0.1.7 icon set");
+if (!currentMarkup.includes("data-icon-stub")) throw new Error("the 0.1.7 icon exports must be used when the host provides them");
+const bareMarkup = renderBadgeWith(primitivesSurface({}));
+if (!bareMarkup.includes("data-usage-stats-badge")) throw new Error("the panel must render when the host exports no icon");
+if (bareMarkup.includes("data-icon-stub") || !bareMarkup.includes("<svg")) throw new Error("a missing icon must fall back to the inline glyph");
+console.log("icon surface compatibility ok (legacy, 0.1.7, none)");
+
+// Apply against a stub client context.
+const registrations = [];
+const registeredEntries = [];
+const ctx = {
+	effect: () => {},
+	locale: { register: (ns, dict) => { if (ns !== "usageStats") throw new Error(`unexpected ns ${ns}`); if (!dict.zh || !dict.en) throw new Error("missing dictionaries"); } },
+	inject: () => { throw new Error("sidebar-only client must not request session-specific services"); },
+	slots: {
+		inject: (slot, fn) => { registrations.push([slot, fn]); return () => {}; },
+		register: (options, component) => { registeredEntries.push({ options, component }); return () => {}; }
+	}
+};
+exports_.apply(ctx);
+if (registrations.length !== 1) throw new Error(`expected only the sidebar slot injection, got ${registrations.length}`);
+const registrationBySlot = new Map(registrations);
+if (!registrationBySlot.has("sidebar.footer.action")) throw new Error("sidebar footer slot registration missing");
+for (const registerFn of registrationBySlot.values()) {
+	const disposer = registerFn();
+	if (typeof disposer !== "function") throw new Error("slot registration must return a disposer");
+}
+const sidebarEntry = registeredEntries.find((entry) => entry.options.name === "sidebar.footer.action");
+if (sidebarEntry?.options.id !== "usage-stats" || typeof sidebarEntry.component !== "function") throw new Error("sidebar action must remain the sole client entry");
+console.log("apply ok, sidebar-only slot:", [...registrationBySlot.keys()].join(", "));
+
+// Render the month heatmap with synthetic per-day data (calendar grid + colors).
+const { MonthHeatmap, DayDetail, buildMonthHeatmap } = exports_;
+const dayMap = new Map();
+const now = new Date();
+for (let i = 0; i < 40; i += 1) {
+	const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+	const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+	dayMap.set(key, { tokens: 1000 + i * 137, cacheHitRate: i % 3 === 0 ? null : 90.5 });
+}
+const heat = buildMonthHeatmap(dayMap, now.getFullYear(), now.getMonth());
+if (heat.weeks.length < 4 || heat.weeks.length > 6) throw new Error(`unexpected week count ${heat.weeks.length}`);
+for (const week of heat.weeks) if (week.length !== 7) throw new Error("week must have 7 slots");
+const heatMarkup = renderToStaticMarkup(react.createElement(MonthHeatmap, {
+	heat,
+	translate: (key) => key,
+	selectedKey: null,
+	onSelect: () => {}
+}));
+if (heatMarkup.length < 500) throw new Error("heatmap markup too small");
+if (!heatMarkup.includes("tokens")) throw new Error("heatmap cells missing tooltips");
+console.log("month heatmap render ok, markup length:", heatMarkup.length, "| weeks:", heat.weeks.length);
+
+// Sqrt rgba scale: monotonic in tokens — more usage → deeper blue (higher alpha).
+const { cellColor } = exports_;
+const levelOf = (tokens, max) => {
+	const style = cellColor(tokens, max);
+	if (style.background === "var(--usg-cellEmpty)") return 0;
+	return Number(style.background.match(/rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/)[4]);
+};
+const levelMap = new Map();
+const lkeys = [];
+for (let i = 1; i <= 4; i += 1) {
+	const d = new Date(now.getFullYear(), now.getMonth(), i);
+	const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+	levelMap.set(key, { tokens: [1000, 100000, 10000000, 40000000][i - 1], cacheHitRate: 90 });
+	lkeys.push(key);
+}
+const levelHeat = buildMonthHeatmap(levelMap, now.getFullYear(), now.getMonth());
+const levels = lkeys.map((key) => levelOf(levelHeat.weeks.flat().find((c) => c !== null && c.key === key).tokens, levelHeat.max));
+if (levels[3] !== 1) throw new Error(`max day must be alpha 1 (deep blue), got ${levels[3]}`);
+for (let i = 1; i < 4; i += 1) if (levels[i] < levels[i - 1]) throw new Error(`levels not monotonic: ${JSON.stringify(levels)}`);
+if (levelOf(0, levelHeat.max) !== 0) throw new Error("zero tokens must be level 0");
+if (!cellColor(1000, levelHeat.max).background.startsWith("rgba(")) throw new Error("background must be plain rgba (no color-mix)");
+console.log("rgba sqrt scale monotonic ok:", JSON.stringify(levels.map((a) => a.toFixed(3))));
+
+// Regression: the panel parses `YYYY-MM` (1-based) from viewMonth; emulate it
+// and check the grid lands on the right month (August 2026 starts on Saturday).
+const [panelYear, panelMonth] = "2026-08".split("-").map(Number);
+const panelHeat = buildMonthHeatmap(levelMap, panelYear, panelMonth - 1);
+const firstWeek = panelHeat.weeks[0];
+if (firstWeek[5] === null || firstWeek[5].day !== 1) throw new Error(`August 2026 should start with day 1 at weekday index 5, got ${JSON.stringify(firstWeek)}`);
+if (firstWeek[0] !== null || firstWeek[4] !== null) throw new Error("August 2026 must lead with 5 empty slots");
+console.log("month off-by-one regression ok (Aug 2026 grid correct)");
+
+// Render the day-detail view with per-model breakdown.
+const dayDetail = renderToStaticMarkup(react.createElement(DayDetail, {
+	day: {
+		date: "2026-08-13",
+		tokens: 34333358,
+		inputTokens: 199382,
+		outputTokens: 116824,
+		cacheReadTokens: 34017152,
+		cacheWriteTokens: 0,
+		cacheHitRate: 99.4,
+		models: [
+			{ model: "deepseek-official/deepseek-v4-flash", tokens: 30000000, inputTokens: 100000, outputTokens: 50000, cacheReadTokens: 29000000, cacheWriteTokens: 0, cacheHitRate: 99.6 },
+			{ model: "ark/deepseek-v4-flash", tokens: 4333358, inputTokens: 99382, outputTokens: 66824, cacheReadTokens: 5017152, cacheWriteTokens: 0, cacheHitRate: 98.1 }
+		]
+	},
+	translate: (key) => key,
+	onBack: () => {}
+}));
+if (!dayDetail.includes("deepseek-v4-flash")) throw new Error("day detail missing model rows");
+if (!dayDetail.includes("deepseek-official · deepseek-v4-flash")) throw new Error("day detail must prefix the provider");
+if (!dayDetail.includes("ark · deepseek-v4-flash")) throw new Error("same model from another provider must stay distinct");
+if (dayDetail.length < 500) throw new Error("day detail markup too small");
+console.log("day detail render ok (provider-prefixed models), markup length:", dayDetail.length);
+
+// Balance and subscription providers share one account-card frame. Only the
+// selected provider is rendered; the inner payload varies by account mode.
+const { ProviderAccountCard, buildProviderChoices, buildProviderPickerChoices, providerChoiceLabel } = exports_;
+if (typeof providerChoiceLabel !== "function") throw new Error("provider choice presentation helper is missing");
+if (typeof buildProviderPickerChoices !== "function") throw new Error("synthetic provider choice policy must be testable");
+assert.equal(
+	providerChoiceLabel({ id: "orcarouter", displayName: "OrcaRouter" }, (key) => key === "orcarouter.choiceSuffix" ? "（赞助集成）" : key),
+	"OrcaRouter（赞助集成）",
+	"OrcaRouter sponsorship must stay a compact parenthetical selector label"
+);
+assert.equal(providerChoiceLabel({ id: "deepseek-official", displayName: "DeepSeek" }, () => "（赞助集成）"), "DeepSeek", "other provider labels must remain unchanged");
+const freshProviderChoices = buildProviderPickerChoices(
+	buildProviderChoices([{ id: "deepseek-official", displayName: "DeepSeek", configured: true }]),
+	{ available: true, installed: false }
+);
+assert.equal(freshProviderChoices.at(-1)?.id, ORCAROUTER_ADD_SENTINEL, "a fresh writable install must append the synthetic OrcaRouter action");
+assert.equal(
+	providerChoiceLabel(freshProviderChoices.at(-1), (key) => key === "orcarouter.choiceSuffix" ? "（赞助集成）" : key),
+	"OrcaRouter（赞助集成）"
+);
+const installedProviderChoices = buildProviderPickerChoices(buildProviderChoices([
+	{ id: "deepseek-official", displayName: "DeepSeek", configured: true },
+	{ id: "orcarouter", displayName: "OrcaRouter", configured: true }
+]), { available: true, installed: false });
+assert.equal(installedProviderChoices.filter((provider) => provider.id === "orcarouter").length, 1, "a real OrcaRouter provider must not gain a synthetic duplicate");
+assert.equal(installedProviderChoices.some((provider) => provider.id === ORCAROUTER_ADD_SENTINEL), false);
+assert.equal(
+	buildProviderPickerChoices(buildProviderChoices([{ id: "deepseek-official" }]), { available: false, installed: false }).some((provider) => provider.id === ORCAROUTER_ADD_SENTINEL),
+	false,
+	"an unavailable settings seam must not expose an unusable action"
+);
+assert.equal(
+	buildProviderPickerChoices(buildProviderChoices([{ id: "deepseek-official" }]), { available: true }).some((provider) => provider.id === ORCAROUTER_ADD_SENTINEL),
+	false,
+	"an incomplete integration status must fail closed"
+);
+const translateAccount = (key, params) => {
+	if (params?.value !== void 0) return `${key}:${params.value}`;
+	if (params?.refs !== void 0) return `${key}:${params.refs}`;
+	if (params?.ref !== void 0) return `${key}:${params.ref}`;
+	return key;
+};
+const deepseekAccount = {
+	id: "deepseek-official",
+	displayName: "DeepSeek",
+	mode: "balance",
+	status: "ok",
+	balance: { remaining: 36.44, currency: "CNY", unlimited: false, breakdown: { toppedUp: 20, granted: 16.44 } }
+};
+const deepseekMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+	provider: { id: "deepseek-official", displayName: "DeepSeek", accountMode: "balance" },
+	account: deepseekAccount,
+	accountLoading: false,
+	accountError: null,
+	translate: translateAccount,
+	onRetry: () => {}
+}));
+const goSubscription = {
+	id: "opencode-go",
+	displayName: "OpenCode Go",
+	status: "ok",
+	plan: "Go",
+	windows: [
+		{ kind: "session", usedPercent: 12, remainingPercent: 88, resetsAt: "2026-08-14T01:00:00Z" },
+		{ kind: "weekly", usedPercent: 34, remainingPercent: 66 },
+		{ kind: "monthly", usedPercent: 56, remainingPercent: 44 }
+	]
+};
+const goMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+	provider: { id: "opencode-go", displayName: "OpenCode Go", accountMode: "subscription", subscriptionId: "opencode-go" },
+	account: { ...goSubscription, mode: "subscription" },
+	accountLoading: false,
+	accountError: null,
+	translate: translateAccount,
+	onRetry: () => {}
+}));
+if (!deepseekMarkup.includes("usg_accountCard") || !goMarkup.includes("usg_accountCard")) throw new Error("both account modes must use the shared card frame");
+if (!deepseekMarkup.includes("data-account-mode=\"balance\"") || !deepseekMarkup.includes("DeepSeek") || deepseekMarkup.includes("progressbar")) throw new Error("DeepSeek must render only monetary balance data");
+if (!goMarkup.includes("data-account-mode=\"subscription\"") || !goMarkup.includes("OpenCode Go")) throw new Error("OpenCode Go must render the subscription account mode");
+if ((goMarkup.match(/role="progressbar"/g) ?? []).length !== 3 || !goMarkup.includes("width:12%")) throw new Error("OpenCode Go must render three quota meters");
+for (const [window, expected] of [
+	[{ kind: "quota", label: "ZCode credit", amount: 75 }, "75"],
+	[{ kind: "quota", label: "Zero credit", amount: 0 }, "0"],
+	[{ kind: "quota", label: "Unknown credit" }, "—"]
+]) {
+	const markup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+		provider: { id: "zcode", displayName: "ZCode", accountMode: "subscription" },
+		account: { mode: "subscription", status: "ok", windows: [window] },
+		accountLoading: false, accountError: null, translate: translateAccount, onRetry: () => {}
+	}));
+	assert.ok(markup.includes(expected), `CodeArts quota must display ${expected}`);
+	assert.equal(markup.includes('role="progressbar"'), false, "absolute or unknown quotas must not invent a progress bar");
+	if (window.amount === void 0) assert.equal(markup.includes('class="usg_quotaValue">Remaining 0'), false);
+}
+// Command Code reports a plan credit pool next to its rolling windows, so the
+// subscription card must show both instead of forcing a choice between them.
+const usd = (amount) => new Intl.NumberFormat(void 0, { style: "currency", currency: "USD" }).format(amount);
+const commandCodeAccount = {
+	id: "commandcode",
+	displayName: "Command Code",
+	mode: "subscription",
+	adapter: "commandcode-goat",
+	status: "ok",
+	plan: "GOAT",
+	windows: [
+		{ kind: "session", usedPercent: 2, remainingPercent: 98, resetsAt: "2026-09-28T12:00:00Z" },
+		{ kind: "weekly", usedPercent: 0.8, remainingPercent: 99.2 },
+		{ kind: "monthly", usedPercent: 0.3, remainingPercent: 99.7, resetsAt: "2026-10-01T00:00:00Z" }
+	],
+	balance: { remaining: 69.72, used: 0.24, total: 69.96, currency: "USD", breakdown: { granted: 0, toppedUp: 0 } }
+};
+const commandCodeMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+	provider: { id: "commandcode", displayName: "Command Code", accountMode: "subscription", adapter: "commandcode-goat" },
+	account: commandCodeAccount,
+	accountLoading: false,
+	accountError: null,
+	translate: translateAccount,
+	onRetry: () => {}
+}));
+if (!commandCodeMarkup.includes("data-account-mode=\"subscription\"") || !commandCodeMarkup.includes("Command Code") || !commandCodeMarkup.includes("GOAT")) {
+	throw new Error("Command Code must render the subscription card with its plan label");
+}
+if (!commandCodeMarkup.includes(usd(69.72))) throw new Error("Command Code must render the credit balance beside its windows");
+if ((commandCodeMarkup.match(/role="progressbar"/g) ?? []).length !== 3 || !commandCodeMarkup.includes("width:2%")) {
+	throw new Error("Command Code must render 5-hour, weekly and monthly windows");
+}
+if (!commandCodeMarkup.includes("subscription.window.monthly") || !commandCodeMarkup.includes("width:0.3%")) {
+	throw new Error("the monthly credit pool must render as its own window");
+}
+// Credits without a readable window are a complete answer: the card may not
+// also claim the provider returned no quota windows.
+const creditsOnlyMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+	provider: { id: "commandcode", displayName: "Command Code", accountMode: "subscription", adapter: "commandcode-goat" },
+	account: { ...commandCodeAccount, plan: void 0, windows: [], balance: { remaining: 3, currency: "USD" } },
+	accountLoading: false,
+	accountError: null,
+	translate: translateAccount,
+	onRetry: () => {}
+}));
+if (!creditsOnlyMarkup.includes(usd(3)) || creditsOnlyMarkup.includes("usg_quotaEmpty")) {
+	throw new Error("a credits-only Command Code account must show its balance without an empty-quota notice");
+}
+const invalidMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+	provider: { id: "minimax", displayName: "MiniMax", accountMode: "subscription" },
+	account: { id: "minimax", displayName: "MiniMax", mode: "subscription", status: "invalid-response", windows: [], reason: "all-addresses-unreachable" },
+	accountLoading: false,
+	accountError: null,
+	translate: translateAccount,
+	onRetry: () => {}
+}));
+if (!invalidMarkup.includes("account.status.invalidResponse") || !invalidMarkup.includes("account.invalidResponse")) throw new Error("invalid account responses need a distinct status and explanation");
+if (!invalidMarkup.includes("account.reason.allAddressesUnreachable")) throw new Error("safe diagnostic reason must render in account card");
+
+// Local security-policy rejections must render a distinct blocked state, not
+// the "provider has no balance interface" unsupported message.
+const blockedMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+	provider: { id: "relay-a", displayName: "Relay A", accountMode: "balance" },
+	account: { id: "relay-a", displayName: "Relay A", mode: "balance", status: "blocked", balance: null },
+	accountLoading: false,
+	accountError: null,
+	translate: translateAccount,
+	onRetry: () => {}
+}));
+const blockedSubMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+	provider: { id: "opencode-go", displayName: "OpenCode Go", accountMode: "subscription" },
+	account: { id: "opencode-go", displayName: "OpenCode Go", mode: "subscription", status: "blocked", windows: [] },
+	accountLoading: false,
+	accountError: null,
+	translate: translateAccount,
+	onRetry: () => {}
+}));
+if (!blockedMarkup.includes("account.status.blocked") || !blockedMarkup.includes("account.blocked")) throw new Error("blocked balance queries need a distinct status and neutral explanation");
+if (!blockedSubMarkup.includes("account.status.blocked") || !blockedSubMarkup.includes("account.blocked")) throw new Error("blocked subscription queries need a distinct status and neutral explanation");
+if (blockedMarkup.includes("balance.unsupported")) throw new Error("blocked must not reuse the unsupported explanation");
+if (blockedMarkup.includes("balance.blocked") || blockedSubMarkup.includes("balance.blocked")) throw new Error("blocked must not reuse the balance-specific explanation");
+if (!source.includes('"account.status.blocked"') || !source.includes('"account.blocked"')) throw new Error("blocked status keys missing from client locales");
+if (source.includes('"balance.blocked"')) throw new Error("balance-specific blocked copy must not be reintroduced");
+
+const healthMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+	provider: { id: "deepseek-official", displayName: "DeepSeek", accountMode: "balance", adapter: "deepseek-balance" },
+	account: {
+		...deepseekAccount,
+		status: "rate-limited",
+		stale: true,
+		lastAttemptAt: Date.parse("2026-08-24T01:00:00Z"),
+		lastSuccessAt: Date.parse("2026-08-24T00:00:00Z"),
+		ageMs: 3600000,
+		provenance: "official",
+		reason: "rate-limited",
+		secret: "SECRET_API_KEY"
+	},
+	accountLoading: false,
+	accountError: null,
+	translate: translateAccount,
+	onRetry: () => {}
+}));
+for (const expected of ["account.status.stale", "account.health.lastAttempt", "account.health.lastSuccess", "account.health.age", "account.health.provenance", "account.provenance.official", "account.reason.rateLimited"]) {
+	if (!healthMarkup.includes(expected)) throw new Error(`account health detail is missing ${expected}`);
+}
+if (!healthMarkup.includes('data-account-stale="true"') || healthMarkup.includes("SECRET_API_KEY")) throw new Error("stale health metadata must be explicit and secret-free");
+
+const choices = buildProviderChoices([
+	{ id: "deepseek-official", displayName: "DeepSeek", adapter: "deepseek-balance", accountMode: "balance", configured: true },
+	{ id: "zai-coding-cn", displayName: "Z.ai CN", adapter: "zai-token-plan", accountMode: "subscription", configured: true },
+	{ id: "opencode-go", displayName: "OpenCode Go", adapter: "opencode-go", accountMode: "subscription", configured: true }
+]);
+if (choices.length !== 3) throw new Error(`provider metadata must remain one row per provider, got ${choices.length}`);
+if (choices.find((provider) => provider.id === "zai-coding-cn")?.accountMode !== "subscription") throw new Error("Z.ai must prefer its subscription presentation");
+const selectedMarkup = goMarkup;
+if (selectedMarkup.includes("DeepSeek") || selectedMarkup.includes("Z.ai")) throw new Error("the account area must render only the selected provider");
+console.log("unified single-provider account card ok, balance:", deepseekMarkup.length, "subscription:", goMarkup.length);
+
+// Race regression (P1): usage and account must each keep their OWN staleness
+// counter, so an account request issued right after a usage request must NOT
+// invalidate the in-flight usage response.
+const { budgetWindowText, createLoader, fmtCurrency } = exports_;
+if (typeof budgetWindowText !== "function") throw new Error("budget display helper missing");
+const usageLoader = createLoader();
+const accountLoader = createLoader();
+const usageId = usageLoader.start();
+const accountId = accountLoader.start();
+if (!usageLoader.isCurrent(usageId)) throw new Error("race: account start invalidated the usage request");
+if (!accountLoader.isCurrent(accountId)) throw new Error("account request must stay current");
+usageLoader.start(); // a newer usage refresh supersedes the old one
+if (usageLoader.isCurrent(usageId)) throw new Error("a newer usage start must supersede the previous usage request");
+if (!accountLoader.isCurrent(accountId)) throw new Error("account must not be affected by usage refreshes");
+console.log("loader race regression ok (independent usage/account counters)");
+
+// Currency formatting must respect the reported currency, not hardcode ¥.
+const cny = fmtCurrency("36.44", "CNY");
+if (!cny.includes("36.44")) throw new Error(`unexpected CNY format: ${cny}`);
+if (fmtCurrency(void 0, "CNY") !== "—") throw new Error("missing amount must render em dash");
+if (fmtCurrency("9.9", "USD").includes("¥")) throw new Error("USD must not render as ¥");
+console.log("currency formatting ok:", cny);
+
+const { buildSessionCostRows, sessionCostMeta } = exports_;
+const sessionRows = buildSessionCostRows([
+	{ sessionId: "old", title: "Old", tokens: 1000, estimatedCost: 1.25, currency: "USD", costComplete: true, models: ["deepseek-v4-flash"], lastAt: "2026-09-01T00:00:00.000Z" },
+	{ sessionId: "unknown", title: "Unknown", tokens: 2000, estimatedCost: null, currency: null, costComplete: false, models: ["relay-model"], lastAt: "2026-09-03T00:00:00.000Z" },
+	{ sessionId: "new", title: "New", tokens: 3000, estimatedCost: 0, currency: "USD", costComplete: true, models: ["deepseek-v4-pro"], lastAt: "2026-09-02T00:00:00.000Z" }
+]);
+assert.deepEqual(sessionRows.map((session) => session.sessionId), ["new", "old"], "only complete priced sessions should render, newest first");
+assert.equal(sessionRows[0].estimatedCost, 0, "a complete zero-cost session remains a valid priced session");
+assert.equal(buildSessionCostRows(sessionRows, 1).length, 1, "session cost list limit must be respected");
+assert.equal(buildSessionCostRows(sessionRows, 0).length, 0);
+const sessionTranslate = (key, params) => {
+	if (key === "sessionCost.meta") return `${params.tokens} tokens · ${params.models}`;
+	if (key === "sessionCost.tokensOnly") return `${params.tokens} tokens`;
+	return key;
+};
+const meta = sessionCostMeta(sessionRows[0], sessionTranslate);
+if (!meta.includes("3,000") || !meta.includes("deepseek-v4-pro")) throw new Error(`unexpected session cost metadata: ${meta}`);
+console.log("session cost filtering, ordering, zero-cost handling, and metadata ok");
+const budgetTranslate = (key, params) => {
+	if (key === "budget.period.daily") return "Today";
+	if (key === "budget.level.warning") return "Near";
+	if (key === "budget.level.unknown") return "Unknown";
+	if (key === "budget.summary") return `${params.period}: ${params.spent} / ${params.limit} · ${params.level}`;
+	return key;
+};
+const warningBudget = budgetWindowText("daily", { limit: 10, currency: "USD", estimatedSpend: 8, costComplete: true, level: "warning" }, budgetTranslate);
+if (!warningBudget.includes("8.00") || !warningBudget.includes("10.00") || !warningBudget.includes("Near")) throw new Error(`known budget state must be visible: ${warningBudget}`);
+const unknownBudget = budgetWindowText("daily", { limit: 10, currency: "USD", estimatedSpend: null, costComplete: false, level: "unknown" }, budgetTranslate);
+if (!unknownBudget.includes("—") || !unknownBudget.includes("Unknown")) throw new Error("incomplete budget cost must stay unknown");
+
+// Collapsed-badge account value + warning policy (v0.2.0 unified account model).
+const { badgeAccountValue, badgeWarnOf } = exports_;
+// balance just above the threshold => normal, no warning
+const balanceOk = badgeAccountValue({ mode: "balance", status: "ok", balance: { remaining: 6, currency: "USD" } });
+if (balanceOk === null || balanceOk.kind !== "balance" || balanceOk.value !== 6) throw new Error(`balance 6 must render amount, got ${JSON.stringify(balanceOk)}`);
+if (!balanceOk.display.includes("6")) throw new Error("balance display must include the amount");
+if (badgeWarnOf({ mode: "balance", status: "ok", balance: { remaining: 6, currency: "USD" } }) !== false) throw new Error("balance 6 must NOT warn");
+// balance at/below threshold => warning (red)
+if (badgeWarnOf({ mode: "balance", status: "ok", balance: { remaining: 5, currency: "USD" } }) !== true) throw new Error("balance 5 must warn");
+if (badgeWarnOf({ mode: "balance", status: "ok", balance: { remaining: 0, currency: "USD" } }) !== true) throw new Error("balance 0 must warn");
+// subscription: lowest remaining percent wins
+const subLow = badgeAccountValue({ mode: "subscription", status: "ok", windows: [{ remainingPercent: 40 }, { remainingPercent: 4 }] });
+if (subLow === null || subLow.kind !== "percent" || subLow.value !== 4 || subLow.display !== "4%") throw new Error(`subscription must warn on the lowest window, got ${JSON.stringify(subLow)}`);
+if (badgeWarnOf({ mode: "subscription", status: "ok", windows: [{ remainingPercent: 40 }, { remainingPercent: 4 }] }) !== true) throw new Error("subscription with a 4% window must warn");
+if (badgeWarnOf({ mode: "subscription", status: "ok", windows: [{ remainingPercent: 40 }, { remainingPercent: 55 }] }) !== false) throw new Error("subscription all above 5% must NOT warn");
+assert.equal(badgeAccountValue({ mode: "subscription", status: "ok", windows: [
+	{ kind: "expired", remainingPercent: 0 }, { kind: "quota", remainingPercent: 75 }
+] }).value, 75, "expired packages must not replace the active quota badge");
+assert.equal(badgeAccountValue({ mode: "subscription", status: "ok", windows: [{ kind: "expired", remainingPercent: 0 }] }), null);
+// not-configured / unavailable / empty => no misleading numeric value, no warning
+if (badgeAccountValue({ mode: "balance", status: "not-configured" }) !== null) throw new Error("not-configured balance must not show a numeric badge");
+if (badgeAccountValue({ mode: "balance", status: "signed-out" }) !== null) throw new Error("signed-out account must not show a numeric badge");
+if (badgeAccountValue({ mode: "balance", status: "ok", balance: { remaining: null, currency: null, wallets: [
+	{ currency: "CNY", remaining: 10 }, { currency: "USD", remaining: 2 }
+] } }) !== null) throw new Error("multi-currency account must not invent one collapsed total");
+if (badgeAccountValue({ mode: "subscription", status: "unavailable", windows: [] }) !== null) throw new Error("unavailable subscription must not show a numeric badge");
+if (badgeWarnOf({ mode: "balance", status: "not-configured" }) !== false) throw new Error("not-configured must never warn");
+if (badgeWarnOf(null) !== false) throw new Error("null account must never warn");
+// stale/unavailable snapshots that still carry PREVIOUS data must NOT render a
+// colored value (the badge must not show an outdated balance/quota as current)
+const staleBalance = { mode: "balance", status: "unavailable", stale: true, balance: { remaining: 2, currency: "CNY" } };
+if (badgeAccountValue(staleBalance) !== null) throw new Error("stale balance snapshot must not render a numeric badge");
+if (badgeWarnOf(staleBalance) !== false) throw new Error("stale balance snapshot must never warn");
+const staleSubscription = { mode: "subscription", status: "unavailable", stale: true, windows: [{ remainingPercent: 3 }] };
+if (badgeAccountValue(staleSubscription) !== null) throw new Error("stale subscription snapshot must not render a numeric badge");
+if (badgeWarnOf(staleSubscription) !== false) throw new Error("stale subscription snapshot must never warn");
+// a stale flag on an otherwise ok snapshot is also a no-render condition
+const okButStale = { mode: "balance", status: "ok", stale: true, balance: { remaining: 100, currency: "USD" } };
+if (badgeAccountValue(okButStale) !== null) throw new Error("ok-but-stale snapshot must not render a numeric badge");
+console.log("collapsed-badge account value + warning policy ok");
+
+const { formatResetCountdown } = exports_;
+const resetTranslate = (key, params) => {
+	if (key === "duration.minutes") return `${params.minutes}m`;
+	if (key === "duration.hoursMinutes") return `${params.hours}h ${params.minutes}m`;
+	if (key === "duration.daysHours") return `${params.days}d ${params.hours}h`;
+	if (key === "subscription.resets") return `Resets in ${params.time}`;
+	if (key === "subscription.resetDue") return "Reset due";
+	return key;
+};
+const resetNow = Date.parse("2026-08-24T00:00:00Z");
+assert.equal(formatResetCountdown(null, resetNow, resetTranslate), "");
+assert.equal(formatResetCountdown("invalid", resetNow, resetTranslate), "");
+assert.equal(formatResetCountdown("2026-08-23T23:59:00Z", resetNow, resetTranslate), "Reset due");
+assert.equal(formatResetCountdown("2026-08-24T00:05:00Z", resetNow, resetTranslate), "Resets in 5m");
+assert.equal(formatResetCountdown("2026-08-24T02:37:00Z", resetNow, resetTranslate), "Resets in 2h 37m");
+assert.equal(formatResetCountdown("2026-08-27T14:00:00Z", resetNow, resetTranslate), "Resets in 3d 14h");
+console.log("panel reset countdown formatting ok");
+
+const { tariffWindowText } = exports_;
+const tariffTranslate = (key, params) => {
+	if (key === "duration.minutes") return `${params.minutes}m`;
+	if (key === "duration.hoursMinutes") return `${params.hours}h ${params.minutes}m`;
+	if (key === "duration.daysHours") return `${params.days}d ${params.hours}h`;
+	if (key === "pricing.peak") return "Peak";
+	if (key === "pricing.offPeak") return "Off-peak";
+	if (key === "pricing.peakCountdown") return `Peak · off-peak in ${params.time}`;
+	if (key === "pricing.offPeakCountdown") return `Off-peak · peak in ${params.time}`;
+	return key;
+};
+assert.equal(tariffWindowText({ tariff: "peak", nextTransitionAt: "2026-08-24T04:00:00.000Z" }, Date.parse("2026-08-24T03:00:00.000Z"), tariffTranslate), "Peak · off-peak in 1h 0m");
+assert.equal(tariffWindowText({ tariff: "offPeak", nextTransitionAt: "2026-08-31T01:00:00.000Z" }, Date.parse("2026-08-30T01:00:00.000Z"), tariffTranslate), "Off-peak · peak in 1d 0h");
+assert.equal(tariffWindowText({ tariff: "peak", nextTransitionAt: "2026-08-24T04:00:00.000Z" }, Date.parse("2026-08-24T04:00:00.000Z"), tariffTranslate), "", "expired tariff state must not remain visible");
+assert.equal(tariffWindowText(null, Date.now(), tariffTranslate), "");
+console.log("DeepSeek tariff countdown formatting ok");
+
+const { accountRequestHeaders } = exports_;
+const accountHeaders = accountRequestHeaders();
+assert.equal(typeof accountHeaders["x-dsh-usage-stats-client-locale"], "string");
+assert.match(accountHeaders["x-dsh-usage-stats-timezone-offset"], /^-?\d+$/);
+console.log("DeepSeek Account request metadata headers ok");
+
+// Mount the real sidebar action and verify its own badge opens the existing
+// panel. Network and timers are inert test doubles; production still uses the
+// panel's existing refresh/cache path.
+const originalFetch = globalThis.fetch;
+const integrationRequests = [];
+document.addEventListener = () => {};
+document.removeEventListener = () => {};
+window.setInterval = () => 1;
+window.clearInterval = () => {};
+const providerFixture = (includeOrcaRouter = false) => [
+	{ id: "deepseek-official", displayName: "DeepSeek", configured: true, accountMode: "balance" },
+	{ id: "opencode-go", displayName: "OpenCode Go", configured: true, accountMode: "subscription" },
+	...(includeOrcaRouter ? [{ id: "orcarouter", displayName: "OrcaRouter", configured: true, accountMode: "balance", adapter: null }] : [])
+];
+const usageFixture = {
+	ok: true,
+	days: [],
+	total: { tokens: 0 },
+	budgets: {
+		daily: { limit: 10, currency: "USD", estimatedSpend: 8, costComplete: true, level: "warning" },
+		monthly: { limit: null, currency: "USD", estimatedSpend: 8, costComplete: true, level: "disabled" }
+	}
+};
+const accountFixtureFor = (path) => {
+	const providerId = new URL(String(path), "http://local.test").searchParams.get("provider") ?? "deepseek-official";
+	return providerId === "opencode-go"
+		? { id: providerId, displayName: "OpenCode Go", mode: "subscription", status: "ok", windows: [{ kind: "weekly", remainingPercent: 18 }], alert: { level: "warning" } }
+		: { id: providerId, displayName: providerId === "orcarouter" ? "OrcaRouter" : "DeepSeek", mode: "balance", status: providerId === "orcarouter" ? "unsupported" : "ok", balance: providerId === "orcarouter" ? null : { remaining: 5, currency: "USD" } };
+};
+const responseFixture = (payload, { ok = true, status = 200 } = {}) => ({ ok, status, json: async () => payload });
+const flushPanelEffects = async () => {
+	for (let index = 0; index < 5; index += 1) await Promise.resolve();
+};
+globalThis.fetch = async (path, options = {}) => {
+	const request = { path: String(path), method: options.method ?? "GET", headers: options.headers ?? {}, body: options.body };
+	integrationRequests.push(request);
+	if (request.path.includes("/integrations/orcarouter")) return responseFixture({ ok: true, integration: { available: true, installed: true } });
+	if (request.path.includes("/providers")) return responseFixture({ ok: true, providers: providerFixture(true) });
+	if (request.path.includes("/account")) return responseFixture({ ok: true, account: accountFixtureFor(request.path) });
+	return responseFixture(usageFixture);
+};
+let integrationRenderer;
+const panelTranslate = (key) => key === "orcarouter.choiceSuffix" ? "（赞助集成）" : key;
+writeSelectedProvider("opencode-go", localStorage);
+await act(async () => {
+	integrationRenderer = TestRenderer.create(react.createElement(UsageStatsPanel, { wide: true, t: panelTranslate }));
+	await Promise.resolve();
+});
+await act(async () => {
+	integrationRenderer.root.findByProps({ "data-usage-stats-badge": true }).props.onClick();
+	await flushPanelEffects();
+});
+if (integrationRenderer.root.findAllByProps({ "data-usage-stats-panel": true }).length !== 1) throw new Error("sidebar badge click must open the existing account panel");
+assert.equal(integrationRequests.filter((request) => request.path.includes("/integrations/orcarouter") && request.method === "GET").length, 1, "opening the panel must read the secret-free OrcaRouter integration status once");
+assert.equal(integrationRequests.some((request) => request.path.includes("/integrations/orcarouter") && request.method === "POST"), false, "opening the panel must never mutate OrcaRouter settings");
+const exportLinks = integrationRenderer.root.findAll((node) => typeof node.props?.["data-export-format"] === "string");
+assert.deepEqual(exportLinks.map((node) => node.props["data-export-format"]), ["daily-csv", "sessions-csv", "json"], "the panel must expose all three secret-free downloads without a new fetch loop");
+for (const link of exportLinks) if (link.type !== "a" || typeof link.props.download !== "string" || link.props.className !== "usg_exportLink") throw new Error("exports must be styled browser downloads");
+const selectedPicker = integrationRenderer.root.findByType("select");
+if (selectedPicker.props.value !== "opencode-go") throw new Error(`sidebar panel must restore its persisted provider, got ${selectedPicker.props.value}`);
+const providerOptionLabels = selectedPicker.props.children.map((option) => option.props.children);
+if (!providerOptionLabels.includes("OrcaRouter（赞助集成）")) throw new Error(`provider picker must expose the compact OrcaRouter sponsorship label, got ${JSON.stringify(providerOptionLabels)}`);
+assert.equal(selectedPicker.props.children.filter((option) => option.props.value === "orcarouter").length, 1, "an installed OrcaRouter must appear exactly once as a real provider");
+assert.equal(selectedPicker.props.children.some((option) => option.props.value === ORCAROUTER_ADD_SENTINEL), false, "an installed OrcaRouter must not retain the synthetic action");
+if (!integrationRequests.some((request) => request.path.includes("/account?provider=opencode-go&activity=detail"))) throw new Error("the open detail panel must signal its provider to the central scheduler");
+const closeAction = integrationRenderer.root.findByProps({ "aria-label": "action.close" });
+await act(async () => {
+	closeAction.props.onClick();
+	await Promise.resolve();
+});
+if (integrationRenderer.root.findAllByProps({ "data-usage-stats-panel": true }).length !== 0) throw new Error("close action must dismiss the account panel");
+await act(async () => {
+	integrationRenderer.root.findByProps({ "data-usage-stats-badge": true }).props.onClick();
+	await flushPanelEffects();
+});
+const reopenedPicker = integrationRenderer.root.findByType("select");
+if (reopenedPicker.props.value !== "opencode-go") throw new Error(`closing and reopening must preserve the selected provider, got ${reopenedPicker.props.value}`);
+if (integrationRenderer.root.findAllByProps({ "data-budget-period": "daily" }).length !== 1
+	|| integrationRenderer.root.findByProps({ "data-budget-period": "daily" }).props["data-budget-level"] !== "warning") {
+	throw new Error("configured budget state must integrate into the existing usage panel");
+}
+await act(async () => { integrationRenderer.unmount(); });
+
+// Fresh install: the synthetic selector action is the only sponsored setup UI.
+// It performs one guarded POST, reloads the real provider list, and only then
+// persists/selects the real route id.
+writeSelectedProvider("deepseek-official", localStorage);
+const freshStorageStart = storedWrites.length;
+const freshRequests = [];
+let freshInstalled = false;
+globalThis.fetch = async (path, options = {}) => {
+	const request = { path: String(path), method: options.method ?? "GET", headers: options.headers ?? {}, body: options.body };
+	freshRequests.push(request);
+	if (request.path.includes("/integrations/orcarouter")) {
+		if (request.method === "POST") {
+			freshInstalled = true;
+			return responseFixture({ ok: true, integration: { available: true, installed: true, added: true } });
+		}
+		return responseFixture({ ok: true, integration: { available: true, installed: freshInstalled } });
+	}
+	if (request.path.includes("/providers")) return responseFixture({ ok: true, providers: providerFixture(freshInstalled) });
+	if (request.path.includes("/account")) return responseFixture({ ok: true, account: accountFixtureFor(request.path) });
+	return responseFixture(usageFixture);
+};
+let freshRenderer;
+await act(async () => {
+	freshRenderer = TestRenderer.create(react.createElement(UsageStatsPanel, { wide: true, t: panelTranslate }));
+	await Promise.resolve();
+});
+await act(async () => {
+	freshRenderer.root.findByProps({ "data-usage-stats-badge": true }).props.onClick();
+	await flushPanelEffects();
+});
+let freshPicker = freshRenderer.root.findByType("select");
+assert.equal(freshPicker.props.children.at(-1).props.value, ORCAROUTER_ADD_SENTINEL, "fresh install must append the synthetic OrcaRouter option");
+assert.equal(freshPicker.props.children.at(-1).props.children, "OrcaRouter（赞助集成）");
+await act(async () => {
+	const first = freshPicker.props.onChange({ target: { value: ORCAROUTER_ADD_SENTINEL } });
+	const duplicate = freshPicker.props.onChange({ target: { value: ORCAROUTER_ADD_SENTINEL } });
+	await Promise.all([first, duplicate]);
+	await flushPanelEffects();
+});
+const freshPosts = freshRequests.filter((request) => request.path.includes("/integrations/orcarouter") && request.method === "POST");
+assert.equal(freshPosts.length, 1, "one synthetic selection must perform exactly one guarded mutation even if the event is repeated while pending");
+assert.equal(freshPosts[0].headers["content-type"], "application/json");
+assert.equal(freshPosts[0].headers["x-dsh-usage-stats-action"], "add-orcarouter");
+assert.equal(freshPosts[0].body, "{}");
+freshPicker = freshRenderer.root.findByType("select");
+assert.equal(freshPicker.props.value, "orcarouter", "a successful action must select the reloaded real OrcaRouter provider");
+assert.equal(freshPicker.props.children.some((option) => option.props.value === ORCAROUTER_ADD_SENTINEL), false, "the synthetic action must disappear after installation");
+assert.equal(freshPicker.props.children.filter((option) => option.props.value === "orcarouter").length, 1);
+assert.equal(readSelectedProvider(localStorage), "orcarouter");
+assert.equal(storedWrites.slice(freshStorageStart).some(([, value]) => value === ORCAROUTER_ADD_SENTINEL), false, "the sentinel must never be persisted during the success transition");
+await act(async () => { freshRenderer.unmount(); });
+
+// Failed explicit mutation: the controlled picker and persistence stay on the
+// previous real provider, while a small inline status explains the failure.
+writeSelectedProvider("opencode-go", localStorage);
+const failedStorageStart = storedWrites.length;
+const failedRequests = [];
+globalThis.fetch = async (path, options = {}) => {
+	const request = { path: String(path), method: options.method ?? "GET", headers: options.headers ?? {}, body: options.body };
+	failedRequests.push(request);
+	if (request.path.includes("/integrations/orcarouter")) {
+		if (request.method === "POST") return responseFixture({ ok: false, error: "settings-update-rejected" }, { ok: false, status: 422 });
+		return responseFixture({ ok: true, integration: { available: true, installed: false } });
+	}
+	if (request.path.includes("/providers")) return responseFixture({ ok: true, providers: providerFixture(false) });
+	if (request.path.includes("/account")) return responseFixture({ ok: true, account: accountFixtureFor(request.path) });
+	return responseFixture(usageFixture);
+};
+let failedRenderer;
+await act(async () => {
+	failedRenderer = TestRenderer.create(react.createElement(UsageStatsPanel, { wide: true, t: panelTranslate }));
+	await Promise.resolve();
+});
+await act(async () => {
+	failedRenderer.root.findByProps({ "data-usage-stats-badge": true }).props.onClick();
+	await flushPanelEffects();
+});
+const failedPicker = failedRenderer.root.findByType("select");
+assert.equal(failedPicker.props.value, "opencode-go");
+await act(async () => {
+	await failedPicker.props.onChange({ target: { value: ORCAROUTER_ADD_SENTINEL } });
+	await flushPanelEffects();
+});
+assert.equal(failedRequests.filter((request) => request.path.includes("/integrations/orcarouter") && request.method === "POST").length, 1);
+assert.equal(failedRenderer.root.findByType("select").props.value, "opencode-go", "a rejected mutation must preserve the current provider");
+assert.equal(readSelectedProvider(localStorage), "opencode-go", "a rejected mutation must preserve the persisted provider");
+assert.equal(storedWrites.slice(failedStorageStart).some(([, value]) => value === ORCAROUTER_ADD_SENTINEL), false);
+assert.equal(failedRenderer.root.findAllByProps({ "data-orcarouter-action-error": true }).length, 1, "a rejected mutation must expose one lightweight inline error");
+await act(async () => { failedRenderer.unmount(); });
+globalThis.fetch = originalFetch;
+
+console.log("sidebar-only panel, persistence, and OrcaRouter setup policy ok");
+
+// OpenDesign Go draws ONE BAR PER BACKEND WINDOW: a 5-hour pool and a 7-day
+// pool, each named by its own length. The client must localize the period from
+// the data (`period`), never from a hardcoded "5-hour window" label — the paid
+// tiers ship only the 7-day pool, and the backend may add pools without a
+// client release.
+{
+	const openDesignMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+		provider: { id: "opendesign", displayName: "OpenDesign", accountMode: "subscription" },
+		account: {
+			mode: "subscription",
+			status: "ok",
+			plan: "OpenDesign Go",
+			windows: [
+				{
+					kind: "session",
+					usedPercent: 3.8,
+					remainingPercent: 96.2,
+					period: { unit: "hours", count: 5 },
+					resetsAt: "2026-10-22T03:03:12.000Z",
+					policyId: "policy_5h",
+					durationSeconds: 18000
+				},
+				{
+					kind: "weekly",
+					usedPercent: 1.4,
+					remainingPercent: 98.6,
+					period: { unit: "days", count: 7 },
+					resetsAt: "2026-10-28T02:03:12.000Z",
+					policyId: "policy_7d",
+					durationSeconds: 604800
+				}
+			],
+			balance: { remaining: 1, currency: "USD", unlimited: false, expiresAt: null, available: true }
+		},
+		accountLoading: false,
+		accountError: null,
+		translate: translateAccount,
+		onRetry: () => {}
+	}));
+	assert.equal(openDesignMarkup.includes("data-account-mode=\"subscription\""), true);
+	assert.equal(openDesignMarkup.includes("OpenDesign Go"), true, "the Go plan label must render");
+	// Two windows → two meters, one per enforced pool.
+	assert.equal((openDesignMarkup.match(/role="progressbar"/g) ?? []).length, 2, "OpenDesign Go must render two quota meters");
+	// Period names come from `period`, so both pools are distinguishable. The
+	// translate stub echoes the key, which is what proves the client asked for
+	// the duration-keyed label instead of a generic "weekly window".
+	assert.equal(openDesignMarkup.includes("subscription.window.hours"), true, "the 5-hour pool must be named by its length");
+	assert.equal(openDesignMarkup.includes("subscription.window.days"), true, "the 7-day pool must be named by its length");
+	// The share drawn matches the backend's usedPercent, not a re-derived guess.
+	assert.equal(openDesignMarkup.includes("width:3.8%"), true);
+	assert.equal(openDesignMarkup.includes("width:1.4%"), true);
+
+	// A paid tier with only the 7-day pool must still draw exactly one meter.
+	const proMarkup = renderToStaticMarkup(react.createElement(ProviderAccountCard, {
+		provider: { id: "opendesign", displayName: "OpenDesign", accountMode: "subscription" },
+		account: {
+			mode: "subscription",
+			status: "ok",
+			plan: "OpenDesign Pro",
+			windows: [{ kind: "weekly", usedPercent: 40, remainingPercent: 60, period: { unit: "days", count: 7 } }]
+		},
+		accountLoading: false,
+		accountError: null,
+		translate: translateAccount,
+		onRetry: () => {}
+	}));
+	assert.equal((proMarkup.match(/role="progressbar"/g) ?? []).length, 1, "a single-pool plan must draw one meter");
+	assert.equal(proMarkup.includes("OpenDesign Pro"), true);
+	console.log("OpenDesign Go 5h + 7d subscription bars ok");
+}
+
+console.log("SMOKE TEST PASSED");

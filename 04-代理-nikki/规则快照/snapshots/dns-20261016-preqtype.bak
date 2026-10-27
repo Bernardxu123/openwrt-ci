@@ -1,0 +1,16 @@
+upstream {
+  unicom: 'udp://210.22.70.3:53'
+  cf: 'tls://1.1.1.1:853'
+}
+
+routing {
+  request {
+    qname(geosite:private) -> unicom
+    qname(geosite:cn) -> unicom
+    fallback: cf
+  }
+  response {
+    upstream(cf) -> accept
+    fallback: accept
+  }
+}

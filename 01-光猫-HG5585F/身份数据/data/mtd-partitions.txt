@@ -1,0 +1,52 @@
+# /proc/mtd 原始输出 · FiberHome HG5585F (联通 CU)
+# Telnet cat /proc/mtd · 采集 2026-10-16
+#
+# dev:    size   erasesize  name
+dev:    size   erasesize  name
+mtd0: 00280000 00020000 "boot"
+mtd1: 00080000 00020000 "bootflag"
+mtd2: 00600000 00020000 "KernelA"
+mtd3: 000020cc 00020000 "RootfsA_Header"
+mtd4: 03bfdf34 00020000 "RootfsA_Data"
+mtd5: 03c00000 00020000 "RootfsA"
+mtd6: 00600000 00020000 "KernelB"
+mtd7: 000020cc 00020000 "RootfsB_Header"
+mtd8: 03bfdf34 00020000 "RootfsB_Data"
+mtd9: 03c00000 00020000 "RootfsB"
+mtd10: 04000000 00020000 "apps"
+mtd11: 01000000 00020000 "frameworka"
+mtd12: 01000000 00020000 "frameworkb"
+mtd13: 00300000 00020000 "factory"      <-- PON 身份 + 光模块校准 + WiFi EEPROM
+mtd14: 00200000 00020000 "userlocalct"
+mtd15: 03032000 0001f000 "apps"
+mtd16: 00991000 0001f000 "userdata"
+
+# /proc/partitions 同样内容（单位 KB）：
+#   31       13        3072 mtdblock13     -> factory 3072 KB = 3 MiB
+
+#
+# ---- 关键：factory 分区 vs ponwrt 期望 ----
+#
+# 原厂 mtd13 = 0x300000 (3 MiB) 原始分区
+# ponwrt target/linux/airoha/base-files/etc/board.d/03_pon_data:
+#     fiberhome,hg5382a|fiberhome,hg5585f-ct|fiberhome,hg5585f-cu)
+#             pon_data_target factory ubi 1048576        # 1 MiB
+#
+# → 差值由 pbs05/fiberhome-factory 工具转换（导入原厂镜像 → 输出 OpenWrt 用的 1 MiB 布局）
+#
+# ---- fiberhome-factory 的 1 MiB 布局 ----
+#   0x000000  0x0800  APONCAL  PON 校准（光模块）      <-- 未获取，缺则 PON 起不来
+#   0x000800  0x0800  保留
+#   0x001000  0x1000  MT7916 EEPROM (WiFi)             <-- 未获取，缺则 WiFi 起不来
+#   0x002000  0x0006  Base MAC                         ✅ D0:69:FF:16:32:80
+#   0x002006  0x000a  保留
+#   0x002010  0x0008  PON serial number                ✅ FHTTC1C6ACAA
+#   0x002018  0x0008  保留
+#   0x002020  0x0020  Device serial number             ✅ 01FFFFFFFF010FFF25D069FF16328037
+#   0x002040  0xfdfc0 保留
+#
+# ---- 为什么取不到 ----
+# /dev/mtd13 = crw-rw---- 1 root root
+# Telnet shell = opuser, Uid 100, CapEff 0（零 capability），全系统无 SUID
+# → cat: can't open '/dev/mtd13': Permission denied
+# → an758x-stock2ubi 需要 root，telnet 路线不通；需 TTL 串口走 uboot 手动路径

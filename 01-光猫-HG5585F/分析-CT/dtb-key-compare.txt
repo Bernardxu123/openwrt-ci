@@ -1,0 +1,30 @@
+KEY                           ct/fdt-1.bin                          cu/fdt-1.bin                          qwrt-ct/fdt-1.dtb                     
+bytes                         23281                                 22959                                 14698                                 
+sha256                        "50f1934455915417f61d78f911e29f78927  "1a3408d5d303dfa4387f7704cce1837df3e  "b56ae8c6de206a36a132e3008f8c37bb453  
+fdt_totalsize                 23281                                 22959                                 14698                                 
+nodes                         190                                   189                                   113                                   
+model                         "FiberHome HG5585F CT"                "FiberHome HG5585F CU"                "FiberHome HG5585F CT"                
+compatible                    ["fiberhome,hg5585f-ct", "airoha,an7  ["fiberhome,hg5585f-cu", "airoha,an7  ["fiberhome,hg5585f-ct", "airoha,an7  
+chosen/rootdisk_phandle       2                                     2                                     2                                     
+eth@4.status                  "okay"                                "disabled"                            -                                     
+eth@4.phy-mode                "2500base-x"                          -                                     -                                     
+eth@4.netdev                  "lan1"                                -                                     -                                     
+eth@4.phy-handle_phandle      61                                    -                                     -                                     
+pcs@1fa09000.status           "okay"                                -                                     -                                     
+mdio/phy@7.compatible         "ethernet-phy-id67c9.de10"            -                                     "ethernet-phy-ieee802.3-c45"          
+mdio/phy@7.reg                7                                     -                                     7                                     
+mdio/phy@7.reset-gpios        {"phandle": 39, "pin": 34, "flags":   -                                     {"phandle": 9, "pin": 34, "flags": 1  
+mdio/phy@7.reset-assert-us    100000                                -                                     100000                                
+mdio/phy@7.reset-deassert-us  100000                                -                                     800000                                
+switch/port@1.status          "disabled"                            "okay"                                -                                     
+switch/port@1.label           -                                     "lan1"                                "lan1"                                
+switch/port@1.phy-mode        "internal"                            "internal"                            "2500base-x"                          
+mdio/phy@9.status             "disabled"                            "okay"                                -                                     
+keys/reset.label              "reset"                               "reset"                               "reset"                               
+keys/reset.gpios              {"phandle": 39, "pin": 35, "flags":   {"phandle": 39, "pin": 35, "flags":   {"phandle": 9, "pin": 0, "flags": 1}  
+keys/reset.linux,code         408                                   408                                   408                                   
+factory_nvmem_layout          {"calibration@0": [0, 2048], "mac-ad  {"calibration@0": [0, 2048], "mac-ad  {}                                    
+ubi_volumes                   [{"node": "ubi-volume-fip", "volname  [{"node": "ubi-volume-fip", "volname  [{"node": "fit", "volname": "fit"},   
+leds                          [{"node": "led-0", "function": "powe  [{"node": "led-0", "function": "powe  [{"node": "power", "label": "blue:po  
+
+WROTE D:\AI\路由\光猫-CT-HG5585F\分析\dtb-key-compare.json

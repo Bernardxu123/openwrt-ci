@@ -1,0 +1,13 @@
+/ :: timestamp=6a d8 36 cb; description=41 52 4d 36 34 20 51 57 52 54 20 46 49 54 20 28; #address-cells=00 00 00 01
+/configurations :: default=63 6f 6e 66 69 67 40 31 00
+/configurations/config@1 :: description=4f 70 65 6e 57 72 74 20 66 69 62 65 72 68 6f 6d; kernel=6b 65 72 6e 65 6c 2d 31 00; fdt=66 64 74 2d 31 00; loadables=72 6f 6f 74 66 73 2d 31 00
+/images :: 
+/images/fdt-1 :: data-size=00 00 39 6a; data-position=00 46 00 00; description=41 52 4d 36 34 20 51 57 52 54 20 66 69 62 65 72; type=66 6c 61 74 5f 64 74 00; arch=61 72 6d 36 34 00; compression=6e 6f 6e 65 00
+/images/fdt-1/hash-1 :: value=b6 a2 24 5f; algo=63 72 63 33 32 00
+/images/fdt-1/hash-2 :: value=d1 4b b6 54 85 b2 19 ba ea 97 64 1d 6e c9 0b e8; algo=73 68 61 31 00
+/images/kernel-1 :: data-size=00 45 e9 b5; data-position=00 00 10 00; description=41 52 4d 36 34 20 51 57 52 54 20 4c 69 6e 75 78; type=6b 65 72 6e 65 6c 00; arch=61 72 6d 36 34 00; os=6c 69 6e 75 78 00; compression=67 7a 69 70 00; load=8a 00 00 00; entry=8a 00 00 00
+/images/kernel-1/hash-1 :: value=4f f8 7f 32; algo=63 72 63 33 32 00
+/images/kernel-1/hash-2 :: value=e7 d7 dd 6c 96 7a 27 c1 1a f2 51 b2 a0 70 49 60; algo=73 68 61 31 00
+/images/rootfs-1 :: data-size=02 3d b0 00; data-position=00 46 40 00; description=41 52 4d 36 34 20 4f 70 65 6e 57 72 74 20 66 69; type=66 69 6c 65 73 79 73 74 65 6d 00; arch=61 72 6d 36 34 00; compression=6e 6f 6e 65 00
+/images/rootfs-1/hash-1 :: value=bd 2a 4b 91; algo=63 72 63 33 32 00
+/images/rootfs-1/hash-2 :: value=bc 5c ea 95 44 65 1f 73 e6 b1 82 1b 56 b9 5e c2; algo=73 68 61 31 00

@@ -1,0 +1,391 @@
+---
+port: 7890
+socks-port: 7891
+redir-port: 7892
+mixed-port: 7893
+tproxy-port: 7895
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+ipv6: true
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: 'off'
+keep-alive-interval: 180
+keep-alive-idle: 600
+external-controller: 0.0.0.0:9090
+secret: Y5MNeQyv
+profile:
+  store-selected: true
+  store-fake-ip: true
+geodata-loader: memconservative
+ntp:
+  enable: true
+  server: ntp.aliyun.com
+  port: 123
+  interval: 30
+  write-to-system: true
+proxy-providers:
+  极速:
+    type: http
+    url: https://hm.zmglqtdbkr.com/jiqun/96c9086f57deae4d3cf4b022cf630ed8
+    interval: 86400
+    path: "./proxy_provider/jisu.yaml"
+    proxy: DIRECT
+    override:
+      additional-prefix: "[极速] "
+    exclude-filter: "(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航"
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 1800
+      timeout: 5000
+      lazy: true
+  乌龟:
+    type: http
+    url: https://1.14.154.150:43443/wuguisub?token=68d4b49963bb88509855b5c4da3f4070
+    interval: 86400
+    path: "./proxy_provider/wugui.yaml"
+    proxy: DIRECT
+    override:
+      additional-prefix: "[乌龟] "
+    exclude-filter: "(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航"
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 1800
+      timeout: 5000
+      lazy: true
+  极速CF:
+    type: http
+    url: https://cfnew.xy.kg/sub?host=https%3A%2F%2Fgoui.290490.xyz&uuid=ba8f0e2c-9ee7-4c8f-867b-285f985b663c&target=clash
+    interval: 86400
+    path: "./proxy_provider/cf.yaml"
+    proxy: DIRECT
+    override:
+      additional-prefix: "[CF] "
+    exclude-filter: "(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航"
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 1800
+      timeout: 5000
+      lazy: true
+proxies:
+- name: "\U0001F1F8\U0001F1EC 新加坡-自建Hy2"
+  type: hysteria2
+  server: 161.118.196.196
+  port: 49426
+  password: 8ae4a192ff1b4cbfaee86176dd0fc3dd
+  sni: xx.290490.xyz
+  obfs: salamander
+  obfs-password: 1k0t8lv2qtbfyvi4
+  udp: true
+- name: "\U0001F1F8\U0001F1EC 新加坡-自建TLS"
+  type: vless
+  server: 161.118.196.196
+  port: 8443
+  uuid: d01a144e-d927-408e-a72f-09c945215158
+  network: tcp
+  udp: true
+  tls: true
+  servername: xx.290490.xyz
+  alpn:
+  - http/1.1
+proxy-groups:
+- name: "\U0001F680 默认代理"
+  type: select
+  proxies:
+  - "♻️ 香港自动"
+  - "♻️ 新加坡自动"
+  - "\U0001F6E1️ 稳定固定"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1F8\U0001F1EC 新加坡节点"
+  - "\U0001F310 全部节点"
+  - DIRECT
+- name: "\U0001F916 ChatGPT"
+  type: select
+  proxies:
+  - "\U0001F6E1️ 稳定固定"
+  - "\U0001F680 默认代理"
+  - DIRECT
+- name: "\U0001F4FA YouTube"
+  type: select
+  proxies:
+  - "\U0001F680 默认代理"
+  - "\U0001F6E1️ 稳定固定"
+  - DIRECT
+- name: "\U0001F50D Google"
+  type: select
+  proxies:
+  - "\U0001F1F8\U0001F1EC 新加坡-自建TLS"
+  - "\U0001F6E1️ 稳定固定"
+  - "\U0001F680 默认代理"
+  - DIRECT
+- name: "\U0001F3AC 流媒体"
+  type: select
+  proxies:
+  - "♻️ 新加坡自动"
+  - "♻️ 香港自动"
+  - "\U0001F680 默认代理"
+  - "\U0001F6E1️ 稳定固定"
+  - DIRECT
+- name: "\U0001F4E6 GitHub"
+  type: select
+  proxies:
+  - "\U0001F680 默认代理"
+  - "♻️ 香港自动"
+  - "\U0001F310 全部节点"
+  - DIRECT
+- name: "✈️ Telegram"
+  type: select
+  proxies:
+  - "\U0001F680 默认代理"
+  - "♻️ 香港自动"
+  - "♻️ 新加坡自动"
+  - DIRECT
+- name: "\U0001F34E Apple"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 默认代理"
+- name: "\U0001FA9F 微软"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 默认代理"
+- name: "\U0001F3E2 甲骨文 Oracle"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 默认代理"
+- name: "✈️ Speedtest"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 默认代理"
+- name: "\U0001F3AF 直连"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 默认代理"
+- name: "\U0001F41F 漏网之鱼"
+  type: select
+  proxies:
+  - "\U0001F680 默认代理"
+  - DIRECT
+- name: "\U0001F6E1️ 稳定固定"
+  type: select
+  proxies:
+  - "\U0001F1F8\U0001F1EC 新加坡-自建TLS"
+  - "\U0001F1F8\U0001F1EC 新加坡-自建Hy2"
+  - "♻️ 新加坡自动"
+- name: "♻️ 香港自动"
+  type: url-test
+  use:
+  - 极速
+  - 乌龟
+  - 极速CF
+  url: https://www.gstatic.com/generate_204
+  interval: 600
+  tolerance: 100
+  max-failed-times: 2
+  lazy: true
+  filter: "(?i)港|hk|hong ?kong"
+  exclude-filter: "(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航"
+- name: "♻️ 新加坡自动"
+  type: url-test
+  use:
+  - 极速
+  - 乌龟
+  - 极速CF
+  url: https://www.gstatic.com/generate_204
+  interval: 600
+  tolerance: 100
+  max-failed-times: 2
+  lazy: true
+  filter: "(?i)新加坡|狮|singapore|sg-?[0-9]"
+  exclude-filter: "(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航"
+- name: "\U0001F1ED\U0001F1F0 香港节点"
+  type: select
+  use:
+  - 极速
+  - 乌龟
+  - 极速CF
+  filter: "(?i)港|hk|hong ?kong"
+  exclude-filter: "(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航"
+- name: "\U0001F1F8\U0001F1EC 新加坡节点"
+  type: select
+  use:
+  - 极速
+  - 乌龟
+  - 极速CF
+  filter: "(?i)新加坡|狮|singapore|sg-?[0-9]"
+  exclude-filter: "(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航"
+- name: "\U0001F310 全部节点"
+  type: select
+  use:
+  - 极速
+  - 乌龟
+  - 极速CF
+  proxies:
+  - "\U0001F1F8\U0001F1EC 新加坡-自建TLS"
+  - "\U0001F1F8\U0001F1EC 新加坡-自建Hy2"
+dns:
+  enable: true
+  listen: 0.0.0.0:7874
+  ipv6: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-range6: 2001:2::1/64
+  fake-ip-filter-mode: rule
+  cache-algorithm: lru
+  cache-size: 4096
+  prefer-h3: false
+  respect-rules: true
+  use-hosts: true
+  default-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  proxy-server-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  direct-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  nameserver:
+  - https://1.1.1.1/dns-query
+  - tls://8.8.4.4:853
+  nameserver-policy:
+    rule-set:oc-cn-domain:
+    - 223.5.5.5
+    - 119.29.29.29
+    geosite:private:
+    - 223.5.5.5
+    - 119.29.29.29
+  fake-ip-filter:
+  - RULE-SET,oc-cn-domain,real-ip
+  - GEOSITE,private,real-ip
+  - DOMAIN-SUFFIX,lan,real-ip
+  - DOMAIN-SUFFIX,local,real-ip
+  - DOMAIN-SUFFIX,localdomain,real-ip
+  - DOMAIN-SUFFIX,home.arpa,real-ip
+  - DOMAIN-SUFFIX,msftconnecttest.com,real-ip
+  - DOMAIN-SUFFIX,msftncsi.com,real-ip
+  - GEOSITE,connectivity-check,real-ip
+  - DOMAIN-SUFFIX,ntp.aliyun.com,real-ip
+  - DOMAIN-SUFFIX,ntp.tencent.com,real-ip
+  - DOMAIN-SUFFIX,cn.pool.ntp.org,real-ip
+  - MATCH,fake-ip
+rule-providers:
+  oc-cn-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 43200
+    url: https://raw.githubusercontent.com/MetaCubeX/meta-rules-dat/meta/geo/geosite/cn.mrs
+    path: "./rule_provider/oc-cn-domain.mrs"
+  zdcn:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://testingcf.jsdelivr.net/gh/Bernardxu123/xu@main/zdcn.list
+    path: "./rule_provider/zdcn.list"
+  zdgw:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://testingcf.jsdelivr.net/gh/Bernardxu123/xu@main/zdgw.list
+    path: "./rule_provider/zdgw.list"
+  oracle:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: https://testingcf.jsdelivr.net/gh/Bernardxu123/xu@main/oracle.list
+    path: "./rule_provider/oracle.list"
+rules:
+- "GEOSITE,private,\U0001F3AF 直连"
+- "IP-CIDR,192.168.0.0/16,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR,10.0.0.0/8,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR,172.16.0.0/12,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR,100.64.0.0/10,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR,127.0.0.0/8,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR,169.254.0.0/16,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR,224.0.0.0/3,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR6,fdae:8777:3859::/60,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR6,fe80::/10,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR6,ff00::/8,\U0001F3AF 直连,no-resolve"
+- "IP-CIDR6,::1/128,\U0001F3AF 直连,no-resolve"
+- "AND,((NETWORK,UDP),(DST-PORT,3478)),\U0001F3AF 直连"
+- "AND,((NETWORK,UDP),(DST-PORT,19302)),\U0001F3AF 直连"
+- "AND,((NETWORK,UDP),(DST-PORT,7844)),\U0001F3AF 直连"
+- "DST-PORT,123,\U0001F3AF 直连"
+- AND,((NETWORK,UDP),(DST-PORT,443),(NOT,((GEOIP,CN)))),REJECT
+- "DOMAIN,vlook.290490.xyz,\U0001F680 默认代理"
+- "DOMAIN,xx.290490.xyz,\U0001F3AF 直连"
+- "DOMAIN-SUFFIX,290490.xyz,\U0001F3AF 直连"
+- "RULE-SET,zdcn,\U0001F3AF 直连"
+- "RULE-SET,zdgw,\U0001F680 默认代理"
+- "DOMAIN-SUFFIX,steamcontent.com,\U0001F3AF 直连"
+- "DOMAIN-SUFFIX,steamstatic.com,\U0001F3AF 直连"
+- "DOMAIN-SUFFIX,steamcdn-a.akamaihd.net,\U0001F3AF 直连"
+- "GEOSITE,steam,\U0001F680 默认代理"
+- "DOMAIN-SUFFIX,aistudio.google.com,\U0001F6E1️ 稳定固定"
+- "DOMAIN-SUFFIX,makersuite.google.com,\U0001F6E1️ 稳定固定"
+- "DOMAIN-SUFFIX,alkalimakersuite-pa.clients6.google.com,\U0001F6E1️ 稳定固定"
+- "DOMAIN-SUFFIX,alkalimakersuite-pa.googleapis.com,\U0001F6E1️ 稳定固定"
+- "DOMAIN-SUFFIX,generativelanguage.googleapis.com,\U0001F6E1️ 稳定固定"
+- "GEOSITE,google-gemini,\U0001F6E1️ 稳定固定"
+- "GEOSITE,youtube,\U0001F4FA YouTube"
+- "GEOSITE,category-ai-!cn,\U0001F916 ChatGPT"
+- "GEOSITE,netflix,\U0001F3AC 流媒体"
+- "GEOSITE,disney,\U0001F3AC 流媒体"
+- "GEOSITE,spotify,\U0001F3AC 流媒体"
+- "GEOSITE,tiktok,\U0001F3AC 流媒体"
+- "GEOSITE,github,\U0001F4E6 GitHub"
+- "DOMAIN-SUFFIX,githubusercontent.com,\U0001F4E6 GitHub"
+- "DOMAIN-SUFFIX,github.io,\U0001F4E6 GitHub"
+- "DOMAIN-SUFFIX,githubapp.com,\U0001F4E6 GitHub"
+- GEOSITE,telegram,✈️ Telegram
+- "GEOSITE,twitter,\U0001F680 默认代理"
+- "GEOSITE,google,\U0001F50D Google"
+- "GEOSITE,google-cn,\U0001F50D Google"
+- "GEOSITE,apple,\U0001F34E Apple"
+- "GEOSITE,apple-cn,\U0001F34E Apple"
+- "GEOSITE,onedrive,\U0001F680 默认代理"
+- "GEOSITE,microsoft,\U0001FA9F 微软"
+- "RULE-SET,oracle,\U0001F3E2 甲骨文 Oracle"
+- "GEOSITE,oracle,\U0001F3E2 甲骨文 Oracle"
+- GEOSITE,ookla-speedtest,✈️ Speedtest
+- "RULE-SET,oc-cn-domain,\U0001F3AF 直连"
+- "GEOIP,CN,\U0001F3AF 直连,no-resolve"
+- "MATCH,\U0001F41F 漏网之鱼"
+external-ui: "/usr/share/openclash/ui"
+external-ui-name: zashboard
+external-ui-url: https://codeload.github.com/Zephyruso/zashboard/zip/refs/heads/gh-pages-cdn-fonts
+geox-url: {}
+tun:
+  enable: true
+  stack: mips
+  device: utun
+  dns-hijack:
+  - 127.0.0.1:53
+  endpoint-independent-nat: true
+  auto-route: false
+  auto-detect-interface: false
+  auto-redirect: false
+  strict-route: false
+  disable-icmp-forwarding: false
+  gso: true
+authentication:
+- Clash:7TDBkhbE
+hosts:
+  openwrt.lan: lan
+  immortalwrt.lan: lan
+  lede.lan: lan
+  router.lan: lan
+  ct-hg5585f.lan: lan

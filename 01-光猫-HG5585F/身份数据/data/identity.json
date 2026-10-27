@@ -1,0 +1,176 @@
+{
+  "_comment": "FiberHome HG5585F (联通 CU) 身份数据。采集 2026-10-16，来源：/fh_tool/api GetDevInfo + Telnet 'load_cli factory' → 'show allinfo'。刷 ponwrt 后写回 factory 卷时对照本文件。",
+  "device": {
+    "model_vendor": "FiberHome",
+    "model_factory_string": "HG5585F-C",
+    "ponwrt_profile": "fiberhome_hg5585f-cu",
+    "soc": "Airoha AN7581",
+    "operator": "CH_CU",
+    "operator_cn": "中国联通",
+    "area": "Shanghai",
+    "hardware_version": "WKE2.094.906",
+    "software_version": "V03.00.M0000",
+    "build_time": "2025-10-06 03:09:17 +0800",
+    "build_num": 349,
+    "ethernet_ports": 4,
+    "pon_num": 1,
+    "ssid_num": 8,
+    "wifi_bands": [2.4, 5],
+    "note_4plus1": "机身标签写 4+1+WiFi，但 GetDevInfo port_num=4，第 5 个不是 LAN 口"
+  },
+
+  "pon": {
+    "current_ponmode": "EPON_10G",
+    "default_ponmode": "EPON_10G",
+    "ponwrt_line_mode": "epon-10g-1g",
+    "asymmetric": true,
+    "rx_power_dbm": -17.96,
+    "tx_power_dbm": 3.50,
+    "optical_status": "光纤已连接",
+    "uptime_sec_at_collect": 5600653
+  },
+
+  "factory_identity": {
+    "_layout_ref": "fiberhome-factory 1MiB 布局；ponwrt target/linux/airoha/base-files/etc/board.d/03_pon_data → pon_data_target factory ubi 1048576",
+    "base_mac": {
+      "value": "D0:69:FF:16:32:80",
+      "offset": "0x002000",
+      "size": 6,
+      "status": "已获取"
+    },
+    "pon_sn": {
+      "value": "FHTTC1C6ACAA",
+      "offset": "0x002010",
+      "size": 8,
+      "encoding": "pon-ascii12",
+      "note": "4 位厂商码 FHTT + 8 位 hex C1C6ACAA",
+      "status": "已获取"
+    },
+    "device_sn": {
+      "value": "01FFFFFFFF010FFF25D069FF16328037",
+      "offset": "0x002020",
+      "size": 32,
+      "note": "Web 页 36 字符「设备标识号」= device_OUI(741E93) + '-' + 本值",
+      "status": "已获取"
+    },
+    "aponcal_optical_calibration": {
+      "offset": "0x000000",
+      "size": 2048,
+      "status": "未获取",
+      "blocking": true,
+      "reason": "需 root 读 /dev/mtd13 或 TTL 串口；缺这块 PON 光模块无法正常收发"
+    },
+    "mt7916_wifi_eeprom": {
+      "offset": "0x001000",
+      "size": 4096,
+      "status": "未获取",
+      "blocking": true,
+      "reason": "同上；缺这块 WiFi 无法枚举"
+    },
+    "raw_partition": {
+      "mtd": "mtd13",
+      "name": "factory",
+      "size": "0x300000 (3 MiB)",
+      "erasesize": "0x20000"
+    }
+  },
+
+  "macs": {
+    "base": "D0:69:FF:16:32:80",
+    "br0": "D0:69:FF:16:32:80",
+    "onu": "D0:69:FF:16:32:80",
+    "pon": "D0:69:FF:16:32:80",
+    "internet": "D0:69:FF:16:32:81",
+    "tr069": "D0:69:FF:16:32:82",
+    "voip": "D0:69:FF:16:32:83",
+    "priprotocol": "D0:69:FF:16:32:84",
+    "mac_num": 12
+  },
+
+  "hardware_ids": {
+    "device_OUI": "741E93",
+    "vendor_id": "FH",
+    "transceiver_serial": "HZ251100024263",
+    "transceiver_type": "PLDM588-815-C10",
+    "pcba_sn": "12194833H449",
+    "ap_equip_id": "123451234512345"
+  },
+
+  "registration": {
+    "loid": "000000000000000014509791",
+    "loid_password": null,
+    "loid_password_note": "Web 页不显示；ponwrt 里留空（EPON 认证只用 LOID）",
+    "olt_auth": "已注册已认证",
+    "rms_auth": "注册成功"
+  },
+
+  "wan_connections": [
+    {
+      "name": "veip0.28",
+      "tr069_url": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.",
+      "service_list": "TR069",
+      "vlan": 28,
+      "iptype": 1,
+      "connection_type": "router",
+      "ip": "10.38.184.245",
+      "mask": "255.255.240.0",
+      "gateway": "10.38.176.1",
+      "dns1": "255.255.255.255",
+      "mark": "0x04000000",
+      "mark_mask": "0xFC000000",
+      "snid_v4": "746"
+    },
+    {
+      "name": "veip0.995",
+      "tr069_url": "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.2.WANPPPConnection.1.",
+      "service_list": "INTERNET",
+      "vlan": 995,
+      "iptype": 3,
+      "connection_type": "bridge",
+      "note": "桥接到光猫 LAN1 → LibWrt WAN；VLAN 已在光猫侧解标签，LibWrt 不用配 VLAN"
+    }
+  ],
+
+  "wifi": {
+    "ssid_2g": "CU_7Bxc",
+    "ssid_5g": "CU_7Bxc_5G",
+    "password": "nua539qt"
+  },
+
+  "access": {
+    "web_url": "http://192.168.1.1",
+    "web_user": "user",
+    "web_password": "nua539qt",
+    "web_superadmin": "CUAdmin",
+    "web_superadmin_password": "CUAdmin98932816",
+    "telnet_port": 23,
+    "telnet_user": "admin",
+    "telnet_password": "Fh@163280",
+    "telnet_shell": "opuser (uid 100, 无 capability, 非 root)",
+    "access_note": "光猫桥接后无 DHCP；LibWrt wan 口需挂 192.168.1.2/24，且光猫只认同子网源地址"
+  },
+
+  "pppoe": {
+    "_note": "PPPoE 在 LibWrt 上拨号，不在光猫；光猫侧是 bridge",
+    "router": "192.168.31.1 (LibWrt)",
+    "uci": "uci show network.wan",
+    "username": "02105250448",
+    "password": "052356",
+    "device": "wan",
+    "ipv6": "auto",
+    "observed_session": {
+      "address": "100.92.212.222",
+      "peer": "100.92.192.1",
+      "cgnat": true,
+      "public_ipv4": false
+    }
+  },
+
+  "licensing": {
+    "进网许可": "230760N502Y P5N31PC3N5",
+    "label_product_sn": "MYR7HK820557",
+    "label_material_code": "2094506-OFSEL504",
+    "label_default_web": "http://192.168.1.1",
+    "label_hotline": "10010"
+  }
+}

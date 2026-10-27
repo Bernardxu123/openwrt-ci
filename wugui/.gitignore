@@ -1,5 +1,0 @@
-secrets_local.py
-secrets.py
-*.local.py
-__pycache__/
-

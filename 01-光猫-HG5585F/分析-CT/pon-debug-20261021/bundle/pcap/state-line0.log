@@ -1,0 +1,2786 @@
+sample_at=2026-10-18T15:29:33+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":45,"full_reinitializations":0,"mac_errors":8,"mpcp_timeouts":3,"recoveries":0,"register_acks":4,"register_messages":4,"register_nacks":0,"register_requests":4,"rx_start_count":1,"sync_losses":0},"datapath":{"data_path_configured":true,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.3049,"temperature_celsius":45.6211,"tx_bias_ma":10.4000,"tx_gate_enabled":true,"tx_power_dbm":3.4674,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"operational","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid":164,"llid_valid":true,"mpcp_state":"registered","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     157929892  114609      0    6416       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          7510      66      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       0       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          5308      53      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 91,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 91,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:34+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":45,"full_reinitializations":0,"mac_errors":8,"mpcp_timeouts":3,"recoveries":0,"register_acks":4,"register_messages":4,"register_nacks":0,"register_requests":4,"rx_start_count":1,"sync_losses":0},"datapath":{"data_path_configured":false,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.2354,"temperature_celsius":43.8086,"tx_bias_ma":0.0000,"tx_gate_enabled":false,"tx_power_dbm":-40.0000,"voltage_volts":3.2039},"line":{"active_mode":"none","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"stopped","mode_pending":false,"optical_signal":false,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":false,"rx_active":false,"xgtc_sync":"not-applicable"},"registration":{"llid_valid":false,"mpcp_state":"registering","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":false}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST> mtu 1500 qdisc fq_codel state DOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     158223406  114822      0    6425       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          7510      66      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,M-DOWN> mtu 1492 qdisc noqueue state DOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          5308      53      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 92,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 92,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:35+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":45,"full_reinitializations":0,"mac_errors":8,"mpcp_timeouts":3,"recoveries":0,"register_acks":4,"register_messages":4,"register_nacks":0,"register_requests":4,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":false,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.2354,"temperature_celsius":44.1719,"tx_bias_ma":0.0000,"tx_gate_enabled":true,"tx_power_dbm":-40.0000,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"protocol-activating","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid_valid":false,"mpcp_state":"registering","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     158223406  114822      0    6653       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          7510      66      0       0       0       0 
+13: pon0.995@pon0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1492 qdisc noqueue state LOWERLAYERDOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          5308      53      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 93,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 93,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:36+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":45,"full_reinitializations":0,"mac_errors":8,"mpcp_timeouts":3,"recoveries":0,"register_acks":4,"register_messages":4,"register_nacks":0,"register_requests":4,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":false,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.2584,"temperature_celsius":44.5352,"tx_bias_ma":0.0000,"tx_gate_enabled":true,"tx_power_dbm":-40.0000,"voltage_volts":3.2039},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"protocol-activating","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid_valid":false,"mpcp_state":"registering","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     158223406  114822      0    7528       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          7510      66      0       0       0       0 
+13: pon0.995@pon0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1492 qdisc noqueue state LOWERLAYERDOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          5308      53      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 94,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 94,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:37+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":46,"full_reinitializations":0,"mac_errors":10,"mpcp_timeouts":3,"recoveries":0,"register_acks":5,"register_messages":5,"register_nacks":0,"register_requests":5,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":true,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.2584,"temperature_celsius":44.8984,"tx_bias_ma":10.5000,"tx_gate_enabled":true,"tx_power_dbm":3.4674,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"operational","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid":164,"llid_valid":true,"mpcp_state":"registered","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     159018512  115399      0    7819       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          8314      73      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          5686      57      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 95,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 95,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:38+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":46,"full_reinitializations":0,"mac_errors":10,"mpcp_timeouts":3,"recoveries":0,"register_acks":5,"register_messages":5,"register_nacks":0,"register_requests":5,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":true,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.1220,"temperature_celsius":45.2578,"tx_bias_ma":10.2000,"tx_gate_enabled":true,"tx_power_dbm":3.4674,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"operational","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid":164,"llid_valid":true,"mpcp_state":"registered","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     160200836  116257      0    7819       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          8947      78      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          6067      60      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 96,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 96,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:39+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":47,"full_reinitializations":0,"mac_errors":10,"mpcp_timeouts":3,"recoveries":0,"register_acks":5,"register_messages":5,"register_nacks":0,"register_requests":5,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":true,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.2354,"temperature_celsius":45.2578,"tx_bias_ma":10.5000,"tx_gate_enabled":true,"tx_power_dbm":3.4856,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"operational","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid":164,"llid_valid":true,"mpcp_state":"registered","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     161383160  117115      0    7819       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          9415      82      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          6287      62      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 97,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 97,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:40+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":47,"full_reinitializations":0,"mac_errors":10,"mpcp_timeouts":3,"recoveries":0,"register_acks":5,"register_messages":5,"register_nacks":0,"register_requests":5,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":true,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.3755,"temperature_celsius":45.2578,"tx_bias_ma":0.0000,"tx_gate_enabled":true,"tx_power_dbm":-40.0000,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"operational","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid":164,"llid_valid":true,"mpcp_state":"registered","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     162564106  117972      0    7819       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          9580      83      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          6448      63      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 98,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 98,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:41+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":48,"full_reinitializations":0,"mac_errors":10,"mpcp_timeouts":4,"recoveries":0,"register_acks":5,"register_messages":5,"register_nacks":0,"register_requests":5,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":false,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.2354,"temperature_celsius":45.6211,"tx_bias_ma":0.0000,"tx_gate_enabled":true,"tx_power_dbm":-40.0000,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"protocol-activating","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid_valid":false,"mpcp_state":"registering","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     163259996  118477      0    8192       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          9646      84      0       0       0       0 
+13: pon0.995@pon0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1492 qdisc noqueue state LOWERLAYERDOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          6510      64      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 99,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 99,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:42+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":48,"full_reinitializations":0,"mac_errors":10,"mpcp_timeouts":4,"recoveries":0,"register_acks":5,"register_messages":5,"register_nacks":0,"register_requests":5,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":false,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.1897,"temperature_celsius":45.6211,"tx_bias_ma":0.0000,"tx_gate_enabled":true,"tx_power_dbm":-40.0000,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"protocol-activating","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid_valid":false,"mpcp_state":"registering","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc fq_codel state DOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     163259996  118477      0    9060       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          9646      84      0       0       0       0 
+13: pon0.995@pon0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1492 qdisc noqueue state LOWERLAYERDOWN mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          6510      64      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 100,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 100,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:43+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":49,"full_reinitializations":0,"mac_errors":12,"mpcp_timeouts":4,"recoveries":0,"register_acks":6,"register_messages":6,"register_nacks":0,"register_requests":6,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":true,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.2584,"temperature_celsius":45.6211,"tx_bias_ma":10.5000,"tx_gate_enabled":true,"tx_power_dbm":3.4856,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"operational","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid":164,"llid_valid":true,"mpcp_state":"registered","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     164614570  119460      0    9237       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+         10363      90      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          7033      69      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 101,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 101,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:44+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":49,"full_reinitializations":0,"mac_errors":12,"mpcp_timeouts":4,"recoveries":0,"register_acks":6,"register_messages":6,"register_nacks":0,"register_requests":6,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":true,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.2354,"temperature_celsius":45.6211,"tx_bias_ma":10.4500,"tx_gate_enabled":true,"tx_power_dbm":3.4674,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"operational","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid":164,"llid_valid":true,"mpcp_state":"registered","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     166977840  121175      0    9237       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+         10678      92      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          7194      70      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 102,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 102,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:45+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":50,"full_reinitializations":0,"mac_errors":12,"mpcp_timeouts":4,"recoveries":0,"register_acks":6,"register_messages":6,"register_nacks":0,"register_requests":6,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":true,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.2354,"temperature_celsius":45.6211,"tx_bias_ma":10.3000,"tx_gate_enabled":true,"tx_power_dbm":3.4856,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"operational","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid":164,"llid_valid":true,"mpcp_state":"registered","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     169385206  122922      0    9237       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+         10678      92      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          7194      70      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 103,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 103,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+
+sample_at=2026-10-18T15:29:46+0800
+protocol_status_begin
+{"schema_version":1,"counters":{"discovery_gates":50,"full_reinitializations":0,"mac_errors":12,"mpcp_timeouts":4,"recoveries":0,"register_acks":6,"register_messages":6,"register_nacks":0,"register_requests":6,"rx_start_count":2,"sync_losses":0},"datapath":{"data_path_configured":true,"service_ready":false},"frontend":{"calibration":"ready","error":0,"rx_power_dbm":-17.3049,"temperature_celsius":45.6211,"tx_bias_ma":10.3500,"tx_gate_enabled":true,"tx_power_dbm":3.4674,"voltage_volts":3.1959},"line":{"active_mode":"epon-10g-1g","configured_mode":"epon-10g-1g","last_start_error":0,"lifecycle":"operational","mode_pending":false,"optical_signal":true,"pcs_profile":"epon-10g-1g","pcs_profile_valid":true,"pcs_sync":true,"rx_active":true,"xgtc_sync":"not-applicable"},"registration":{"llid":164,"llid_valid":true,"mpcp_state":"registered","onu_id_valid":false,"onu_state":"not-applicable","registration_id_configured":false,"serial_configured":true,"upstream_tx_armed":true}}
+protocol_status_end
+network_snapshot_begin
+9: pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 2 minmtu 68 maxmtu 1500 addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+     171833912  124699      0    9237       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+         10843      93      0       0       0       0 
+13: pon0.995@pon0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1492 qdisc noqueue state UP mode DEFAULT group default qlen 1000
+    link/ether d0:69:ff:16:32:80 brd ff:ff:ff:ff:ff:ff promiscuity 0 minmtu 0 maxmtu 65535 
+    vlan protocol 802.1Q id 995 <REORDER_HDR> addrgenmode eui64 numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 
+    RX:  bytes packets errors dropped  missed   mcast           
+             0       0      0       1       0       0 
+    TX:  bytes packets errors dropped carrier collsns           
+          7355      71      0       0       0       0 
+{
+	"interface": [
+		{
+			"interface": "lan",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 104,
+			"l3_device": "br-lan",
+			"proto": "static",
+			"device": "br-lan",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "192.168.31.1",
+					"mask": 24
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				{
+					"address": "fd09:7498:e02f::",
+					"mask": 60,
+					"local-address": {
+						"address": "fd09:7498:e02f::1",
+						"mask": 60
+					}
+				}
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "loopback",
+			"up": true,
+			"pending": false,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"uptime": 104,
+			"l3_device": "lo",
+			"proto": "static",
+			"device": "lo",
+			"updated": [
+				"addresses"
+			],
+			"metric": 0,
+			"dns_metric": 0,
+			"delegation": true,
+			"ipv4-address": [
+				{
+					"address": "127.0.0.1",
+					"mask": 8
+				}
+			],
+			"ipv6-address": [
+				
+			],
+			"ipv6-prefix": [
+				
+			],
+			"ipv6-prefix-assignment": [
+				
+			],
+			"route": [
+				
+			],
+			"dns-server": [
+				
+			],
+			"dns-search": [
+				
+			],
+			"neighbors": [
+				
+			],
+			"inactive": {
+				"ipv4-address": [
+					
+				],
+				"ipv6-address": [
+					
+				],
+				"route": [
+					
+				],
+				"dns-server": [
+					
+				],
+				"dns-search": [
+					
+				],
+				"neighbors": [
+					
+				]
+			},
+			"data": {
+				
+			}
+		},
+		{
+			"interface": "wan",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "pppoe",
+			"device": "pon0.995",
+			"data": {
+				
+			},
+			"errors": [
+				{
+					"subsystem": "pppoe",
+					"code": "USER_REQUEST"
+				}
+			]
+		},
+		{
+			"interface": "wan6",
+			"up": false,
+			"pending": true,
+			"available": true,
+			"autostart": true,
+			"dynamic": false,
+			"proto": "dhcpv6",
+			"device": "pon0.995",
+			"data": {
+				
+			}
+		}
+	]
+}
+network_snapshot_end
+

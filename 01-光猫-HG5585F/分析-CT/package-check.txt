@@ -1,0 +1,142 @@
+# ponwrt v2026.10.18 CT / CU sysupgrade 包 · 结构化取证输出
+
+生成方式：`分析/fit_probe.py`（纯 Python，自带 FDT 解析器，不依赖 dtc / libfdt）
+生成日期：2026-10-21 ｜ 工作目录：`D:\AI\路由`
+
+本文件是**包内证据**（从字节直接读出），不是社区说法，也不是推断。
+原始机器可读输出见同目录 `ct-fit.json` / `cu-fit.json` / `qwrt-fit.json`，
+人读原始日志见 `ct-fit.txt` / `cu-fit.txt` / `qwrt-fit.txt`。
+
+---
+
+## 1. 输入文件与哈希
+
+| 包 | 路径 | 字节 | sha256 |
+|---|---|---:|---|
+| CT sysupgrade | `光猫-CT-HG5585F/物料/固件/ponwrt-airoha-an7581-fiberhome_hg5585f-ct-squashfs-sysupgrade.itb` | 60,727,597 | `7d04c755584bccb8c5a9606327abd1ce21da95207479cb6a1df981b7253c65f9` |
+| CT sysupgrade（源副本） | `光猫-HG5585F/downloads/ponwrt-v2026.10.18/…-ct-squashfs-sysupgrade.itb` | 60,727,597 | `7d04c755…65f9`（与物料逐字节相同） |
+| CT initramfs recovery | `光猫-CT-HG5585F/物料/固件/ponwrt-…-ct-initramfs-recovery.itb` | 53,608,448 | `5978cbb640d8dbbe8c2649c866e1b66522386198012208817915b1e9e104f4c7` |
+| CU sysupgrade（v2026.10.18） | `光猫-HG5585F/downloads/ponwrt-v2026.10.18/…-cu-squashfs-sysupgrade.itb` | 60,723,501 | `192270bd8db11eb49d7c8be1f87395182da26f2a72151d8ff0d224bb4043d1ab` |
+| QWRT CT sysupgrade（备选） | `光猫-CT-HG5585F/物料/可选-QWRT/QWRT-R26.10.18-…-ct-squashfs-sysupgrade.itb` | 42,152,775 | `5053531f30dc9abc69e0e247e211a632204655d75df859c7ba31c0447450ae53` |
+
+与包内 `sha256sums.txt` 交叉核对：
+
+- CT sysupgrade `7d04c755…65f9` = `sha256sums.txt` 中 `./ponwrt-…-ct-squashfs-sysupgrade.itb` 行 ✅
+- CT initramfs `5978cbb6…f4c7` = 同名行 ✅
+- CU sysupgrade `192270bd…d1ab` = `./ponwrt-…-cu-squashfs-sysupgrade.itb` 行 ✅
+
+> 注意区分：`downloads/ponwrt-v2026.10.18-2/` 里的 CU 包是**另一次构建**（包内 revision
+> `r0-e585ae8`，sha256 `4b7c3431…f76c`），不是本文件对照用的那份；该目录**没有 CT 包**。
+
+---
+
+## 2. FIT 结构（CT）
+
+```
+magic          d00dfeed
+totalsize      4096 (0x1000)      ← 仅 FIT 结构块，子镜像按绝对 data-position 追加在后
+version        17
+off_dt_struct  0x38   size 0x4b8
+off_dt_strings 0x4f0  size 0x8e
+```
+
+| 子镜像 | type | compression | data-position | data-size | description | 其它 |
+|---|---|---|---:|---:|---|---|
+| kernel-1 | kernel | gzip | 0x00001000 | 5,900,203 | `ARM64 OpenWrt Linux-6.18.55` | load=entry=0x8a000000 |
+| fdt-1 | flat_dt | none | 0x005a2000 | 23,281 | `ARM64 OpenWrt fiberhome_hg5585f-ct device tree blob` | 提取 sha256 `50f19344…ecb3` |
+| rootfs-1 | filesystem | none | 0x005a8000 | 54,796,288 | `ARM64 OpenWrt fiberhome_hg5585f-ct rootfs` | — |
+
+`configurations/config-1`：kernel=kernel-1，fdt=fdt-1，loadables=rootfs-1，
+description `OpenWrt fiberhome_hg5585f-ct`。
+
+DTB 节点内的 hash 节点与实际提取字节核对（本机 python 计算）：
+
+| 子镜像 | hash-1 crc32 | hash-2 sha1 | 结果 |
+|---|---|---|---|
+| kernel-1 | `9cde829b` | `89049378c188a83595b8f2c74c636882f1ed3482` | 与包内声明一致 |
+| fdt-1 | `2445d569` | `cfd9ba2fb4f1ab2a4c5b46e4682c4936751653ff` | ✅ 提取后复算 OK |
+| rootfs-1 | `39f9d998` | `9ac359209bb5431612e219b971632abe6978c207` | 与包内声明一致 |
+
+## 3. FIT 结构（CU，同版本对照）
+
+| 子镜像 | data-position | data-size | description |
+|---|---:|---:|---|
+| kernel-1 | 0x00001000 | 5,900,203 | `ARM64 OpenWrt Linux-6.18.55`（与 CT 完全相同：crc32 `9cde829b` / sha1 `89049378…`） |
+| fdt-1 | 0x005a2000 | 22,959 | `ARM64 OpenWrt fiberhome_hg5585f-cu device tree blob`（sha256 `1a3408d5…cb16`） |
+| rootfs-1 | 0x005a8000 | 54,792,192 | `ARM64 OpenWrt fiberhome_hg5585f-cu rootfs` |
+
+→ **CT 与 CU 的内核字节完全相同，只有 DTB 与 rootfs 不同**（rootfs 差 4,096 字节量级）。
+CT/CU 的 fdt-1 crc32/sha1 分别为 `2445d569`/`cfd9ba2f…` 与 `18a77549`/`12f8e9f4…`，互不相同。
+
+## 4. 尾部 sysupgrade-metadata（包内直接可读）
+
+CT：
+
+- JSON 起点 **0x39ea008**，长度 276 字节，`metadata_version 1.1` / `compat_version 1.0`
+- `supported_devices` = `["fiberhome,hg5585f-ct", "fiberhome,hg5585f-ct-usb-sfp"]`
+- `version` = `{"dist":"PonWrt","version":"SNAPSHOT","revision":"r0-5b12fdb",
+  "target":"airoha/an7581","board":"fiberhome_hg5585f-ct"}`
+- JSON 之后 **17 字节**：`0a` + `46 57 78 30 dd 34 17 36 01 00 00 00 00 00 01 2d`
+  （首 4 字节 ASCII `FWx0`；其后 4 字节随包不同、形态像 CRC；再往后字段未解出，
+  未用官方 `fwtool` 源码核对）
+- 包内**没有** `untrusted comment`（usign 签名文本）→ ponwrt 的 CT/CU 包都是**未签名镜像**
+
+CU：
+
+- JSON 起点 **0x39e9008**，长度 276 字节
+- `supported_devices` = `["fiberhome,hg5585f-cu", "fiberhome,hg5585f-cu-usb-sfp"]`
+- `version.revision` = `r0-5b12fdb`，`board` = `fiberhome_hg5585f-cu`
+- 尾部同样 17 字节：`0a 46 57 78 30 0c 72 70 7e 01 00 00 00 00 00 01 2d`
+
+→ **两个包都自报构建自 `5b12fdb`**；包旁 `profiles.json` 的
+`"git_commit":"5b12fdbce807a10b2c2ef5480fcfc2a8e82c696f"` 与之吻合。
+
+## 5. 设备树 DTB 提取
+
+| 文件 | 字节 | sha256 | FDT totalsize | 节点数 |
+|---|---:|---|---:|---:|
+| `extracted/ct/fdt-1.bin` | 23,281 | `50f1934455915417f61d78f911e29f789275ab14ba7806d0b877555a565eecb3` | 23,281 | 190 |
+| `extracted/cu/fdt-1.bin` | 22,959 | `1a3408d5d303dfa4387f7704cce1837df3eaa67f47d87950d5aebb3d155ccb16` | 22,959 | 189 |
+| `extracted/qwrt-ct/fdt-1.dtb`（= QWRT 包内 fdt-1） | 14,698 | `b56ae8c6de206a36a132e3008f8c37bb4532206d25265c7d19e25b7247b46528` | 14,698 | 113 |
+
+反编译文本：`ct-dtb.dts` / `cu-dtb.dts` / `qwrt-ct-dtb.dts`（本机 Python 自写 dumper，
+非 dtc 输出，见 `README-取证说明.md` 的局限说明）；
+关键项对照表：`dtb-key-compare.txt` / `dtb-key-compare.json`；CT/CU diff：`dtb-diff.txt`。
+
+## 6. QWRT CT 包（备选）FIT 与签名
+
+```
+kernel-1  pos 0x001000  size  4,579,254  gzip  "ARM64 QWRT Linux-5.4.302"  load 0x8a000000
+fdt-1     pos 0x45f000  size     14,698  none  "ARM64 QWRT fiberhome_hg5585f-ct device tree blob"
+rootfs-1  pos 0x463000  size 37,552,128  none  "ARM64 OpenWrt fiberhome_hg5585f-ct rootfs"
+config@1  kernel-1 / fdt-1 / loadables rootfs-1
+```
+
+metadata（JSON 282 字节 @0x2833008）：`OpenWrt` / `25.12.3` / `r7856-44e450dae4` /
+`airoha/an7581` / board `fiberhome_hg5585f-ct`；supported_devices 与 ponwrt CT 相同。
+尾部 **549 字节**：`0a` + `FWx0 79 2e f1 38` + `01 00 00 00` + `00 00 01 33` +
+`00 00 01 64` + `00 00 00 9b` + `untrusted comment: signed by key 215087f5c3341288`
++ usign 签名 base64 + `ucert` TLV（`certtype` / `validfrom` / `expiresat` / `pubkey`）。
+
+→ QWRT 包**带 usign/ucert 签名**（签名者标注 `Local build key`，key id `215087f5c3341288`），
+ponwrt 的 CT/CU 包**不带签名**。这是"ponwrt 只能 `-F` 强刷/无签名校验"这类说法的事实依据之一。
+
+## 7. 引导三件套 CT / CU 对照
+
+| 文件 | 字节 | CT sha256 | CU sha256 | 相同？ |
+|---|---:|---|---|---|
+| `*-firstblock.bin` | 131,072 | `df3426a1fc02313441c813e37ca0ac4114b430322e97d064bf849e9b6e0547e2` | `92b7849b2e2852c1380b1865b52c0c2309c515b10a339e21b6f7905ac6914d57` | ❌ |
+| `*-preloader.bin` | 115,712 | `c2423e5992eefb1230c2c4ad05545176a7bf3b32086cb90b3cfebb1d5223e741` | `04dc30338f1622ca95b9f83856cc7955925e3cb1b38dfd4cd4c44fb7840f9312` | ❌ |
+| `*-bl31-u-boot.fip` | 340,992 | `09cdbeb4fdce1a146cd9c1db477a3baf51efb7cd16310c2b1f2b820b1f91e8c7` | `bc6312f44d9dc6c84df3de44a897ef11c107aeef9f897870e5820d28ffb359c5` | ❌ |
+
+→ 三件套 CT/CU **逐字节不同**，不能混用（长度相同但内容不同）。
+
+---
+
+## 8. 本次未解 / 未做
+
+- FIT 尾部 16 字节 `FWx0` 段头的字段语义：按 QWRT 包对照**推断**为
+  `magic(4) + crc32(4) + version/flags(4) + 长度(4)`，未用官方 `fwtool` 解码器验证。
+- rootfs（squashfs）内部 `/etc/openwrt_release`、Passwall 组件、`/lib/upgrade/platform.sh`
+  未在本次解包核对（另一份材料负责包内容分析）；本文件只做 FIT/DTB/metadata 层取证。
+- CT initramfs recovery 包未逐层取证（与 sysupgrade 同版本，仅登记哈希）。

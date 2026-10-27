@@ -1,0 +1,459 @@
+{
+ "internals": {
+  "_start_offset": "373248",
+  "_end_offset": "9102026",
+  "_toc_offset": "0",
+  "_toc_length": "0"
+ },
+ "count": 64,
+ "entries": [
+  {
+   "name": "struct",
+   "typecode": 0,
+   "pos": 235,
+   "clen": 289,
+   "ulen": 1
+  },
+  {
+   "name": "pyimod01_archive",
+   "typecode": 235,
+   "pos": 2831,
+   "clen": 4914,
+   "ulen": 1
+  },
+  {
+   "name": "pyimod02_importers",
+   "typecode": 3066,
+   "pos": 13630,
+   "clen": 31786,
+   "ulen": 1
+  },
+  {
+   "name": "pyimod03_ctypes",
+   "typecode": 16696,
+   "pos": 2815,
+   "clen": 6434,
+   "ulen": 1
+  },
+  {
+   "name": "pyimod04_pywin32",
+   "typecode": 19511,
+   "pos": 934,
+   "clen": 1663,
+   "ulen": 1
+  },
+  {
+   "name": "pyiboot01_bootstrap",
+   "typecode": 20445,
+   "pos": 1142,
+   "clen": 2020,
+   "ulen": 1
+  },
+  {
+   "name": "pyi_rth_inspect",
+   "typecode": 21587,
+   "pos": 1470,
+   "clen": 2779,
+   "ulen": 1
+  },
+  {
+   "name": "enable_telnet",
+   "typecode": 23057,
+   "pos": 12645,
+   "clen": 24814,
+   "ulen": 1
+  },
+  {
+   "name": "VCRUNTIME140.dll",
+   "typecode": 35702,
+   "pos": 60521,
+   "clen": 124544,
+   "ulen": 1
+  },
+  {
+   "name": "_bz2.pyd",
+   "typecode": 96223,
+   "pos": 36747,
+   "clen": 72704,
+   "ulen": 1
+  },
+  {
+   "name": "_ctypes.pyd",
+   "typecode": 132970,
+   "pos": 55762,
+   "clen": 122880,
+   "ulen": 1
+  },
+  {
+   "name": "_decimal.pyd",
+   "typecode": 188732,
+   "pos": 125886,
+   "clen": 272896,
+   "ulen": 1
+  },
+  {
+   "name": "_hashlib.pyd",
+   "typecode": 314618,
+   "pos": 22021,
+   "clen": 55808,
+   "ulen": 1
+  },
+  {
+   "name": "_lzma.pyd",
+   "typecode": 336639,
+   "pos": 83803,
+   "clen": 152576,
+   "ulen": 1
+  },
+  {
+   "name": "_socket.pyd",
+   "typecode": 420442,
+   "pos": 31647,
+   "clen": 72704,
+   "ulen": 1
+  },
+  {
+   "name": "_ssl.pyd",
+   "typecode": 452089,
+   "pos": 62910,
+   "clen": 167936,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-console-l1-1-0.dll",
+   "typecode": 514999,
+   "pos": 8317,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-datetime-l1-1-0.dll",
+   "typecode": 523316,
+   "pos": 8132,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-debug-l1-1-0.dll",
+   "typecode": 531448,
+   "pos": 8154,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-errorhandling-l1-1-0.dll",
+   "typecode": 539602,
+   "pos": 8195,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-fibers-l1-1-0.dll",
+   "typecode": 547797,
+   "pos": 8135,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-file-l1-1-0.dll",
+   "typecode": 555932,
+   "pos": 9278,
+   "clen": 26656,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-file-l1-2-0.dll",
+   "typecode": 565210,
+   "pos": 8154,
+   "clen": 22552,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-file-l2-1-0.dll",
+   "typecode": 573364,
+   "pos": 8296,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-handle-l1-1-0.dll",
+   "typecode": 581660,
+   "pos": 8168,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-heap-l1-1-0.dll",
+   "typecode": 589828,
+   "pos": 8340,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-interlocked-l1-1-0.dll",
+   "typecode": 598168,
+   "pos": 8196,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-libraryloader-l1-1-0.dll",
+   "typecode": 606364,
+   "pos": 8505,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-localization-l1-2-0.dll",
+   "typecode": 614869,
+   "pos": 9049,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-memory-l1-1-0.dll",
+   "typecode": 623918,
+   "pos": 8344,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-namedpipe-l1-1-0.dll",
+   "typecode": 632262,
+   "pos": 8273,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-processenvironment-l1-1-0.dll",
+   "typecode": 640535,
+   "pos": 8424,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-processthreads-l1-1-0.dll",
+   "typecode": 648959,
+   "pos": 8919,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-processthreads-l1-1-1.dll",
+   "typecode": 657878,
+   "pos": 8371,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-profile-l1-1-0.dll",
+   "typecode": 666249,
+   "pos": 8120,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-rtlsupport-l1-1-0.dll",
+   "typecode": 674369,
+   "pos": 8364,
+   "clen": 22552,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-string-l1-1-0.dll",
+   "typecode": 682733,
+   "pos": 8222,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-synch-l1-1-0.dll",
+   "typecode": 690955,
+   "pos": 8749,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-synch-l1-2-0.dll",
+   "typecode": 699704,
+   "pos": 8398,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-sysinfo-l1-1-0.dll",
+   "typecode": 708102,
+   "pos": 8502,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-timezone-l1-1-0.dll",
+   "typecode": 716604,
+   "pos": 8325,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-core-util-l1-1-0.dll",
+   "typecode": 724929,
+   "pos": 8140,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-conio-l1-1-0.dll",
+   "typecode": 733069,
+   "pos": 8493,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-convert-l1-1-0.dll",
+   "typecode": 741562,
+   "pos": 9576,
+   "clen": 26656,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-environment-l1-1-0.dll",
+   "typecode": 751138,
+   "pos": 8314,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-filesystem-l1-1-0.dll",
+   "typecode": 759452,
+   "pos": 8945,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-heap-l1-1-0.dll",
+   "typecode": 768397,
+   "pos": 8466,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-locale-l1-1-0.dll",
+   "typecode": 776863,
+   "pos": 8439,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-math-l1-1-0.dll",
+   "typecode": 785302,
+   "pos": 11469,
+   "clen": 30792,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-process-l1-1-0.dll",
+   "typecode": 796771,
+   "pos": 8510,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-runtime-l1-1-0.dll",
+   "typecode": 805281,
+   "pos": 9760,
+   "clen": 26656,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-stdio-l1-1-0.dll",
+   "typecode": 815041,
+   "pos": 10192,
+   "clen": 26648,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-string-l1-1-0.dll",
+   "typecode": 825233,
+   "pos": 10356,
+   "clen": 26656,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-time-l1-1-0.dll",
+   "typecode": 835589,
+   "pos": 9033,
+   "clen": 22560,
+   "ulen": 1
+  },
+  {
+   "name": "api-ms-win-crt-utility-l1-1-0.dll",
+   "typecode": 844622,
+   "pos": 8477,
+   "clen": 22600,
+   "ulen": 1
+  },
+  {
+   "name": "base_library.zip",
+   "typecode": 853099,
+   "pos": 423621,
+   "clen": 1409329,
+   "ulen": 1
+  },
+  {
+   "name": "libcrypto-3-x64.dll",
+   "typecode": 1276720,
+   "pos": 2047182,
+   "clen": 7981568,
+   "ulen": 1
+  },
+  {
+   "name": "libffi-8.dll",
+   "typecode": 3323902,
+   "pos": 14356,
+   "clen": 28160,
+   "ulen": 1
+  },
+  {
+   "name": "libssl-3-x64.dll",
+   "typecode": 3338258,
+   "pos": 450378,
+   "clen": 1581568,
+   "ulen": 1
+  },
+  {
+   "name": "python313.dll",
+   "typecode": 3788636,
+   "pos": 2507770,
+   "clen": 6149632,
+   "ulen": 1
+  },
+  {
+   "name": "select.pyd",
+   "typecode": 6296406,
+   "pos": 8997,
+   "clen": 18944,
+   "ulen": 1
+  },
+  {
+   "name": "ucrtbase.dll",
+   "typecode": 6305403,
+   "pos": 520341,
+   "clen": 1124384,
+   "ulen": 1
+  },
+  {
+   "name": "unicodedata.pyd",
+   "typecode": 6825744,
+   "pos": 311730,
+   "clen": 698880,
+   "ulen": 1
+  },
+  {
+   "name": "PYZ.pyz",
+   "typecode": 7137474,
+   "pos": 1587680,
+   "clen": 1587680,
+   "ulen": 0
+  }
+ ]
+}

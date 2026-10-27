@@ -1,0 +1,34 @@
+pname(NetworkManager, systemd-resolved, dnsmasq) -> must_direct
+dip(geoip:private) -> direct
+domain(geosite:private) -> direct
+
+# 传输层协议治理：全局阻断 QUIC 强制 TCP，NTP 直连校时
+l4proto(udp) && dport(443) -> block
+l4proto(udp) && dport(123) -> direct
+
+# 华为设备确定性兜底：家宽段源 + Google/YouTube IPv6 段目标的无 SNI 连接 → AI 组
+# （AI 组甲骨文双节点实测通 IPv6；v6 源用家宽 /16 整段防 PD 前缀滚动，同时覆盖
+#  .122 平板与 .224 手机；dip 只罩 Google 段，不影响其他设备其他流量）
+sip("2408:820c::/16") && dip("2001:4860::/32", "2404:6800::/32") -> AI
+
+# 自建服务直连
+domain(290490.xyz) -> direct
+
+# 境外特例直连修正与国内放行
+domain(stripo.email, justuno.com, mailchimp.com, freepik.com, joeyblog.net, googleapis.cn, services.googleapis.cn, xn--ngstr-lra8j.com, dl.google.com, nvidia.com, workbuddy.ai) -> proxy
+domain(geosite:cn) -> direct
+dip(geoip:cn) -> direct
+
+# 1. 精确 AI 域名 (有真实 SNI 的 Gemini 与 AI 业务，优先且精确进入 AI 组)
+domain(generativelanguage.googleapis.com, ai.google.dev, gemini.google.com, bard.google.com) -> AI
+domain(geosite:openai, geosite:anthropic) -> AI
+domain(opencode.ai, oracle.com, oraclecloud.com, oci.oraclecloud.com) -> AI
+
+# 2. 流媒体专属路由 (YouTube 所有域名进入 Media 组)
+domain(geosite:youtube, geosite:netflix, geosite:disney, geosite:spotify) -> Media
+
+# 3. 华为设备关键修复：无 SNI 的 Google 核心 IPv6 字面量统合归入 Media，绝不让 API 错入 AI 组导致签名 403
+dip("2001:4860::/32", "2404:6800::/32") -> Media
+
+# 兜底常规代理
+fallback: proxy

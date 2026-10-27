@@ -1,0 +1,743 @@
+/dts-v1/;
+
+/ {
+    #address-cells = < &{/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/fit} >;
+    #size-cells = < &{/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/fit} >;
+    compatible = "fiberhome,hg5585f-ct", "airoha,an7581", "airoha,en7581";
+    interrupt-parent = <0x1>;
+    model = "FiberHome HG5585F CT";
+
+    aliases {
+        led-boot = "/leds/power";
+        led-failsafe = "/leds/power";
+        led-running = "/leds/power";
+        led-upgrade = "/leds/power";
+        serial0 = "/serial@1fbf0000";
+    };
+
+    chosen {
+        bootargs = "console=ttyS0,115200 earlycon";
+        rootdisk = <0x2>;
+        stdout-path = "serial0:115200n8";
+    };
+
+    memory@80000000 {
+        device_type = "memory";
+        reg = < 0x0 0x80000000 0x0 0x20000000 >;
+    };
+
+    reserved-memory {
+        #address-cells = < &{/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/fit} >;
+        #size-cells = < &{/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/fit} >;
+        ranges = <>;
+
+        atf@80000000 {
+            no-map = <>;
+            reg = < 0x0 0x80000000 0x0 0x200000 >;
+        };
+
+        npu@84000000 {  /* phandle 0x18 */
+            no-map = <>;
+            reg = < 0x0 0x84000000 0x0 0xa00000 >;
+        };
+
+        qdma0@87000000 {  /* phandle 0x1c */
+            no-map = <>;
+            reg = < 0x0 0x87000000 0x0 0x2000000 >;
+        };
+
+        qdma1@89000000 {  /* phandle 0xb */
+            no-map = <>;
+            reg = < 0x0 0x89000000 0x0 0x1000000 >;
+        };
+
+        npu-pkt@81000000 {  /* phandle 0x19 */
+            no-map = <>;
+            reg = < 0x0 0x81000000 0x0 0x1600000 >;
+        };
+
+        npu-ba@90c06800 {  /* phandle 0x1a */
+            no-map = <>;
+            reg = < 0x0 0x90c06800 0x0 0x200000 >;
+        };
+    };
+
+    factory_nvmem {
+        #address-cells = < &{/interrupt-controller@9000000} >;
+        #size-cells = < &{/interrupt-controller@9000000} >;
+        airoha,nvmem-size = <0x2040>;
+        airoha,ubi-device = <0x0>;
+        compatible = "airoha,ubi-nvmem";
+        volname = "factory";
+
+        calibration@0 {  /* phandle 0xa */
+            reg = < 0x0 0x800 >;
+        };
+
+        eeprom@1000 {  /* phandle 0x29 */
+            reg = < 0x1000 0x1000 >;
+        };
+
+        mac-address@2000 {  /* phandle 0xd */
+            reg = < 0x2000 0x6 >;
+        };
+
+        pon-serial@2010 {  /* phandle 0x11 */
+            reg = < 0x2010 0x8 >;
+        };
+    };
+
+    regulator-usb-3v3 {  /* phandle 0x4 */
+        compatible = "regulator-fixed";
+        regulator-always-on = <>;
+        regulator-max-microvolt = <0x325aa0>;
+        regulator-min-microvolt = <0x325aa0>;
+        regulator-name = "usb-3.3V";
+    };
+
+    regulator-usb-5v {  /* phandle 0x5 */
+        compatible = "regulator-fixed";
+        regulator-always-on = <>;
+        regulator-boot-on = <>;
+        regulator-max-microvolt = <0x4c4b40>;
+        regulator-min-microvolt = <0x4c4b40>;
+        regulator-name = "usb-5v";
+    };
+
+    usb@1fab0000 {
+        compatible = "airoha,an7581-xhci", "mediatek,mtk-xhci";
+        interrupts = < 0x0 0x21 0x4 >;
+        phys = < &{/phy@1fac0000} 0x3 0x3 0x4 >;
+        reg = < 0x0 0x1fab0000 0x0 0x3e00 0x0 0x1fab3e00 0x0 0x100 >;
+        reg-names = [6d6163006970706300];
+        vbus-supply = <0x5>;
+        vusb33-supply = <0x4>;
+    };
+
+    phy@1fac0000 {  /* phandle 0x3 */
+        #phy-cells = < &{/interrupt-controller@9000000} >;
+        airoha,scu = <0x6>;
+        airoha,serdes-port = <0x2>;
+        airoha,usb2-monitor-clk-sel = <0x1>;
+        compatible = "airoha,an7581-usb-phy";
+        reg = < 0x0 0x1fac0000 0x0 0x10000 >;
+    };
+
+    usb@1fad0000 {
+        compatible = "airoha,an7581-xhci", "mediatek,mtk-xhci";
+        interrupts = < 0x0 0x96 0x4 >;
+        mediatek,u3p-dis-msk = <0x1>;
+        phys = < &{/phy@1fae0000} 0x3 >;
+        reg = < 0x0 0x1fad0000 0x0 0x3e00 0x0 0x1fad3e00 0x0 0x100 >;
+        reg-names = [6d6163006970706300];
+        vbus-supply = <0x5>;
+        vusb33-supply = <0x4>;
+    };
+
+    phy@1fae0000 {  /* phandle 0x7 */
+        #phy-cells = < &{/interrupt-controller@9000000} >;
+        airoha,usb2-monitor-clk-sel = <0x2>;
+        compatible = "airoha,an7581-usb-phy";
+        reg = < 0x0 0x1fae0000 0x0 0x10000 >;
+    };
+
+    i2c-clock {  /* phandle 0x8 */
+        #clock-cells = < 0x0 >;
+        clock-frequency = < 0x1312d00 >;
+        compatible = "fixed-clock";
+    };
+
+    i2c@1fbf8000 {
+        #address-cells = < &{/interrupt-controller@9000000} >;
+        #size-cells = < 0x0 >;
+        clock-frequency = < 0x186a0 >;
+        clocks = < &{/i2c-clock} >;
+        compatible = "mediatek,mt7621-i2c";
+        reg = < 0x0 0x1fbf8000 0x0 0x100 >;
+
+        optical-front-end@51 {  /* phandle 0xf */
+            compatible = "fiberhome,hg5x-bosa", "airoha,paged-bosa";
+            fiberhome,ben-active-high = <>;
+            nvmem-cell-names = "calibration";
+            nvmem-cells = < &{/factory_nvmem/calibration@0} >;
+            reg = < 0x51 >;
+            tx-disable-gpios = [000000090000002600000000];
+        };
+    };
+
+    pcs@1fa08000 {  /* phandle 0xe */
+        airoha,scu = <0x6>;
+        compatible = "airoha,an7581-bsp-pon-pcs";
+        reg = < 0x0 0x1fa08000 0x0 0x1000 0x0 0x1fa80000 0x0 0x60 0x0 0x1fa80a00 0x0 0x164 0x0 0x1fa84000 0x0 0x450 0x0 0x1fa85900 0x0 0x338 0x0 0x1fa86000 0x0 0x300 0x0 0x1fa8a000 0x0 0x1000 0x0 0x1fa8b000 0x0 0x1000 >;
+        reg-names = [7063735f6d6163006873676d69695f616e006873676d69695f706373006d756c74695f73676d696900757378676d6969006873676d69695f726174655f616470007063735f616e61007063735f706d6100];
+    };
+
+    ethernet@1fb56000 {  /* phandle 0x10 */
+        airoha,ethernet = <0xc>;
+        airoha,scu = <0x6>;
+        compatible = "airoha,an7581-bsp-pon";
+        interrupts = < 0x0 0x26 0x4 >;
+        memory-region = < &{/reserved-memory/qdma1@89000000} >;
+        nvmem-cell-names = "mac-address";
+        nvmem-cells = < &{/factory_nvmem/mac-address@2000} >;
+        reg = < 0x0 0x1fb56000 0x0 0x2000 >;
+    };
+
+    ethernet@1fb64000 {
+        airoha,default-line-mode = "xgpon";
+        airoha,scu = <0x6>;
+        compatible = "airoha,an7581-xpon-mac";
+        data-path = <0x10>;
+        interrupt-names = [6d61630070687900];
+        interrupts = < 0x0 0x2a 0x4 0x0 0x2b 0x4 >;
+        nvmem-cell-names = "pon-serial";
+        nvmem-cells = < &{/factory_nvmem/pon-serial@2010} >;
+        optical-front-end = <0xf>;
+        pcs-handle = <0xe>;
+        reg = < 0x0 0x1fb64000 0x0 0x3e8 0x0 0x1fb65000 0x0 0xff8 0x0 0x1fb66000 0x0 0x1000 0x0 0x1faf0000 0x0 0x2000 >;
+        reg-names = [67706f6e007867706f6e0065706f6e00706f6e2d70687900];
+    };
+
+    psci {
+        compatible = "arm,psci-0.2";
+        method = <0x736d6300>;
+    };
+
+    cpus {
+        #address-cells = < &{/interrupt-controller@9000000} >;
+        #size-cells = < 0x0 >;
+
+        cpu@0 {  /* phandle 0x17 */
+            #cooling-cells = <0x2>;
+            compatible = "arm,cortex-a53";
+            device_type = "cpu";
+            enable-method = "psci";
+            next-level-cache = <0x13>;
+            operating-points-v2 = <0x12>;
+            reg = < 0x0 >;
+        };
+
+        cpu@1 {
+            #cooling-cells = <0x2>;
+            compatible = "arm,cortex-a53";
+            device_type = "cpu";
+            enable-method = "psci";
+            next-level-cache = <0x13>;
+            operating-points-v2 = <0x12>;
+            reg = < 0x1 >;
+        };
+
+        cpu@2 {
+            #cooling-cells = <0x2>;
+            compatible = "arm,cortex-a53";
+            device_type = "cpu";
+            enable-method = "psci";
+            next-level-cache = <0x13>;
+            operating-points-v2 = <0x12>;
+            reg = < 0x2 >;
+        };
+
+        cpu@3 {
+            #cooling-cells = <0x2>;
+            compatible = "arm,cortex-a53";
+            device_type = "cpu";
+            enable-method = "psci";
+            next-level-cache = <0x13>;
+            operating-points-v2 = <0x12>;
+            reg = < 0x3 >;
+        };
+
+        l2-cache {  /* phandle 0x13 */
+            cache-level = <0x2>;
+            cache-line-size = <0x40>;
+            cache-size = <0x80000>;
+            cache-unified = <>;
+            compatible = "cache";
+        };
+    };
+
+    opp-table {  /* phandle 0x12 */
+        compatible = "operating-points-v2";
+        opp-shared = <>;
+
+        opp-500000000 {
+            opp-hz = [000000001dcd6500];
+        };
+
+        opp-550000000 {
+            opp-hz = [0000000020c85580];
+        };
+
+        opp-600000000 {
+            opp-hz = [0000000023c34600];
+        };
+
+        opp-650000000 {
+            opp-hz = [0000000026be3680];
+        };
+
+        opp-700000000 {
+            opp-hz = [0000000029b92700];
+        };
+
+        opp-750000000 {
+            opp-hz = [000000002cb41780];
+        };
+
+        opp-800000000 {
+            opp-hz = [000000002faf0800];
+        };
+
+        opp-850000000 {
+            opp-hz = [0000000032a9f880];
+        };
+
+        opp-900000000 {
+            opp-hz = [0000000035a4e900];
+        };
+
+        opp-950000000 {
+            opp-hz = [00000000389fd980];
+        };
+
+        opp-1000000000 {
+            opp-hz = [000000003b9aca00];
+        };
+
+        opp-1050000000 {
+            opp-hz = [000000003e95ba80];
+        };
+
+        opp-1100000000 {
+            opp-hz = [000000004190ab00];
+        };
+
+        opp-1150000000 {
+            opp-hz = [00000000448b9b80];
+        };
+
+        opp-1200000000 {
+            opp-hz = [0000000047868c00];
+        };
+    };
+
+    thermal@1efbd000 {  /* phandle 0x15 */
+        #thermal-sensor-cells = <0x0>;
+        airoha,chip-scu = <0x14>;
+        compatible = "airoha,an7581-bsp-thermal";
+        reg = < 0x0 0x1efbd000 0x0 0x1000 >;
+    };
+
+    thermal-zones {
+
+        cpu-thermal {
+            polling-delay = <0x3e8>;
+            polling-delay-passive = <0xfa>;
+            thermal-sensors = <0x15>;
+
+            trips {
+
+                cpu-passive {  /* phandle 0x16 */
+                    hysteresis = <0x7d0>;
+                    temperature = <0x17318>;
+                    type = "passive";
+                };
+
+                cpu-critical {
+                    hysteresis = <0x7d0>;
+                    temperature = <0x1d4c0>;
+                    type = "critical";
+                };
+            };
+
+            cooling-maps {
+
+                map0 {
+                    cooling-device = [00000017ffffffffffffffff];
+                    trip = <0x16>;
+                };
+            };
+        };
+    };
+
+    interrupt-controller@9000000 {  /* phandle 0x1 */
+        #interrupt-cells = < &{/phy@1fac0000} >;
+        compatible = "arm,gic-v3";
+        interrupt-controller = <>;
+        interrupts = < 0x1 0x9 0x8 >;
+        reg = < 0x0 0x9000000 0x0 0x20000 0x0 0x9080000 0x0 0x80000 >;
+    };
+
+    timer {
+        compatible = "arm,armv8-timer";
+        interrupts = < 0x1 0xd 0x8 0x1 0xe 0x8 0x1 0xb 0x8 0x1 0xa 0x8 >;
+    };
+
+    syscon@1fa20000 {  /* phandle 0x14 */
+        compatible = "syscon";
+        reg = < 0x0 0x1fa20000 0x0 0x388 >;
+    };
+
+    syscon@1fb00000 {  /* phandle 0x6 */
+        #clock-cells = < &{/interrupt-controller@9000000} >;
+        #reset-cells = < &{/interrupt-controller@9000000} >;
+        airoha,chip-scu = <0x14>;
+        compatible = "airoha,en7581-scu", "syscon";
+        reg = < 0x0 0x1fb00000 0x0 0x970 >;
+    };
+
+    syscon@1fbf0200 {  /* phandle 0x9 */
+        #gpio-cells = < &{/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/fit} >;
+        airoha,chip-scu = <0x14>;
+        compatible = "airoha,an7581-bsp-gpio", "syscon";
+        gpio-controller = <>;
+        reg = < 0x0 0x1fbf0200 0x0 0xc0 >;
+    };
+
+    mdio@1fb5f01c {
+        #address-cells = < &{/interrupt-controller@9000000} >;
+        #size-cells = < 0x0 >;
+        airoha,chip-scu = <0x14>;
+        airoha,gpio-syscon = <0x9>;
+        airoha,scu = <0x6>;
+        compatible = "airoha,an7581-bsp-mdio";
+        reg = < 0x0 0x1fb5f01c 0x0 0x4 >;
+
+        ethernet-phy@9 {
+            phy-mode = "internal";
+            reg = < 0x9 >;
+        };
+
+        ethernet-phy@a {  /* phandle 0x1e */
+            phy-mode = "internal";
+            reg = < 0xa >;
+        };
+
+        ethernet-phy@b {  /* phandle 0x1f */
+            phy-mode = "internal";
+            reg = < 0xb >;
+        };
+
+        ethernet-phy@c {  /* phandle 0x20 */
+            phy-mode = "internal";
+            reg = < 0xc >;
+        };
+
+        ethernet-phy@7 {  /* phandle 0x1d */
+            compatible = "ethernet-phy-ieee802.3-c45";
+            maxlinear,force-2500base-x = <>;
+            reg = < 0x7 >;
+            reset-assert-us = <0x186a0>;
+            reset-deassert-us = <0xc3500>;
+            reset-gpios = < &{/syscon@1fbf0200} 0x22 0x1 >;
+        };
+    };
+
+    npu@1e900000 {  /* phandle 0x1b */
+        airoha,legacy-wlan-mailbox = <>;
+        airoha,mt7916-rx-only-memory = <>;
+        compatible = "airoha,an7581-bsp-npu";
+        firmware-name = "airoha/en7581_MT7916_npu_rv32.bin airoha/en7581_MT7916_npu_data.bin";
+        interrupt-names = [6d61696c626f780077647430007764743100776474320077647433007764743400776474350077647436007764743700776c616e3000776c616e3100776c616e3200776c616e3300776c616e3400776c616e3500];
+        interrupts = < 0x0 0x7d 0x4 0x0 0x67 0x4 0x0 0x6d 0x4 0x0 0x71 0x4 0x0 0x75 0x4 0x0 0x86 0x4 0x0 0x87 0x4 0x0 0x88 0x4 0x0 0x89 0x4 0x0 0x76 0x4 0x0 0x77 0x4 0x0 0x78 0x4 0x0 0x79 0x4 0x0 0x7a 0x4 0x0 0x7b 0x4 >;
+        memory-region = < &{/reserved-memory/npu@84000000} 0x19 0x1a >;
+        memory-region-names = [62696e61727900706b7400626100];
+        reg = < 0x0 0x1e900000 0x0 0x313000 >;
+    };
+
+    ethernet@1fb50000 {  /* phandle 0xc */
+        #address-cells = < &{/interrupt-controller@9000000} >;
+        #size-cells = < 0x0 >;
+        airoha,npu = <0x1b>;
+        airoha,scu = <0x6>;
+        compatible = "airoha,an7581-bsp-eth";
+        interrupts = < 0x0 0x25 0x4 >;
+        memory-region = < &{/reserved-memory/qdma0@87000000} >;
+        reg = < 0x0 0x1fb50000 0x0 0x2800 0x0 0x1fb54000 0x0 0x2000 0x0 0x1fb58000 0x0 0x701c 0x0 0x1fb5f020 0x0 0xfe0 0x0 0x1fa09000 0x0 0x1000 0x0 0x1fa70000 0x0 0x60 0x0 0x1fa70a00 0x0 0x164 0x0 0x1fa74000 0x0 0x450 0x0 0x1fa7a000 0x0 0x1000 0x0 0x1fa7b000 0x0 0x1000 0x0 0x1fa76000 0x0 0x300 >;
+        reg-names = [66650071646d61007377697463682d6669727374007377697463682d6c617374007873692d6d6163007063732d616e007063732d6873676d6969007063732d6d756c7469007063732d616e616c6f67007063732d706d61007063732d7261746500];
+
+        port@1 {
+            label = "lan1";
+            phy-handle = <0x1d>;
+            phy-mode = "2500base-x";
+            reg = < 0x1 >;
+        };
+
+        port@2 {
+            label = "lan2";
+            phy-handle = <0x1e>;
+            reg = < 0x2 >;
+        };
+
+        port@3 {
+            label = "lan3";
+            phy-handle = <0x1f>;
+            reg = < 0x3 >;
+        };
+
+        port@4 {
+            label = "lan4";
+            phy-handle = <0x20>;
+            reg = < 0x4 >;
+        };
+    };
+
+    leds {
+        compatible = "gpio-leds";
+
+        power {
+            default-state = "on";
+            gpios = < &{/syscon@1fbf0200} 0xd 0x1 >;
+            label = "blue:power";
+            panic-indicator = <>;
+        };
+
+        pon {
+            gpios = < &{/syscon@1fbf0200} 0xe 0x1 >;
+            label = "blue:wan";
+            linux,default-trigger = [706f6e302d726567697374726174696f6e00];
+        };
+
+        los {
+            gpios = < &{/syscon@1fbf0200} 0x10 0x1 >;
+            label = "red:wan";
+            linux,default-trigger = [706f6e302d6c6f7300];
+        };
+
+        usb {
+            gpios = < &{/syscon@1fbf0200} 0x6 0x1 >;
+            label = "blue:usb-1";
+        };
+
+        wlan {
+            gpios = < &{/syscon@1fbf0200} 0xf 0x1 >;
+            label = "blue:wlan";
+        };
+    };
+
+    keys {
+        compatible = "gpio-keys-polled";
+        poll-interval = <0x14>;
+
+        reset {
+            debounce-interval = <0x3c>;
+            gpios = < &{/syscon@1fbf0200} 0x0 0x1 >;
+            label = "reset";
+            linux,code = <0x198>;
+        };
+    };
+
+    pinctrl {
+        airoha,chip-scu = <0x14>;
+        compatible = "airoha,an7581-bsp-pinctrl";
+
+        pnand-pins {  /* phandle 0x22 */
+            function = "pnand";
+            groups = "pnand";
+        };
+
+        pcie0-pins {  /* phandle 0x23 */
+            function = "pcie-reset-open-drain";
+            groups = "pcie0-reset";
+        };
+
+        pcie1-pins {  /* phandle 0x27 */
+            function = "pcie-reset-open-drain";
+            groups = "pcie1-reset";
+        };
+    };
+
+    serial@1fbf0000 {
+        clock-frequency = < 0x1c2000 >;
+        compatible = "ns16550";
+        interrupts = < 0x0 0x12 0x4 >;
+        reg = < 0x0 0x1fbf0000 0x0 0x30 >;
+        reg-io-width = <0x4>;
+        reg-shift = <0x2>;
+    };
+
+    ecc@1fa12000 {  /* phandle 0x21 */
+        clock-names = "nfiecc_clk";
+        clocks = < &{/syscon@1fb00000} 0x4 >;
+        compatible = "airoha,en7581-nand-ecc";
+        reg = < 0x0 0x1fa12000 0x0 0x150 >;
+    };
+
+    nand-controller@1fa11000 {
+        #address-cells = < &{/interrupt-controller@9000000} >;
+        #size-cells = < 0x0 >;
+        clock-names = "nfi_clk";
+        clocks = < &{/syscon@1fb00000} 0x4 >;
+        compatible = "airoha,en7581-nfc";
+        ecc-engine = <0x21>;
+        pinctrl-0 = <0x22>;
+        pinctrl-names = "default";
+        reg = < 0x0 0x1fa11000 0x0 0x580 >;
+
+        nand@0 {
+            nand-bus-width = <0x8>;
+            nand-ecc-mode = "hw";
+            reg = < 0x0 >;
+
+            partitions {
+                #address-cells = < &{/interrupt-controller@9000000} >;
+                #size-cells = < &{/interrupt-controller@9000000} >;
+                compatible = "fixed-partitions";
+
+                partition@0 {
+                    label = "bl2";
+                    read-only = <>;
+                    reg = < 0x0 0x20000 >;
+                };
+
+                partition@20000 {
+                    label = "ubi";
+                    reg = < 0x20000 0x0 >;
+
+                    volumes {
+
+                        fit {  /* phandle 0x2 */
+                            volname = <0x66697400>;
+                        };
+
+                        fip {
+                            volname = <0x66697000>;
+                        };
+
+                        ubootenv {
+                            volname = "ubootenv";
+                        };
+
+                        ubootenv2 {
+                            volname = "ubootenv2";
+                        };
+
+                        factory {
+                            volname = "factory";
+                        };
+                    };
+                };
+            };
+        };
+    };
+
+    phy@1fa5a000 {  /* phandle 0x24 */
+        #phy-cells = < 0x0 >;
+        compatible = "airoha,en7581-pcie-phy";
+        reg = < 0x0 0x1fa5a000 0x0 0xfff 0x0 0x1fa5b000 0x0 0xfff 0x0 0x1fa5c000 0x0 0xfff 0x0 0x1fc10044 0x0 0x4 0x0 0x1fc30044 0x0 0x4 0x0 0x1fc15030 0x0 0x104 >;
+        reg-names = [6373722d326c00706d613000706d61310070302d78722d6474696d650070312d78722d6474696d650072782d61657100];
+    };
+
+    pcie@1fc00000 {
+        #address-cells = < &{/phy@1fac0000} >;
+        #interrupt-cells = < &{/interrupt-controller@9000000} >;
+        #size-cells = < &{/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/fit} >;
+        bus-range = [00000000000000ff];
+        clock-names = "sys-ck";
+        clocks = < &{/syscon@1fb00000} 0x7 >;
+        compatible = "airoha,en7581-pcie";
+        device_type = "pci";
+        interrupt-map = [000000000000000000000000000000010000002600000000000000000000000000000000000000020000002600000001000000000000000000000000000000030000002600000002000000000000000000000000000000040000002600000003];
+        interrupt-map-mask = [00000000000000000000000000000007];
+        interrupts = < 0x0 0x27 0x4 >;
+        linux,pci-domain = <0x0>;
+        max-link-speed = <0x2>;
+        mediatek,pbus-csr = [000000250000000000000004];
+        num-lanes = <0x1>;
+        phy-names = "pcie-phy";
+        phys = < &{/phy@1fa5a000} >;
+        pinctrl-0 = <0x23>;
+        pinctrl-names = "default";
+        ranges = < 0x2000000 0x0 0x20000000 0x0 0x20000000 0x0 0x4000000 >;
+        reg = < 0x0 0x1fc00000 0x0 0x1670 >;
+        reg-names = "pcie-mac";
+        reset-names = [7068792d6c616e65300070657273746f757400];
+        resets = < &{/syscon@1fb00000} 0x30 0x6 0x35 >;
+        status = "okay";
+
+        interrupt-controller {  /* phandle 0x26 */
+            #address-cells = < 0x0 >;
+            #interrupt-cells = < &{/interrupt-controller@9000000} >;
+            interrupt-controller = <>;
+        };
+
+        pcie@0,0 {
+            #address-cells = < &{/phy@1fac0000} >;
+            #size-cells = < &{/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/fit} >;
+            ranges = <>;
+            reg = < 0x0 0x0 0x0 0x0 0x0 >;
+
+            wifi@0,0 {
+                reg = < 0x0 0x0 0x0 0x0 0x0 >;
+            };
+        };
+    };
+
+    pcie@1fc20000 {
+        #address-cells = < &{/phy@1fac0000} >;
+        #interrupt-cells = < &{/interrupt-controller@9000000} >;
+        #size-cells = < &{/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/fit} >;
+        bus-range = [00000000000000ff];
+        clock-names = "sys-ck";
+        clocks = < &{/syscon@1fb00000} 0x7 >;
+        compatible = "airoha,en7581-pcie";
+        device_type = "pci";
+        interrupt-map = [000000000000000000000000000000010000002800000000000000000000000000000000000000020000002800000001000000000000000000000000000000030000002800000002000000000000000000000000000000040000002800000003];
+        interrupt-map-mask = [00000000000000000000000000000007];
+        interrupts = < 0x0 0x28 0x4 >;
+        linux,pci-domain = <0x1>;
+        max-link-speed = <0x2>;
+        mediatek,pbus-csr = [00000025000000080000000c];
+        num-lanes = <0x1>;
+        phy-names = "pcie-phy";
+        phys = < &{/phy@1fa5a000} >;
+        pinctrl-0 = <0x27>;
+        pinctrl-names = "default";
+        ranges = < 0x2000000 0x0 0x24000000 0x0 0x24000000 0x0 0x4000000 >;
+        reg = < 0x0 0x1fc20000 0x0 0x1670 >;
+        reg-names = "pcie-mac";
+        reset-names = [7068792d6c616e65310070657273746f757400];
+        resets = < &{/syscon@1fb00000} 0x31 0x6 0x36 >;
+        status = "okay";
+
+        interrupt-controller {  /* phandle 0x28 */
+            #address-cells = < 0x0 >;
+            #interrupt-cells = < &{/interrupt-controller@9000000} >;
+            interrupt-controller = <>;
+        };
+
+        pcie@0,0 {
+            #address-cells = < &{/phy@1fac0000} >;
+            #size-cells = < &{/nand-controller@1fa11000/nand@0/partitions/partition@20000/volumes/fit} >;
+            ranges = <>;
+            reg = < 0x0 0x0 0x0 0x0 0x0 >;
+
+            wifi@0,0 {
+                airoha,eth = <0xc>;
+                airoha,npu = <0x1b>;
+                nvmem-cell-names = "eeprom";
+                nvmem-cells = < &{/factory_nvmem/eeprom@1000} >;
+                reg = < 0x0 0x0 0x0 0x0 0x0 >;
+            };
+        };
+    };
+
+    syscon@1fbe3400 {  /* phandle 0x25 */
+        compatible = "syscon";
+        reg = < 0x0 0x1fbe3400 0x0 0xff >;
+    };
+
+    wdma@1fa06000 {
+        compatible = "en751221,wdma";
+        interrupts = < 0x0 0x45 0x4 0x0 0x46 0x4 0x0 0x47 0x4 0x0 0x48 0x4 0x0 0x49 0x4 0x0 0x4a 0x4 >;
+        reg = < 0x0 0x1fa06000 0x0 0x400 0x0 0x1fa06400 0x0 0x400 >;
+    };
+
+    wed@1fa02000 {
+        compatible = "en751221,wed";
+        interrupts = < 0x0 0x43 0x4 0x0 0x44 0x4 >;
+        pci_slot_map = [0000000000000001];
+        reg = < 0x0 0x1fa02000 0x0 0xb00 0x0 0x1fa03000 0x0 0xb00 >;
+        wed_num = <0x2>;
+    };
+};

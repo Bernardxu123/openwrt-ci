@@ -1,0 +1,74 @@
+# show allinfo 原始输出 · FiberHome HG5585F (联通 CU)
+# 采集 2026-10-16 · Telnet admin / Fh@163280 · load_cli factory → show allinfo
+# 提示符：Config\factorydir#
+
+Success!
+ device_model=HG5585F-C
+ onu_mac=D0:69:FF:16:32:80
+ base_mac=D0:69:FF:16:32:80
+ br0_mac=D0:69:FF:16:32:80
+ internet_mac=D0:69:FF:16:32:81
+ tr069_mac=D0:69:FF:16:32:82
+ voip_mac=D0:69:FF:16:32:83
+ pon_mac=D0:69:FF:16:32:80
+ priprotocol_mac=D0:69:FF:16:32:84
+ ssid2G_name=CU_7Bxc
+ ssid2G_pwd=nua539qt
+ ssid5G_name=CU_7Bxc_5G
+ ssid5G_pwd=nua539qt
+ user_pwd=nua539qt
+ device_OUI=741E93
+ device_sn=01FFFFFFFF010FFF25D069FF16328037
+ software_version=V03.00.M0000
+ hardware_version=WKE2.094.906
+ vendor_id=FH
+ mac_num=12
+ build=2025-10-06 03:09:17 +0800
+ build_num=349
+ operator_name=CH_CU
+ area=Shanghai
+ odminfo=[FAIL]
+ gpon_sn=FHTTC1C6ACAA
+ transceiver_serial=HZ251100024263
+ transceiver_type=PLDM588-815-C10
+ current_ponmode=EPON_10G
+ default_ponmode=EPON_10G
+ pcba_sn=12194833H449
+ certificate_num=[FAIL]
+
+
+# ---- 其余单项 show 命令回读 ----
+
+show admin_name   => Success! AdminName=CUAdmin
+show admin_pwd    => Success! Admin_pwd=CUAdmin98932816
+show device_oui   => Success! device_oui=741E93
+show vendor_id    => Success! vendor_id=FH
+show pcba_sn      => Success! pcba_sn=12194833H449
+show ap_equip_id  => Success! ap_equip_id=123451234512345
+show mac_num      => Success! mac_num=12
+show build_time   => Success! build_time=2025-10-06 03:09:17 +0800
+show transceiver_serial => Success! transceiver_serial=HZ251100024263
+show transceiver_type   => Success! transceiver_type=PLDM588-815-C10
+show serialnum / hardwareversion / softwareversion => % Unknown command.（用 show allinfo 代替）
+show reg_info     => Init ioctl: Permission denied / get reg info fail.（需 root）
+show pon_errorcode => Success!error code is not detected!
+show odminfo      => Fail!
+show certificate_num => Fail!
+
+
+# ---- /fh_tool/api GetDevInfo 解密后原文 ----
+
+{"index":"1","factory_mode":"FALSE",
+ "serialnum":"01FFFFFFFF010FFF25D069FF16328037",
+ "hardwareversion":"WKE2.094.906",
+ "softwareversion":"V03.00.M0000",
+ "Buildtime":"2025-10-06 03:09:17 +0800\n",
+ "optic_num":0,"port_num":4,"pon_num":1,"ssid_num":8,"onu_type":1,
+ "wifi":1,"wifi5":1,
+ "area_code":"Shanghai","operator_name":"CH_CU",
+ "MainSSIDIndex_58G":5,"wifi_cap":1,"wifi5_cap":1,
+ "result":0}
+
+# ---- /fh_tool/api GetTelnetInfo 解密后原文（Telnet 开启前后一致） ----
+
+{"index":"1","info1":"","info2":"","info3":"","info4":"yvVMNy!iNcvTHthD","result":0}

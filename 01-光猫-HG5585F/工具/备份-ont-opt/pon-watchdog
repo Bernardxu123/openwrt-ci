@@ -1,0 +1,24 @@
+#!/bin/sh /etc/rc.common
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# pon-watchdog 的 procd 包装。
+# 循环本体在 /usr/sbin/pon-watchdog，说明与判据推导见该文件头部注释。
+#
+# START=95 保证在 pon(S18) / airoha-pond(S19) / network(S20) 之后起来。
+# 停用：/etc/init.d/pon-watchdog stop && /etc/init.d/pon-watchdog disable
+
+START=95
+STOP=10
+USE_PROCD=1
+
+start_service() {
+	procd_open_instance
+	procd_set_param command /usr/sbin/pon-watchdog
+	# 看门狗自己崩了就拉起来（不做有限次重试——它崩说明有更底层的问题，需要留痕）
+	procd_set_param respawn 3600 5 5
+	procd_set_param stdout 1
+	procd_set_param stderr 1
+	# /etc/config/pon 变了就重启看门狗，让新的 line 配置立刻进入采样
+	procd_set_param file /etc/config/pon
+	procd_close_instance
+}

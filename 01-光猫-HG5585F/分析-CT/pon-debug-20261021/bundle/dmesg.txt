@@ -1,0 +1,712 @@
+# command: dmesg
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x410fd034]
+[    0.000000] Linux version 5.4.302 (lean@lean-esx) (gcc version 14.3.0 (OpenWrt GCC 14.3.0 r7241-bdec0000c1)) #0 SMP Sun Oct 18 06:55:02 2026
+[    0.000000] Machine model: FiberHome HG5585F CT
+[    0.000000] earlycon: ns16550 at MMIO32 0x000000001fbf0000 (options '115200n8')
+[    0.000000] printk: bootconsole [ns16550] enabled
+[    0.000000] On node 0 totalpages: 109567
+[    0.000000]   DMA32 zone: 1712 pages used for memmap
+[    0.000000]   DMA32 zone: 0 pages reserved
+[    0.000000]   DMA32 zone: 109567 pages, LIFO batch:31
+[    0.000000] psci: probing for conduit method from DT.
+[    0.000000] psci: PSCIv1.1 detected in firmware.
+[    0.000000] psci: Using standard PSCI v0.2 function IDs
+[    0.000000] psci: MIGRATE_INFO_TYPE not supported.
+[    0.000000] psci: SMC Calling Convention v1.0
+[    0.000000] percpu: Embedded 21 pages/cpu s45848 r8192 d31976 u86016
+[    0.000000] pcpu-alloc: s45848 r8192 d31976 u86016 alloc=21*4096
+[    0.000000] pcpu-alloc: [0] 0 [0] 1 [0] 2 [0] 3 
+[    0.000000] Detected VIPT I-cache on CPU0
+[    0.000000] CPU features: detected: ARM erratum 845719
+[    0.000000] CPU features: detected: GIC system register CPU interface
+[    0.000000] CPU features: kernel page table isolation disabled by kernel configuration
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 107855
+[    0.000000] Kernel command line: console=ttyS0,115200 earlycon
+[    0.000000] Dentry cache hash table entries: 65536 (order: 7, 524288 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 32768 (order: 6, 262144 bytes, linear)
+[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+[    0.000000] Memory: 409860K/438268K available (6974K kernel code, 436K rwdata, 1800K rodata, 384K init, 286K bss, 28408K reserved, 0K cma-reserved)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+[    0.000000] rcu: Hierarchical RCU implementation.
+[    0.000000] rcu: 	CONFIG_RCU_FANOUT set to non-default value of 32.
+[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] GICv3: GIC: Using split EOI/Deactivate mode
+[    0.000000] GICv3: 256 SPIs implemented
+[    0.000000] GICv3: 0 Extended SPIs implemented
+[    0.000000] GICv3: Distributor has no Range Selector support
+[    0.000000] GICv3: 16 PPIs implemented
+[    0.000000] GICv3: no VLPI support, no direct LPI support
+[    0.000000] GICv3: CPU0: found redistributor 0 region 0:0x0000000009080000
+[    0.000000] arch_timer: cp15 timer(s) running at 25.00MHz (phys).
+[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x5c40939b5, max_idle_ns: 440795202646 ns
+[    0.000003] sched_clock: 56 bits at 25MHz, resolution 40ns, wraps every 4398046511100ns
+[    0.008924] Calibrating delay loop (skipped), value calculated using timer frequency.. 50.00 BogoMIPS (lpj=100000)
+[    0.020301] pid_max: default: 32768 minimum: 301
+[    0.025454] Mount-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+[    0.033490] Mountpoint-cache hash table entries: 1024 (order: 1, 8192 bytes, linear)
+[    0.043126] ASID allocator initialised with 65536 entries
+[    0.049121] rcu: Hierarchical SRCU implementation.
+[    0.054726] smp: Bringing up secondary CPUs ...
+[    0.060050] Detected VIPT I-cache on CPU1
+[    0.060071] GICv3: CPU1: found redistributor 1 region 0:0x00000000090a0000
+[    0.060093] CPU1: Booted secondary processor 0x0000000001 [0x410fd034]
+[    0.060469] Detected VIPT I-cache on CPU2
+[    0.060482] GICv3: CPU2: found redistributor 2 region 0:0x00000000090c0000
+[    0.060494] CPU2: Booted secondary processor 0x0000000002 [0x410fd034]
+[    0.060838] Detected VIPT I-cache on CPU3
+[    0.060850] GICv3: CPU3: found redistributor 3 region 0:0x00000000090e0000
+[    0.060861] CPU3: Booted secondary processor 0x0000000003 [0x410fd034]
+[    0.060902] smp: Brought up 1 node, 4 CPUs
+[    0.122694] SMP: Total of 4 processors activated.
+[    0.127851] CPU features: detected: 32-bit EL0 Support
+[    0.133494] CPU features: detected: CRC32 instructions
+[    0.139204] CPU: All CPU(s) started at EL2
+[    0.143703] alternatives: patching kernel code
+[    0.150801] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    0.161523] futex hash table entries: 1024 (order: 4, 65536 bytes, linear)
+[    0.169230] pinctrl core: initialized pinctrl subsystem
+[    0.175734] NET: Registered protocol family 16
+[    0.180871] DMA: preallocated 256 KiB pool for atomic allocations
+[    0.187987] hw-breakpoint: found 6 breakpoint and 4 watchpoint registers.
+[    0.195645] Serial: AMBA PL011 UART driver
+[    0.208941] HugeTLB registered 1.00 GiB page size, pre-allocated 0 pages
+[    0.216323] HugeTLB registered 32.0 MiB page size, pre-allocated 0 pages
+[    0.223679] HugeTLB registered 2.00 MiB page size, pre-allocated 0 pages
+[    0.231037] HugeTLB registered 64.0 KiB page size, pre-allocated 0 pages
+[    0.241212] SCSI subsystem initialized
+[    0.245470] libata version 3.00 loaded.
+[    0.249840] usbcore: registered new interface driver usbfs
+[    0.255913] usbcore: registered new interface driver hub
+[    0.261773] usbcore: registered new device driver usb
+[    0.268076] clocksource: Switched to clocksource arch_sys_counter
+[    0.275446] thermal_sys: Registered thermal governor 'fair_share'
+[    0.275453] thermal_sys: Registered thermal governor 'bang_bang'
+[    0.282262] thermal_sys: Registered thermal governor 'step_wise'
+[    0.288861] thermal_sys: Registered thermal governor 'user_space'
+[    0.295456] thermal_sys: Registered thermal governor 'power_allocator'
+[    0.302443] NET: Registered protocol family 2
+[    0.314498] IP idents hash table entries: 8192 (order: 4, 65536 bytes, linear)
+[    0.322767] tcp_listen_portaddr_hash hash table entries: 256 (order: 0, 4096 bytes, linear)
+[    0.331958] TCP established hash table entries: 4096 (order: 3, 32768 bytes, linear)
+[    0.340494] TCP bind hash table entries: 4096 (order: 4, 65536 bytes, linear)
+[    0.348389] TCP: Hash tables configured (established 4096 bind 4096)
+[    0.355424] UDP hash table entries: 256 (order: 1, 8192 bytes, linear)
+[    0.362605] UDP-Lite hash table entries: 256 (order: 1, 8192 bytes, linear)
+[    0.370349] NET: Registered protocol family 1
+[    0.375145] PCI: CLS 0 bytes, default 64
+[    0.380632] workingset: timestamp_bits=46 max_order=17 bucket_order=0
+[    0.390857] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    0.397294] jffs2: version 2.2 (NAND) (SUMMARY) (LZMA) (RTIME) (CMODE_PRIORITY) (c) 2001-2006 Red Hat, Inc.
+[    0.422731] mtk-pcie-gen3 1fc00000.pcie: host bridge /pcie@1fc00000 ranges:
+[    0.422738] mtk-pcie-gen3 1fc20000.pcie: host bridge /pcie@1fc20000 ranges:
+[    0.422751] mtk-pcie-gen3 1fc20000.pcie: Parsing ranges property...
+[    0.422868] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+[    0.423629] printk: console [ttyS0] disabled
+[    0.430435] mtk-pcie-gen3 1fc00000.pcie: Parsing ranges property...
+[    0.430447] mtk-pcie-gen3 1fc00000.pcie:   MEM 0x20000000..0x23ffffff -> 0x20000000
+[    0.471977] mtk-pcie-gen3 1fc20000.pcie:   MEM 0x24000000..0x27ffffff -> 0x24000000
+[    0.472010] 1fbf0000.serial: ttyS0 at MMIO 0x1fbf0000 (irq = 27, base_baud = 115200) is a 16550
+[    0.489978] printk: console [ttyS0] enabled
+[    0.498747] printk: bootconsole [ns16550] disabled
+[    0.514100] brd: module loaded
+[    0.518039] mtk-ecc 1fa12000.ecc: probed
+[    0.522305] nand: device found, Manufacturer ID: 0x98, Chip ID: 0xda
+[    0.528664] nand: Toshiba NAND 256MiB 3,3V 8-bit
+[    0.533278] nand: 256 MiB, SLC, erase size: 128 KiB, page size: 2048, OOB size: 128
+[    0.540938] mtk-nand 1fa11000.nand-controller: eccsize 512 eccstrength 8
+[    0.547650] Scanning device for bad blocks
+[    1.096560] Bad eraseblock 1313 at 0x00000a420000
+[    1.193555] Bad eraseblock 1536 at 0x00000c000000
+[    1.198471] Bad eraseblock 1537 at 0x00000c020000
+[    1.414823] 2 fixed-partitions partitions found on MTD device mtk-nand
+[    1.421354] Creating 2 MTD partitions on "mtk-nand":
+[    1.426319] 0x000000000000-0x000000020000 : "bl2"
+[    1.431548] 0x000000020000-0x000010000000 : "ubi"
+[    1.840230] mtk-pcie-gen3 1fc20000.pcie: PCI host bridge to bus 0001:00
+[    1.840232] mtk-pcie-gen3 1fc00000.pcie: PCI host bridge to bus 0000:00
+[    1.840246] pci_bus 0000:00: root bus resource [bus 00-ff]
+[    1.846861] pci_bus 0001:00: root bus resource [bus 00-ff]
+[    1.853474] pci_bus 0000:00: root bus resource [mem 0x20000000-0x23ffffff]
+[    1.858958] pci_bus 0001:00: root bus resource [mem 0x24000000-0x27ffffff]
+[    1.864433] pci_bus 0000:00: scanning bus
+[    1.871299] pci_bus 0001:00: scanning bus
+[    1.878184] pci 0000:00:00.0: [14c3:6899] type 01 class 0x060400
+[    1.882188] pci 0001:00:00.0: [14c3:6899] type 01 class 0x060400
+[    1.886193] pci 0000:00:00.0: reg 0x10: [mem 0x00000000-0x00007fff 64bit]
+[    1.892196] pci 0001:00:00.0: reg 0x10: [mem 0x00000000-0x00007fff 64bit]
+[    1.898230] pci 0000:00:00.0: PME# supported from D0 D3hot D3cold
+[    1.905010] pci 0001:00:00.0: PME# supported from D0 D3hot D3cold
+[    1.911760] pci 0000:00:00.0: PME# disabled
+[    1.917854] pci 0001:00:00.0: PME# disabled
+[    1.924788] pci_bus 0000:00: fixups for bus
+[    1.928889] pci_bus 0001:00: fixups for bus
+[    1.932308] pci 0000:00:00.0: scanning [bus 00-00] behind bridge, pass 0
+[    1.932312] pci 0000:00:00.0: bridge configuration invalid ([bus 00-00]), reconfiguring
+[    1.936493] pci 0001:00:00.0: scanning [bus 00-00] behind bridge, pass 0
+[    1.940669] pci 0000:00:00.0: scanning [bus 00-00] behind bridge, pass 1
+[    1.947368] pci 0001:00:00.0: bridge configuration invalid ([bus 00-00]), reconfiguring
+[    1.955415] pci_bus 0000:01: scanning bus
+[    1.962059] pci 0001:00:00.0: scanning [bus 00-00] behind bridge, pass 1
+[    1.968771] pci 0000:01:00.0: [14c3:790a] type 00 class 0x028000
+[    1.976805] pci_bus 0001:01: scanning bus
+[    1.980783] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x000fffff 64bit pref]
+[    1.987471] pci 0001:01:00.0: [14c3:7906] type 00 class 0x028000
+[    1.993462] pci 0000:01:00.0: reg 0x18: [mem 0x00000000-0x00007fff 64bit]
+[    1.997493] pci 0001:01:00.0: reg 0x10: [mem 0x00000000-0x000fffff 64bit pref]
+[    2.004694] pci 0000:01:00.0: reg 0x20: [mem 0x00000000-0x00000fff 64bit pref]
+[    2.010703] pci 0001:01:00.0: reg 0x18: [mem 0x00000000-0x00007fff 64bit]
+[    2.017555] pci 0000:01:00.0: PME# supported from D0 D3hot D3cold
+[    2.024714] pci 0001:01:00.0: reg 0x20: [mem 0x00000000-0x00000fff 64bit pref]
+[    2.031925] pci 0000:01:00.0: PME# disabled
+[    2.038779] pci 0001:01:00.0: PME# supported from D0 D3hot D3cold
+[    2.056744] pci_bus 0000:01: fixups for bus
+[    2.062274] pci 0001:01:00.0: PME# disabled
+[    2.066457] pci_bus 0000:01: bus scan returning with max=01
+[    2.070657] pci 0001:01:00.0: 4.000 Gb/s available PCIe bandwidth, limited by 5 GT/s x1 link at 0001:00:00.0 (capable of 8.000 Gb/s with 5 GT/s x2 link)
+[    2.076198] pci_bus 0000:01: busn_res: [bus 01-ff] end is updated to 01
+[    2.096450] pci_bus 0000:00: bus scan returning with max=01
+[    2.100737] pci_bus 0001:01: fixups for bus
+[    2.102034] pci 0000:00:00.0: BAR 8: assigned [mem 0x20000000-0x200fffff]
+[    2.106197] pci_bus 0001:01: bus scan returning with max=01
+[    2.112978] pci 0000:00:00.0: BAR 9: assigned [mem 0x20100000-0x202fffff 64bit pref]
+[    2.118549] pci_bus 0001:01: busn_res: [bus 01-ff] end is updated to 01
+[    2.126283] pci 0000:00:00.0: BAR 0: assigned [mem 0x20300000-0x20307fff 64bit]
+[    2.132889] pci_bus 0001:00: bus scan returning with max=01
+[    2.140195] pci 0000:01:00.0: BAR 0: assigned [mem 0x20100000-0x201fffff 64bit pref]
+[    2.145758] pci 0001:00:00.0: BAR 8: assigned [mem 0x24000000-0x240fffff]
+[    2.153496] pci 0000:01:00.0: BAR 2: assigned [mem 0x20000000-0x20007fff 64bit]
+[    2.160277] pci 0001:00:00.0: BAR 9: assigned [mem 0x24100000-0x242fffff 64bit pref]
+[    2.167583] pci 0000:01:00.0: BAR 4: assigned [mem 0x20200000-0x20200fff 64bit pref]
+[    2.175320] pci 0001:00:00.0: BAR 0: assigned [mem 0x24300000-0x24307fff 64bit]
+[    2.183060] pci 0000:00:00.0: PCI bridge to [bus 01]
+[    2.190367] pci 0001:01:00.0: BAR 0: assigned [mem 0x24100000-0x241fffff 64bit pref]
+[    2.195319] pci 0000:00:00.0:   bridge window [mem 0x20000000-0x200fffff]
+[    2.203062] pci 0001:01:00.0: BAR 2: assigned [mem 0x24000000-0x24007fff 64bit]
+[    2.209841] pci 0000:00:00.0:   bridge window [mem 0x20100000-0x202fffff 64bit pref]
+[    2.217149] pci 0001:01:00.0: BAR 4: assigned [mem 0x24200000-0x24200fff 64bit pref]
+[    2.224981] pcieport 0000:00:00.0: assign IRQ: got 38
+[    2.232627] pci 0001:00:00.0: PCI bridge to [bus 01]
+[    2.237677] pcieport 0000:00:00.0: enabling device (0000 -> 0002)
+[    2.242628] pci 0001:00:00.0:   bridge window [mem 0x24000000-0x240fffff]
+[    2.248719] pcieport 0000:00:00.0: enabling bus mastering
+[    2.255492] pci 0001:00:00.0:   bridge window [mem 0x24100000-0x242fffff 64bit pref]
+[    2.261923] pcieport 0000:00:00.0: PME: Signaling with IRQ 39
+[    2.268683] pcieport 0001:00:00.0: assign IRQ: got 40
+[    2.274552] pcieport 0000:00:00.0: AER: enabled with IRQ 39
+[    2.279422] pcieport 0001:00:00.0: enabling device (0000 -> 0002)
+[    2.291089] pcieport 0001:00:00.0: enabling bus mastering
+[    2.297521] pcieport 0001:00:00.0: PME: Signaling with IRQ 41
+[    2.303441] pcieport 0001:00:00.0: AER: enabled with IRQ 41
+[    3.867031] airoha-an7581-mdio 1fb5f01c.mdio: BSP calibration completed for PHYs 9..12
+[    5.748760] Maxlinear Ethernet GPY211C 1fb5f01c.mdio:07: Firmware Version: 0x886F (release)
+[    6.648624] an7581-bsp-eth 1fb50000.ethernet: PSE pages: total=16384 reserved=4320 shared=12064
+[    6.747577] an7581-bsp-eth 1fb50000.ethernet: BSP FE/QDMA CPU path registered, switch ports 0x1c
+[    6.768035] xhci-mtk 1fab0000.usb: xHCI Host Controller
+[    6.773280] xhci-mtk 1fab0000.usb: new USB bus registered, assigned bus number 1
+[    6.783855] xhci-mtk 1fab0000.usb: hcc params 0x01400f98 hci version 0x110 quirks 0x0000000000210010
+[    6.793025] xhci-mtk 1fab0000.usb: irq 6, io mem 0x1fab0000
+[    6.798691] xhci-mtk 1fab0000.usb: xHCI Host Controller
+[    6.803918] xhci-mtk 1fab0000.usb: new USB bus registered, assigned bus number 2
+[    6.811314] xhci-mtk 1fab0000.usb: Host supports USB 3.2 Enhanced SuperSpeed
+[    6.818708] hub 1-0:1.0: USB hub found
+[    6.822477] hub 1-0:1.0: 1 port detected
+[    6.826639] usb usb2: We don't know the algorithms for LPM for this host, disabling LPM.
+[    6.834976] hub 2-0:1.0: USB hub found
+[    6.838738] hub 2-0:1.0: 1 port detected
+[    6.850111] xhci-mtk 1fad0000.usb: xHCI Host Controller
+[    6.855348] xhci-mtk 1fad0000.usb: new USB bus registered, assigned bus number 3
+[    6.862824] xhci-mtk 1fad0000.usb: hcc params 0x01400f98 hci version 0x110 quirks 0x0000000000210010
+[    6.872000] xhci-mtk 1fad0000.usb: irq 7, io mem 0x1fad0000
+[    6.877672] xhci-mtk 1fad0000.usb: xHCI Host Controller
+[    6.882903] xhci-mtk 1fad0000.usb: new USB bus registered, assigned bus number 4
+[    6.890308] xhci-mtk 1fad0000.usb: Host supports USB 3.2 Enhanced SuperSpeed
+[    6.897662] hub 3-0:1.0: USB hub found
+[    6.901433] hub 3-0:1.0: 1 port detected
+[    6.905581] usb usb4: We don't know the algorithms for LPM for this host, disabling LPM.
+[    6.913922] hub 4-0:1.0: USB hub found
+[    6.917704] hub 4-0:1.0: 1 port detected
+[    6.921922] i2c /dev entries driver
+[    6.925690] i2c-mt7621 1fbf8000.i2c: clock 100 kHz
+[    6.948111] airoha-bsp-thermal 1efbd000.thermal: BSP calibrated sensor: offset=22685 slope=5645 reference=30000 mC
+[    6.960134] NET: Registered protocol family 10
+[    6.965435] Segment Routing with IPv6
+[    6.969157] NET: Registered protocol family 17
+[    6.973632] bridge: filtering via arp/ip/ip6tables is no longer available by default. Update your scripts to load br_netfilter if you need this.
+[    6.986714] 8021q: 802.1Q VLAN Support v1.8
+[    6.990920] Mass Storage accelerater start.
+[    6.997554] UBI: auto-attach mtd1
+[    7.000892] ubi0: default fastmap pool size: 100
+[    7.005510] ubi0: default fastmap WL pool size: 50
+[    7.010300] ubi0: attaching mtd1
+[    7.071173] ubi0: attached by fastmap
+[    7.074843] ubi0: fastmap pool size: 100
+[    7.078765] ubi0: fastmap WL pool size: 50
+[    7.089686] ubi0: attached mtd1 (name "ubi", size 255 MiB)
+[    7.095193] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    7.102064] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    7.108853] ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    7.115813] ubi0: good PEBs: 2044, bad PEBs: 3, corrupted PEBs: 0
+[    7.121906] ubi0: user volume: 6, internal volumes: 1, max. volumes count: 128
+[    7.129129] ubi0: max/mean erase counter: 2/1, WL threshold: 4096, image sequence number: 0
+[    7.137480] ubi0: available PEBs: 0, total reserved PEBs: 2044, PEBs reserved for bad PEB handling: 37
+[    7.147193] ubi0: background thread "ubi_bgt0d" started, PID 700
+[    7.147298] block ubiblock0_4: created from ubi0:4(fit)
+[    7.158439] hctosys: unable to open rtc device (rtc0)
+[    7.163654] clk: Disabling unused clocks
+[    7.168476] FIT: Detected U-Boot 2026.07-gd5b173d17470
+[    7.173625] FIT: Selected configuration: "config@1" (OpenWrt fiberhome_hg5585f-ct)
+[    7.181210] FIT:           kernel sub-image 0x00001000..0x0045efb5 "kernel-1" (ARM64 QWRT Linux-5.4.302) 
+[    7.190791] FIT:          flat_dt sub-image 0x0045f000..0x00462969 "fdt-1" (ARM64 QWRT fiberhome_hg5585f-ct device tree blob) 
+[    7.202189] FIT:       filesystem sub-image 0x00463000..0x02832fff "rootfs-1" (ARM64 OpenWrt fiberhome_hg5585f-ct rootfs) 
+[    7.213564] block ubiblock0_4: mapped 1 uImage.FIT filesystem sub-image as /dev/fit0
+[    7.225024] VFS: Mounted root (squashfs filesystem) readonly on device 259:0.
+[    7.232345] Freeing unused kernel memory: 384K
+[    7.252119] Run /sbin/init as init process
+[    7.801471] init: Console is alive
+[    8.935405] kmodloader: loading kernel modules from /etc/modules-boot.d/*
+[    9.051315] Key type encrypted registered
+[    9.056926] raid6: using algorithm neonx8 gen() 0 MB/s
+[    9.062081] raid6: .... xor() 0 MB/s, rmw enabled
+[    9.066785] raid6: using neon recovery algorithm
+[    9.072264] xor: measuring software checksum speed
+[    9.116057]    8regs     :  2232.000 MB/sec
+[    9.160056]    32regs    :  2721.000 MB/sec
+[    9.204057]    arm64_neon:  2389.000 MB/sec
+[    9.208242] xor: using function: 32regs (2721.000 MB/sec)
+[    9.242076] Btrfs loaded, crc32c=crc32c-generic
+[    9.268162] usbcore: registered new interface driver usb-storage
+[    9.275345] usbcore: registered new interface driver uas
+[    9.280955] kmodloader: done loading kernel modules from /etc/modules-boot.d/*
+[    9.298572] init: - preinit -
+[    9.532214] an7581-bsp-npu 1e900000.npu: NPU firmware 0.0, mailbox ready
+[    9.539426] random: procd: uninitialized urandom read (4 bytes read)
+[   10.858186] random: jshn: uninitialized urandom read (4 bytes read)
+[   10.885671] random: jshn: uninitialized urandom read (4 bytes read)
+[   10.909169] random: jshn: uninitialized urandom read (4 bytes read)
+[   11.067821] an7581-bsp-eth 1fb50000.ethernet lan2: Link is Down
+[   13.234377] mount_root: loading kmods from internal overlay
+[   13.255319] kmodloader: loading kernel modules from //etc/modules-boot.d/*
+[   13.264256] kmodloader: done loading kernel modules from //etc/modules-boot.d/*
+[   13.564413] block: attempting to load /tmp/overlay/upper/etc/config/fstab
+[   13.571949] block: unable to load configuration (fstab: Entry not found)
+[   13.578695] block: attempting to load /tmp/overlay/etc/config/fstab
+[   13.585024] block: unable to load configuration (fstab: Entry not found)
+[   13.591760] block: attempting to load /etc/config/fstab
+[   13.597579] block: unable to load configuration (fstab: Entry not found)
+[   13.604310] block: no usable configuration
+[   13.611444] UBIFS (ubi0:5): Mounting in unauthenticated mode
+[   13.617202] UBIFS (ubi0:5): background thread "ubifs_bgt0_5" started, PID 955
+[   13.643894] UBIFS (ubi0:5): recovery needed
+[   13.749390] UBIFS (ubi0:5): recovery completed
+[   13.753888] UBIFS (ubi0:5): UBIFS: mounted UBI device 0, volume 5, name "rootfs_data"
+[   13.761719] UBIFS (ubi0:5): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[   13.771633] UBIFS (ubi0:5): FS size: 207859712 bytes (198 MiB, 1637 LEBs), journal size 10412032 bytes (9 MiB, 82 LEBs)
+[   13.782411] UBIFS (ubi0:5): reserved for root: 4952683 bytes (4836 KiB)
+[   13.789027] UBIFS (ubi0:5): media format: w5/r0 (latest is w5/r0), UUID E6B7470B-955B-49FF-B44A-2381B2DBA1FD, small LPT model
+[   13.801210] block: attempting to load /tmp/ubifs_cfg/upper/etc/config/fstab
+[   13.810539] block: extroot: not configured
+[   13.814750] UBIFS (ubi0:5): un-mount UBI device 0
+[   13.819463] UBIFS (ubi0:5): background thread "ubifs_bgt0_5" stops
+[   13.828510] UBIFS (ubi0:5): Mounting in unauthenticated mode
+[   13.834256] UBIFS (ubi0:5): background thread "ubifs_bgt0_5" started, PID 958
+[   13.894149] UBIFS (ubi0:5): UBIFS: mounted UBI device 0, volume 5, name "rootfs_data"
+[   13.901986] UBIFS (ubi0:5): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[   13.911902] UBIFS (ubi0:5): FS size: 207859712 bytes (198 MiB, 1637 LEBs), journal size 10412032 bytes (9 MiB, 82 LEBs)
+[   13.922680] UBIFS (ubi0:5): reserved for root: 4952683 bytes (4836 KiB)
+[   13.929305] UBIFS (ubi0:5): media format: w5/r0 (latest is w5/r0), UUID E6B7470B-955B-49FF-B44A-2381B2DBA1FD, small LPT model
+[   13.942079] mount_root: loading kmods from internal overlay
+[   13.960657] kmodloader: loading kernel modules from /tmp/overlay/upper/etc/modules-boot.d/*
+[   13.969628] kmodloader: done loading kernel modules from /tmp/overlay/upper/etc/modules-boot.d/*
+[   14.017828] block: attempting to load /tmp/overlay/upper/etc/config/fstab
+[   14.026033] block: extroot: not configured
+[   14.032234] block: attempting to load /tmp/ubifs_cfg/upper/etc/config/fstab
+[   14.039386] block: extroot: not configured
+[   14.044842] mount_root: switching to ubifs overlay
+[   14.055761] urandom-seed: Seeding with /etc/urandom.seed
+[   14.137078] procd: - early -
+[   14.746544] procd: - ubus -
+[   14.854268] random: ubusd: uninitialized urandom read (4 bytes read)
+[   14.898271] random: ubusd: uninitialized urandom read (4 bytes read)
+[   14.904820] random: ubusd: uninitialized urandom read (4 bytes read)
+[   14.914513] procd: - init -
+[   15.563734] kmodloader: loading kernel modules from /etc/modules.d/*
+[   15.629428] NET: Registered protocol family 38
+[   15.648991] device-mapper: ioctl: 4.41.0-ioctl (2019-09-16) initialised: dm-devel@redhat.com
+[   15.667415] ntfs3: Max link count 4000
+[   15.671182] ntfs3: Enabled Linux POSIX ACLs support
+[   15.676065] ntfs3: Warning: Activated 64 bits per cluster. Windows does not support this
+[   15.684155] ntfs3: Read-only LZX/Xpress compression included
+[   15.698848] tun: Universal TUN/TAP device driver, 1.6
+[   15.713122] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+[   15.790263] cryptodev: driver 1.14 loaded.
+[   15.795659] Bridge firewalling registered
+[   15.809358] an7581-bsp-ppe an7581-bsp-ppe.0.auto: using legacy MT7916 PPE register initialization
+[   15.842903] an7581-bsp-ppe an7581-bsp-ppe.0.auto: PPE engines 0x3, flow admission ready, stats 0x0
+[   15.853915] GACT probability on
+[   15.857883] Mirror/redirect action on
+[   15.866696] u32 classifier
+[   15.869414]     input device check on
+[   15.873077]     Actions configured
+[   15.887345] Simple TC action Loaded
+[   15.905604] fuse: init (API version 7.31)
+[   17.144946] WiFi@C12L1,get_dbg_setting_by_profile() 4377: debug level setting=INDEX0_debug_level not found!!
+[   17.154812] WiFi@C12L1,get_dbg_setting_by_profile() 4400: debug option setting=INDEX0_debug_option not found!!
+[   17.164916] mt_pci_slave 0000:01:00.0: assign IRQ: got 38
+[   17.170324] mt_pci_slave 0000:01:00.0: enabling device (0000 -> 0002)
+[   17.176810] mt_pci_slave 0000:01:00.0: enabling bus mastering
+[   17.182667] !!HIF_RX_EVENT Only
+[   17.186458] mt_drv 0001:01:00.0: assign IRQ: got 40
+[   17.191413] mt_drv 0001:01:00.0: enabling device (0000 -> 0002)
+[   17.197371] mt_drv 0001:01:00.0: enabling bus mastering
+[   17.210174] mt7916_init()-->
+[   17.213061] Use the default iPAiLNA bin image!
+[   17.217535] <--mt7916_init()
+[   17.220444] RtmpRaDevCtrlInit(): MCS_LUT not used becasue MacTb size(544) > 128!
+[   17.227956] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX1
+[   17.235283] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX2
+[   17.242607] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX3
+[   17.249933] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX4
+[   17.257251] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX5
+[   17.264569] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX6
+[   17.271887] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX7
+[   17.279205] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX8
+[   17.286531] WiFi@C12L1,match_index_by_chipname() 514: not find chip name INDEX9
+[   17.293835] WiFi@C12L2,match_index_by_chipname() 518: Not find slot id, back to old rule.
+[   17.302114] msta_ifname not found
+[   17.305754] !!HIF_RX_EVENT Only
+[   17.308959] !!HIF_RX_EVENT Only
+[   17.312552] !!HIF_RX_EVENT Only
+[   17.316184] !!HIF_RX_EVENT Only
+[   17.320289] !!HIF_RX_EVENT Only
+[   17.334366] whnat_module_init(): module init and register callback for whnat
+[   17.341471] create whnat_ctrl ok!!!
+[   17.345121] wed_slot_map_get(): assign slot_id:0 for entry: 0!
+[   17.351019] wed_slot_map_get(): assign slot_id:1 for entry: 1!
+[   17.368225] an7581-bsp-pon 1fb56000.ethernet: PON WAN QDMA registered as pon0, 8192 forwarding buffers
+[   17.465767] usbcore: registered new interface driver ums-alauda
+[   17.473014] usbcore: registered new interface driver ums-cypress
+[   17.480482] usbcore: registered new interface driver ums-datafab
+[   17.487758] usbcore: registered new interface driver ums-freecom
+[   17.495107] usbcore: registered new interface driver ums-isd200
+[   17.502483] usbcore: registered new interface driver ums-jumpshot
+[   17.509854] usbcore: registered new interface driver ums-karma
+[   17.517416] usbcore: registered new interface driver ums-sddr09
+[   17.524777] usbcore: registered new interface driver ums-sddr55
+[   17.532295] usbcore: registered new interface driver ums-usbat
+[   17.565842] xt_time: kernel timezone is -0000
+[   17.574467] airoha-paged-bosa 0-0051: GN28L95 frontend registered, ID 0xa1, calibration ready
+[   17.583686] airoha-xpon 1fb64000.ethernet: PON LED triggers registered: pon0-registration, pon0-los, pon0-online
+[   17.594389] airoha-xpon 1fb64000.ethernet: OMCI raw-PDU interface omci0 registered; carrier remains off until O5
+[   17.605097] airoha-xpon 1fb64000.ethernet: OAM raw-PDU interface oam0 registered; carrier remains off until an LLID is active
+[   17.617407] airoha-xpon 1fb64000.ethernet: PON resources bound to pon0; mode=xgpon, MAC irq=9, PHY irq=10
+[   17.634374] PPP generic driver version 2.4.2
+[   17.639771] PPP MPPE Compression module registered
+[   17.646113] NET: Registered protocol family 24
+[   17.655081] wireguard: WireGuard 1.0.0 loaded. See www.wireguard.com for information.
+[   17.662973] wireguard: Copyright (C) 2015-2019 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
+[   17.674940] kmodloader: done loading kernel modules from /etc/modules.d/*
+[   17.949805] random: jshn: uninitialized urandom read (4 bytes read)
+[   17.959276] random: ubusd: uninitialized urandom read (4 bytes read)
+[   17.965793] random: ubus: uninitialized urandom read (4 bytes read)
+[   18.718913] airoha-xpon 1fb64000.ethernet: PON line mode set to epon-10g-1g
+[   22.188068] random: crng init done
+[   22.191478] random: 128 urandom warning(s) missed due to ratelimiting
+[   23.976819] an7581-bsp-eth 1fb50000.ethernet lan2: Link is Down
+[   23.982891] br-lan: port 1(lan2) entered blocking state
+[   23.988169] br-lan: port 1(lan2) entered disabled state
+[   23.993719] device lan2 entered promiscuous mode
+[   24.005797] an7581-bsp-eth 1fb50000.ethernet lan3: Link is Down
+[   24.012203] br-lan: port 2(lan3) entered blocking state
+[   24.017498] br-lan: port 2(lan3) entered disabled state
+[   24.023009] device lan3 entered promiscuous mode
+[   24.032620] an7581-bsp-eth 1fb50000.ethernet lan4: Link is Down
+[   24.038597] br-lan: port 3(lan4) entered blocking state
+[   24.043866] br-lan: port 3(lan4) entered disabled state
+[   24.049349] device lan4 entered promiscuous mode
+[   24.057143] br-lan: port 4(lan1) entered blocking state
+[   24.061616] an7581-bsp-eth 1fb50000.ethernet lan1: Link is Down
+[   24.062408] br-lan: port 4(lan1) entered disabled state
+[   24.073766] device lan1 entered promiscuous mode
+[   24.448148] an7581-bsp-pon-pcs 1fa08000.pcs: PON PrCal: mode=4 attempt=1 idac=0x4f2 lock=1 fl=0x9ed3 target=0x9edf
+[   24.526641] an7581-bsp-pon-pcs 1fa08000.pcs: PON PMA sequence finished: mode=4 lock=1 fl=0x9ede prcal=0 eo(gain=1 peak=0 fom=449)
+[   24.538313] an7581-bsp-pon-pcs 1fa08000.pcs: PON line configured: mode=4, WAN_SEL=6, full SerDes analog init
+[   24.549423] airoha-xpon 1fb64000.ethernet: EPON PCS synchronized: PHY events=0x80000000
+[   24.562486] airoha-xpon 1fb64000.ethernet: epon-10g-1g MAC started; LLID0 is waiting for a Discovery Gate
+[   25.586146] airoha-xpon 1fb64000.ethernet: EPON first Discovery Gate received: sync_time=0x0020, tx_armed=1
+[   25.596013] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[   25.603061] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=1
+[   25.611062] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[   25.618117] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+[   25.618181] IPv6: ADDRCONF(NETDEV_CHANGE): oam0: link becomes ready
+[   25.631770] IPv6: ADDRCONF(NETDEV_CHANGE): pon0: link becomes ready
+[   25.639495] IPv6: ADDRCONF(NETDEV_CHANGE): pon0.995: link becomes ready
+[   28.165668] an7581-bsp-eth 1fb50000.ethernet lan1: Link is Up - 2.5Gbps/Full - flow control off
+[   28.174432] br-lan: port 4(lan1) entered blocking state
+[   28.179706] br-lan: port 4(lan1) entered forwarding state
+[   28.185775] IPv6: ADDRCONF(NETDEV_CHANGE): br-lan: link becomes ready
+[   30.256352] WiFi@C01L2,RTMP_COM_IoctlHandle() 1504: -> CMD_RTPRIV_IOCTL_VIRTUAL_INF_INIT
+[   30.266211] msta_ifname not found
+[   30.270277] whnat_cap_support(): chip_id=7906 is in WHNAT support list
+[   30.276861] wifi_slot_get(): get slot id=1
+[   30.280971] whnat_entry_acquire(): PCIE SLOT:1, hook to WHNAT,entry id=1
+[   30.287929] wed_init(1): irq=37,base_addr=0xffffffc0129bd000
+[   30.295293] wed_ring_init(): wed ring init result = 0
+[   30.317140] create wed ok!!!
+[   30.320228] wdma_init(): wdma(1) base addr=ffffffc0129c5400
+[   30.325877] wdma_init(): wdma(1) irq[0]=33
+[   30.330018] wdma_init(): wdma(1) irq[1]=34
+[   30.334164] wdma_init(): wdma(1) irq[2]=35
+[   30.339046] wifi_chip_probe(): Chang CHIP IRQ: 40 to WHNAT IRQ: 37
+[   30.345278] wifi_slot_get(): get slot id=1
+[   30.349400] wifi_pcie_match wifi->wpdma_base: 241d7000
+[   30.354562] whnat_hal_pcie_map(): pcie_base===1fc20000=====
+[   30.360147] whnat_hal_pcie_map(): whnat->idx===1=====
+[   30.365210] whnat_hal_pcie_map(): WED_PCIE_INT_CTRL value===1000=====
+[   30.371666] whnat_hal_pcie_map(): WED_PCIE_INT_CTRL value===101000=====
+[   30.378292] whnat_hal_pcie_map(): WED_WPDMA_CFG_BASE value===241d7000=====
+[   30.393950] WiFi@C02L1,HwCtrlInit() 604: ser_init() return NDIS_STATUS_FAILURE
+[   30.406625] WiFi@C00L0,multi_profile_merge_increase() 726: parm is SSID, no need trim space
+[   30.419129] WiFi@C00L0,multi_profile_merge_increase() 721: parm is WPAPSK, no need trim space
+[   30.486758] WiFi@C08L2,profile_wds_reg() 1333: WdsEnable is unknow()
+[   30.493296] WiFi@C08L2,profile_wds_reg() 1333: WdsEnable is unknow()
+[   30.514881] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS0 PhyMode=78
+[   30.521561] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS1 PhyMode=78
+[   30.528206] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS2 PhyMode=78
+[   30.534856] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS3 PhyMode=78
+[   30.541497] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS4 PhyMode=78
+[   30.548140] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS5 PhyMode=177
+[   30.554860] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS6 PhyMode=177
+[   30.561590] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS7 PhyMode=177
+[   30.568311] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS8 PhyMode=177
+[   30.575029] WiFi@C12L1,RTMPWirelessModeCfg() 592: Init: BSS9 PhyMode=177
+[   30.582071] WiFi@C23L1,auto_ch_select_set_cfg() 3372: Invalid argument!
+[   30.588706] WiFi@C23L3,auto_ch_select_set_cfg() 3402: BandIdx0, AutoChannelAtBootup=0, AutoChannelAlg = 1466068026
+[   30.599069] WiFi@C23L3,auto_ch_select_set_cfg() 3402: BandIdx1, AutoChannelAtBootup=0, AutoChannelAlg = 0
+[   30.676951] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=0, Desired MFPC=0
+[   30.684367] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=1, Desired MFPC=0
+[   30.691781] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=2, Desired MFPC=0
+[   30.699201] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=3, Desired MFPC=0
+[   30.706621] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=4, Desired MFPC=0
+[   30.714034] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=5, Desired MFPC=0
+[   30.721444] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=6, Desired MFPC=0
+[   30.728859] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=7, Desired MFPC=0
+[   30.736272] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=8, Desired MFPC=0
+[   30.743694] WiFi@C15L1,Set_PMFMFPC_Proc() 1729: [PMF] :: apidx=9, Desired MFPC=0
+[   30.838503] !!!! do phy and virtual address mapping
+[   30.843932] PciePortType=3
+[   30.846756] mt7916: NPU band 0 RX ring 2 MMIO=0x241d4540
+[   30.852181] mt7916: NPU band 1 RX ring 0 MMIO=0x201d8550
+[   30.860169] AllocSize 3000 AllocVa 1690c000,  .AllocPa 1e818000
+[   30.866998] AllocSize 3000 AllocVa 16910020,  .AllocPa 1e826020
+[   30.875022] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_0[0xd8430]: Attr:0, Base=0x98200000, Cnt=2048!
+[   30.885236] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_1[0xd7300]: Attr:0, Base=0x97180000, Cnt=2048!
+[   30.895419] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_2[0xd7310]: Attr:0, Base=0x97188000, Cnt=2048!
+[   30.905605] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_3[0xd4400]: Attr:3, Base=0x97161000, Cnt=128!
+[   30.915705] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_4[0xd4410]: Attr:2, Base=0x97162000, Cnt=256!
+[   30.925822] WiFi@C00L1,mtd_asic_init_txrx_ring() 1195: -->TX_RING_5[0xd4440]: Attr:1, Base=0x97163000, Cnt=256!
+[   30.935945] wdma_dma_ctrl(): WDMA_GLO_CFG=40000450
+[   30.940746] =========whnat_hal_wdma_init :ECNT WED_WDMA_CFG_BASE = 1fa00000 
+[   30.947799] whnat_hal_int_ctrl():WED_PCIE_INTS_TRIG  1000000
+[   30.953460] whnat_hal_int_ctrl():WED_PCIE_OFST  1800184
+[   30.958821] using E1 ROM patch
+[   30.961881] using E1 RAM
+[   30.964433] current sync CR = 0x1
+[   30.967745] 	Built date: 20220928174644a
+[   30.971674] 	Platform: ALPS
+[   30.974466] 	HW/SW version: 0x8a108a10
+[   30.978216] 	Patch version: 0xffffffff
+[   30.987678] current sync CR = 0x1
+[   30.991031] 	Chip ID: 0x13
+[   30.993754] 	Eco version: 0x00
+[   30.996812] 	Region number: 0x09
+[   31.000034] 	Format version: 0x02
+[   31.003352] 	Format flag: 0x01
+[   31.006414] 	Ram version: ____000000
+[   31.009999] 	Built date: 20220928174705
+[   31.013844] 	Common crc: 0xd5dc7cdf
+[   31.017338] 	Release info: header tag = 0, total length = 80
+[   31.023008] 	tag 1, padding length = 1, tag length = 75
+[   31.028241] 	payload: t-neptune-main-2111-7916-imp-MT7916_E1_ASIC_ROM_RAM_REBB_IMP-20220928174602
+[   31.066771] 	Chip ID: 0x00
+[   31.069503] 	Eco version: 0x00
+[   31.072579] 	Region number: 0x03
+[   31.075806] 	Format version: 0x02
+[   31.079131] 	Format flag: 0x01
+[   31.082199] 	Ram version: DEV_000000
+[   31.085803] 	Built date: 20220819115652
+[   31.089666] 	Common crc: 0x7fee377a
+[   31.093166] 	Release info: header tag = 0, total length = 0
+[   31.199157] current sync CR = 0x7
+[   31.202540] efuse_probe: efuse = 100002
+[   31.206905] MT7916: runtime EEPROM power override 2G 0x441-0x444=0x2b, 5G 0x445-0x458=0x2b
+[   34.160459] WiFi@C17L1,RTMPReadTxPwrPerRate() 450: (450): Don't Support this now!
+[   34.167988] WiFi@C01L1,AntCfgInit() 3101: Not support for HIF_MT yet!
+[   34.198968] WiFi@C17L1,tx_pwr_comp_init() 641: NotSupportYet!
+[   34.204783] WiFi@C12L1,SCS_init() 879: INIT SCSEnable [0]= 1
+[   34.210474] WiFi@C12L1,SCS_init() 886: INIT SCSEnable [1]= 0
+[   34.216271] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+[   34.221796] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+[   34.227453] WiFi@C14L1,IPMacTable_init() 348: IPMacTable already inited!
+[   34.234584] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+[   34.240101] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+[   34.254008] WiFi@C00L2,dump_ht_cap() 29: Caller: dump_ht_cap+0x10/0x20 [mt7916_ap]
+[   34.263287] WiFi@C00L2,dump_ht_cap() 29: Caller: dump_ht_cap+0x10/0x20 [mt7916_ap]
+[   34.511951] WiFi@C00L2,red_tail_drop_init() 82: red_tail_drop_init: available token:7680, whnat_en:1
+[   34.521427] WiFi@C00L1,MtCmdCr4RedSet() 916: MtCmdCr4RedSet: (ret = 0)
+[   34.528012] WiFi@C00L1,SendRedCmd() 1051: SendRedCmd:(ret = 1)
+[   34.534252] WiFi@C01L2,RTMP_COM_IoctlHandle() 1481:  -> CMD_RTPRIV_IOCTL_VIRTUAL_INF_UP
+[   34.542536] WiFi@C01L3,wifi_sys_open() 844: wdev idx = 0
+[   34.548804] WiFi@C08L3,wifi_sys_op_lock() 792: wifi_sys_open+0xdc/0x370 [mt7916_ap](0): get wdev_op_lock.
+[   34.558795] WiFi@C00L3,BuildChannelList() 517: BandIdx = 0, PhyMode = 78, ChListNum = 13:
+[   34.567050] WiFi@C23L1,DfsBuildChannelList() 3426: [RDM]: wdev is not 5G.
+[   34.573898] WiFi@C23L3,RadarStateCheck() 243: Bw160 Zero Wait State: 0, phy_bw=1, band_bw[band_idx]=0
+[   34.583957] WiFi@C03L3,MtCmdChannelSwitch() 2526: ctrl_chl=6, ctrl_ch2=0, cent_ch=4 DBDCIdx=0, ChBand=0, BW=1, TXStream=2, RXStream=2, scan(0)
+[   34.747750] WiFi@C03L3,MtCmdSetTxRxPath() 2778: ctrl_chl=6, ctrl_ch2=0, cent_ch=4, RxPath=3, BandIdx=0, ChBand=0, BW=1,TXStream=2, RXStream=3, scan(0)
+[   34.761789] WiFi@C00L2,dump_ht_cap() 29: Caller: wlan_operate_init+0xac/0x110 [mt7916_ap]
+[   34.769994] wdev_attr_update(): wdevId0 = 70:d5:1e:06:9c:7e
+[   34.775594] WiFi@C12L1,wifi_sys_open() 891: wifi_sys_open():band0 group_idx[0]=0, bw_grp=16 omac=0
+[   34.784718] WiFi@C08L3,hw_ctrl_flow_v2_open() 13: wdev_idx=0
+[   34.790530] WiFi@C08L3,wifi_sys_op_unlock() 815: release wdev_op_lock.
+[   34.797109] WiFi@C02L2,AsicRadioOnOffCtrl() 2209: DbdcIdx=0 RadioOn
+[   34.803978] WiFi@C00L2,ApAutoChannelAtBootUp() 339: ----------------->
+[   34.810635] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+[   34.816208] WiFi@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+[   34.821652] WiFi@C00L1,ApAutoChannelAtBootUp() 506: not A band
+[   34.827596] WiFi@C08L1,ap_run_at_boot() 631: [41m ACS is disable !![m
+[   34.834460] WiFi@C08L2,APStartUpForMbss() 986: ===>(caller:ap_inf_open+0x114/0x4a0 [mt7916_ap]), mbss_idx:0, CfgMode:0
+[   34.845470] WiFi@C15L2,APPMFInit() 130: [PMF] apidx=0, MFPC=0, MFPR=0, SHA256=0
+[   34.853067] WiFi@C00L2,dump_ht_cap() 29: Caller: dump_ht_cap+0x10/0x20 [mt7916_ap]
+[   34.861122] WiFi@C08L2,ap_link_up() 7117: (caller:wdev_do_linkup+0x20/0x34 [mt7916_ap]), wdev(0)
+[   34.869926] WiFi@C01L3,wifi_sys_linkup() 1155: wdev idx = 0
+[   34.875813] WiFi@C08L3,wifi_sys_op_lock() 792: wifi_sys_linkup+0x84/0x408 [mt7916_ap](0): get wdev_op_lock.
+[   34.965292] WiFi@C08L3,hw_ctrl_flow_v2_link_up() 72: wdev_idx=0
+[   34.975048] WiFi@C08L3,UpdateBeaconHandler() 1899: BCN_UPDATE_INIT, OmacIdx = 0 (ra0)
+[   34.982894] WiFi@C08L3,UpdateBeaconHandler() 1912: 	Band0 BcnInitedRnd = 4
+[   34.989783] WiFi@C08L3,wifi_sys_op_unlock() 815: release wdev_op_lock.
+[   35.008989] PrintSrCmd:
+[   35.008989] u1CmdSubId = 1, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+[   35.008989] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   35.023090] PrintSrCmd:
+[   35.023090] u1CmdSubId = 5, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+[   35.023090] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   35.037248] PrintSrCmd:
+[   35.037248] u1CmdSubId = 3, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+[   35.037248] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   35.051274] PrintSrCmd:
+[   35.051274] u1CmdSubId = 23, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+[   35.051274] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   35.065645] PrintSrCmd:
+[   35.065645] u1CmdSubId = 31, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+[   35.065645] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   35.079841] PrintSrCmd:
+[   35.079841] u1CmdSubId = 33, u1ArgNum = 0, u1DbdcIdx = 0, u1Status = 0
+[   35.079841] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   35.094068] WiFi@C03L3,MtCmdTxPwrShowInfo() 13775: ucTxPowerInfoCatg: 2, BandIdx: 0 
+[   35.101834] WiFi@C03L3,MtCmdTxPwrShowInfo() 13804: (ret = 0)
+[   35.107508] [mtf_txpower_all_rate_info] band_idx:0 pwr:49 ChBand:2G ePAGain:0
+[   35.118722] br-lan: port 5(ra0) entered blocking state
+[   35.123902] br-lan: port 5(ra0) entered disabled state
+[   35.129515] device ra0 entered promiscuous mode
+[   35.134365] br-lan: port 5(ra0) entered blocking state
+[   35.139540] br-lan: port 5(ra0) entered forwarding state
+[   35.145493] 7906@C12L2,Set_ACLClearAll_Proc() 17042: The Access Control List is empty!
+[   35.153456] 7906@C12L2,Set_ACLClearAll_Proc() 17043: No need to clear the Access Control List!
+[   35.185399] 7906@C08L2,mbss_virtual_if_open() 141:  ===> rai0
+[   35.191219] 7906@C01L2,RTMP_COM_IoctlHandle() 1504: -> CMD_RTPRIV_IOCTL_VIRTUAL_INF_INIT
+[   35.199362] 7906@C01L2,RTMP_COM_IoctlHandle() 1481:  -> CMD_RTPRIV_IOCTL_VIRTUAL_INF_UP
+[   35.207407] WiFi@C01L3,wifi_sys_open() 844: wdev idx = 5
+[   35.213290] 7906@C08L3,wifi_sys_op_lock() 792: wifi_sys_open+0xdc/0x370 [mt7916_ap](5): get wdev_op_lock.
+[   35.222979] 7906@C00L3,BuildChannelList() 517: BandIdx = 1, PhyMode = 177, ChListNum = 13:
+[   35.231347] 7906@C23L3,DfsBuildChannelList() 3471: Done
+[   35.236628] 7906@C23L3,RadarStateCheck() 243: Bw160 Zero Wait State: 0, phy_bw=3, band_bw[band_idx]=0
+[   35.245877] 7906@C23L3,RadarStateCheck() 287: [1;33m RD_NORMAL_MODE [m 
+[   35.252831] 7906@C03L3,MtCmdChannelSwitch() 2526: ctrl_chl=36, ctrl_ch2=0, cent_ch=50 DBDCIdx=1, ChBand=1, BW=3, TXStream=3, RXStream=3, scan(0)
+[   35.761673] 7906@C03L3,MtCmdSetTxRxPath() 2778: ctrl_chl=36, ctrl_ch2=0, cent_ch=50, RxPath=7, BandIdx=1, ChBand=1, BW=3,TXStream=3, RXStream=7, scan(0)
+[   35.780948] WiFi@C00L2,dump_ht_cap() 29: Caller: wlan_operate_init+0xac/0x110 [mt7916_ap]
+[   35.789198] wdev_attr_update(): wdevId5 = 70:d5:1e:06:9c:7f
+[   35.794846] WiFi@C12L1,wifi_sys_open() 891: wifi_sys_open():band1 group_idx[5]=4, bw_grp=16 omac=0
+[   35.803902] 7906@C08L3,hw_ctrl_flow_v2_open() 13: wdev_idx=5
+[   35.810846] 7906@C08L3,wifi_sys_op_unlock() 815: release wdev_op_lock.
+[   35.818073] 7906@C02L2,AsicRadioOnOffCtrl() 2209: DbdcIdx=1 RadioOn
+[   35.825121] 7906@C00L2,ApAutoChannelAtBootUp() 339: ----------------->
+[   35.831868] 7906@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+[   35.837471] 7906@C03L1,MtCmdSetMacTxRx() 10275: (ret = 0)
+[   35.842945] 7906@C00L1,ApAutoChannelAtBootUp() 499: zero-wait DFS is not enabled
+[   35.850393] 7906@C08L1,ap_run_at_boot() 631: [41m ACS is disable !![m
+[   35.857337] 7906@C08L2,APStartUpForMbss() 986: ===>(caller:ap_inf_open+0x114/0x4a0 [mt7916_ap]), mbss_idx:5, CfgMode:0
+[   35.868130] 7906@C15L2,APPMFInit() 130: [PMF] apidx=5, MFPC=0, MFPR=0, SHA256=0
+[   35.875891] WiFi@C00L2,dump_ht_cap() 29: Caller: dump_ht_cap+0x10/0x20 [mt7916_ap]
+[   35.883833] WiFi@C08L2,ap_link_up() 7117: (caller:wdev_do_linkup+0x20/0x34 [mt7916_ap]), wdev(5)
+[   35.892652] 7906@C01L3,wifi_sys_linkup() 1155: wdev idx = 5
+[   35.898687] 7906@C08L3,wifi_sys_op_lock() 792: wifi_sys_linkup+0x84/0x408 [mt7916_ap](5): get wdev_op_lock.
+[   35.986962] 7906@C08L3,hw_ctrl_flow_v2_link_up() 72: wdev_idx=5
+[   35.996756] 7906@C08L3,UpdateBeaconHandler() 1899: BCN_UPDATE_INIT, OmacIdx = 0 (rai0)
+[   36.004781] 7906@C08L3,UpdateBeaconHandler() 1912: 	Band1 BcnInitedRnd = 13
+[   36.011883] 7906@C08L3,wifi_sys_op_unlock() 815: release wdev_op_lock.
+[   36.032019] PrintSrCmd:
+[   36.032019] u1CmdSubId = 1, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+[   36.032019] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   36.046092] PrintSrCmd:
+[   36.046092] u1CmdSubId = 5, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+[   36.046092] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   36.060150] PrintSrCmd:
+[   36.060150] u1CmdSubId = 3, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+[   36.060150] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   36.074187] PrintSrCmd:
+[   36.074187] u1CmdSubId = 23, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+[   36.074187] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   36.088519] PrintSrCmd:
+[   36.088519] u1CmdSubId = 31, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+[   36.088519] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   36.102652] PrintSrCmd:
+[   36.102652] u1CmdSubId = 33, u1ArgNum = 0, u1DbdcIdx = 1, u1Status = 0
+[   36.102652] u1DropTaIdx = 0, u1StaIdx = 0, u4Value = 0
+[   36.116792] 7906@C03L3,MtCmdTxPwrShowInfo() 13775: ucTxPowerInfoCatg: 2, BandIdx: 1 
+[   36.124555] 7906@C03L3,MtCmdTxPwrShowInfo() 13804: (ret = 0)
+[   36.124674] [mtf_txpower_all_rate_info] band_idx:1 pwr:51 ChBand:5G ePAGain:0
+[   36.133846] br-lan: port 6(rai0) entered blocking state
+[   36.142620] br-lan: port 6(rai0) entered disabled state
+[   36.148218] device rai0 entered promiscuous mode
+[   36.153069] br-lan: port 6(rai0) entered blocking state
+[   36.158303] br-lan: port 6(rai0) entered forwarding state
+[   36.165732] 7906@C12L2,Set_ACLClearAll_Proc() 17042: The Access Control List is empty!
+[   36.173695] 7906@C12L2,Set_ACLClearAll_Proc() 17043: No need to clear the Access Control List!
+[   37.240106] BcnCheck start after 2900 ms (ra0)
+[   37.244582] BcnCheck start after 3800 ms (ra0)
+[   39.848069] BcnCheck start after 400 ms (ra0)
+[   39.852441] BcnCheck start after 1300 ms (ra0)
+[   73.917438] airoha-xpon 1fb64000.ethernet: EPON MPCP timeout: state=4 llid_valid=1
+[   75.603655] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=2
+[   75.611723] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[   75.618744] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[   75.625811] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+[   89.935242] airoha-xpon 1fb64000.ethernet: EPON MPCP timeout: state=4 llid_valid=1
+[   91.608868] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=3
+[   91.616879] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[   91.624025] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[   91.631091] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+[  105.955065] airoha-xpon 1fb64000.ethernet: EPON MPCP timeout: state=4 llid_valid=1
+[  107.614078] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=4
+[  107.622037] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[  107.629062] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[  107.636087] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+[  114.389656] device oam0 entered promiscuous mode
+[  114.394452] device pon0 entered promiscuous mode
+[  116.005915] airoha-xpon 1fb64000.ethernet: EPON PCS synchronized: PHY events=0x80000000
+[  116.020155] airoha-xpon 1fb64000.ethernet: epon-10g-1g MAC started; LLID0 is waiting for a Discovery Gate
+[  117.616082] airoha-xpon 1fb64000.ethernet: EPON first Discovery Gate received: sync_time=0x0020, tx_armed=1
+[  117.625872] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[  117.632864] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=5
+[  117.641083] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[  117.648110] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+[  117.648116] IPv6: ADDRCONF(NETDEV_CHANGE): oam0: link becomes ready
+[  117.661694] IPv6: ADDRCONF(NETDEV_CHANGE): pon0: link becomes ready
+[  117.668258] IPv6: ADDRCONF(NETDEV_CHANGE): pon0.995: link becomes ready
+[  121.972607] airoha-xpon 1fb64000.ethernet: EPON MPCP timeout: state=4 llid_valid=1
+[  123.619332] airoha-xpon 1fb64000.ethernet: EPON Register Request completed: requests=6
+[  123.627506] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[  123.634575] airoha-xpon 1fb64000.ethernet: EPON MAC error interrupt: 0x0100
+[  123.641658] airoha-xpon 1fb64000.ethernet: EPON LLID0 registered: LLID=0x00a4
+[  127.842421] device oam0 left promiscuous mode
+[  127.847185] device pon0 left promiscuous mode

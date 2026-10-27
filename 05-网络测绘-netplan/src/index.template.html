@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>户型网络规划器 · 家里 Wi‑Fi 优化</title>
+<style>/*__CSS__*/</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ================= 顶栏 ================= -->
+  <header>
+    <div class="brand">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+        <path d="M2 8.5a14 14 0 0 1 20 0" stroke="#38bdf8" stroke-width="1.9" stroke-linecap="round"/>
+        <path d="M5.5 12.2a9 9 0 0 1 13 0" stroke="#38bdf8" stroke-width="1.9" stroke-linecap="round" opacity=".75"/>
+        <path d="M9 15.9a4.4 4.4 0 0 1 6 0" stroke="#38bdf8" stroke-width="1.9" stroke-linecap="round" opacity=".5"/>
+        <circle cx="12" cy="19.6" r="1.7" fill="#38bdf8"/>
+      </svg>
+      <span>户型网络规划器</span>
+      <span class="sub">家庭 Wi‑Fi 覆盖与拓扑优化</span>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div class="seg" id="viewSeg">
+      <button data-view="plan" class="on">平面热力图</button>
+      <button data-view="topo">网络拓扑</button>
+      <button data-view="calib">标定房间</button>
+    </div>
+
+    <div class="seg" id="bandSeg">
+      <button data-band="2.4">2.4 GHz</button>
+      <button data-band="5" class="on">5 GHz</button>
+    </div>
+
+    <select id="scenarioSel" title="部署方案"></select>
+    <select id="wallSel" title="墙体材质">
+      <option value="light">轻质隔墙</option>
+      <option value="brick" selected>砖墙</option>
+      <option value="heavy">承重墙 / 混凝土</option>
+    </select>
+
+    <button id="btnReport" title="导出当前布局与实测数据，交给 AI 继续优化"
+      style="border:1px solid var(--line-2);background:transparent;color:var(--text-2);
+      border-radius:7px;padding:5px 11px;font-size:12px;cursor:pointer;font-family:inherit;
+      transition:.12s;display:flex;align-items:center;gap:5px">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/>
+      </svg>
+      导出报告
+    </button>
+  </header>
+
+  <!-- ================= 左栏 ================= -->
+  <aside class="left">
+    <div>
+      <div class="sec-title">显示图层</div>
+      <label class="chk"><input type="checkbox" id="lyHeat" checked><span class="box"></span><span class="lbl">覆盖热力图</span></label>
+      <label class="chk"><input type="checkbox" id="lyClients" checked><span class="box"></span><span class="lbl">终端设备</span></label>
+      <label class="chk"><input type="checkbox" id="lyLinks" checked><span class="box"></span><span class="lbl">关联连线（RSSI）</span></label>
+      <label class="chk"><input type="checkbox" id="lyRooms" checked><span class="box"></span><span class="lbl">房间名称与数值</span></label>
+      <label class="chk"><input type="checkbox" id="lyWalls" checked><span class="box"></span><span class="lbl">墙体轮廓</span></label>
+      <label class="chk"><input type="checkbox" id="lyContour"><span class="box"></span><span class="lbl">等信号线</span></label>
+    </div>
+
+    <div id="liveBox">
+      <div class="sec-title">实时信号 <span id="liveBadge" class="chip">离线</span></div>
+      <div id="liveInfo" style="font-size:10.5px;color:var(--text-3);line-height:1.6">
+        需要运行 <code style="background:#0c1526;padding:0 3px;border-radius:3px;color:#38bdf8">python server.py</code>，
+        然后用手机浏览器打开服务地址。
+      </div>
+      <div style="display:flex;gap:6px;margin-top:7px">
+        <button id="btnLiveConnect" class="mini-btn" style="flex:1;padding:6px">连接</button>
+        <button id="btnLiveMeasure" class="mini-btn" style="flex:1;padding:6px" disabled>测当前位置</button>
+      </div>
+      <div id="liveResult" style="margin-top:7px"></div>
+    </div>
+
+    <div id="measuredBox">
+      <div class="sec-title">实测数据 <span id="measBadge" class="chip">未导入</span></div>
+      <div id="measInfo" style="font-size:10.5px;color:var(--text-3);line-height:1.6">
+        运行 <code style="background:#0c1526;padding:0 3px;border-radius:3px;color:#38bdf8">python survey.py</code>
+        采集路由器真实 RSSI，再 <code style="background:#0c1526;padding:0 3px;border-radius:3px;color:#38bdf8">python locate.py</code>
+        反解位置。
+      </div>
+      <button id="btnLoadGeo" class="mini-btn" style="width:100%;margin-top:7px;padding:6px">
+        导入 geo.json
+      </button>
+      <input type="file" id="fileGeo" accept=".json" style="display:none">
+    </div>
+
+    <div>
+      <div class="sec-title">接入点 <span id="apCount" class="chip"></span></div>
+      <div id="apList" style="display:flex;flex-direction:column;gap:7px;"></div>
+    </div>
+
+    <div>
+      <div class="sec-title">终端 <span id="cliCount" class="chip"></span></div>
+      <div id="cliList" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+  </aside>
+
+  <!-- ================= 主画布 ================= -->
+  <main>
+    <div id="stage">
+      <canvas id="planCanvas"></canvas>
+      <svg id="topoSvg"></svg>
+    </div>
+
+    <div class="hint" id="hint">
+      拖动 AP / 终端调整位置 · <kbd>滚轮</kbd> 缩放 · 拖动画布平移 · <kbd>双击</kbd> 复位
+    </div>
+
+    <div class="hud">
+      <button id="zoomOut" title="缩小">−</button>
+      <span class="zoomval" id="zoomVal">100%</span>
+      <button id="zoomIn" title="放大">+</button>
+      <button id="zoomFit" title="适应窗口">⤢</button>
+    </div>
+
+    <div class="legend" id="legend">
+      <div class="bar"></div>
+      <div class="ticks"><span>-88</span><span>-76</span><span>-64</span><span>-52</span><span>-40 dBm</span></div>
+    </div>
+  </main>
+
+  <!-- ================= 右栏 ================= -->
+  <aside class="right">
+    <div class="card" id="calibCard" style="display:none">
+      <h3>标定房间 <span class="badge">校准</span></h3>
+      <div class="body">
+        <div style="font-size:10.5px;color:var(--text-3);line-height:1.65;margin-bottom:9px">
+          点击平面图上的房间可改名；拖动房间边框四角可调整范围。
+          改完点「保存」，会写进浏览器本地存储，刷新后保留。
+        </div>
+        <div id="calibList" style="display:flex;flex-direction:column;gap:5px;max-height:230px;overflow-y:auto"></div>
+        <div style="display:flex;gap:6px;margin-top:9px">
+          <button id="btnCalibSave" class="mini-btn" style="flex:1;padding:6px">保存</button>
+          <button id="btnCalibReset" class="mini-btn" style="flex:1;padding:6px">恢复默认</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>覆盖评估 <span class="badge" id="covBadge">—</span></h3>
+      <div class="body">
+        <div class="kpis" id="kpis"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>逐房间信号</h3>
+      <div class="body" style="padding:0">
+        <table>
+          <thead><tr><th>房间</th><th>RSSI</th><th>速率</th><th>服务 AP</th></tr></thead>
+          <tbody id="roomTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>终端体验</h3>
+      <div class="body" style="padding:0">
+        <table>
+          <thead><tr><th>终端</th><th>频段</th><th>RSSI</th><th>预估速率</th></tr></thead>
+          <tbody id="cliTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>信道规划</h3>
+      <div class="body" id="chBody"></div>
+    </div>
+
+    <div class="card">
+      <h3>AP 位置推荐 <span class="badge" id="spotBadge">—</span></h3>
+      <div class="body">
+        <div id="spotList" style="font-size:11.5px;color:var(--text-2);line-height:1.6">
+          点击下方按钮，在户型内枚举候选点并评估覆盖收益。
+        </div>
+        <button id="btnSearch" class="mini-btn" style="width:100%;margin-top:9px;padding:7px">
+          搜索最佳 AP 补点位置
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>诊断与优化建议 <span class="badge" id="issueCount">—</span></h3>
+      <div class="body" id="issues"></div>
+    </div>
+  </aside>
+</div>
+
+<div id="toast"></div>
+
+<script>/*__JS__*/</script>
+</body>
+</html>

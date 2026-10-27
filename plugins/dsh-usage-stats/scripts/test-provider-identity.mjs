@@ -1,0 +1,214 @@
+import assert from "node:assert/strict";
+
+import { resolveAccountSpec } from "../lib/accounts.js";
+import { estimateTokenCost } from "../lib/pricing.js";
+import { resolveProviderIdentity } from "../lib/provider-identity.js";
+import { applyUsageDelta, createUsageState, currentSessionContext } from "../lib/usage.js";
+
+function provider(id, baseURL, displayName = id) {
+	return { id, displayName, ...(baseURL === void 0 ? {} : { baseURL }) };
+}
+
+function requestEvent(seq, providerId, model, time = Date.UTC(2026, 7, 23, 12, 0, seq)) {
+	return {
+		seq,
+		time,
+		type: "request/header",
+		data: { header: { config: { provider: providerId, model } } }
+	};
+}
+
+function assistantEvent(seq, providerId, model, time = Date.UTC(2026, 7, 23, 12, 1, seq)) {
+	return {
+		seq,
+		time,
+		type: "assistant/message",
+		data: { message: { source: { kind: "model", provider: providerId, model } } }
+	};
+}
+
+{
+	const identity = resolveProviderIdentity(provider("deepseek-official", "https://relay.invalid/v1", "Anything"));
+	assert.deepEqual(identity, {
+		routeId: "deepseek-official",
+		displayName: "Anything",
+		providerFamily: "deepseek",
+		accountAdapter: "deepseek-balance",
+		pricingFamily: "deepseek",
+		baseURL: "https://relay.invalid/v1",
+		confidence: "canonical-id"
+	});
+}
+
+{
+	const identity = resolveProviderIdentity(provider("deepseek-account", void 0, "DeepSeek Account"));
+	assert.equal(identity.providerFamily, "deepseek");
+	assert.equal(identity.accountAdapter, "deepseek-account");
+	assert.equal(identity.pricingFamily, "unknown", "account-login history must not be repriced as API-key traffic implicitly");
+	assert.equal(identity.confidence, "canonical-id");
+	const spec = resolveAccountSpec(provider("deepseek-account", void 0, "DeepSeek Account"));
+	assert.equal(spec.adapter, "deepseek-account");
+	assert.equal(spec.mode, "balance");
+	assert.equal(spec.apiKeyRef, void 0, "account login must not masquerade as an API-key credential");
+}
+
+{
+	const identity = resolveProviderIdentity(provider("relay-a", "https://api.deepseek.com/v1", "Not DeepSeek"));
+	assert.equal(identity.providerFamily, "deepseek");
+	assert.equal(identity.accountAdapter, "deepseek-balance");
+	assert.equal(identity.confidence, "canonical-host");
+	assert.equal(resolveAccountSpec(provider("relay-a", "https://api.deepseek.com/v1")).adapter, "deepseek-balance", "AccountService must consume the shared resolver policy");
+}
+
+{
+	const canonical = resolveProviderIdentity(provider("ollama", "https://ollama.com"));
+	assert.equal(canonical.providerFamily, "ollama");
+	assert.equal(canonical.accountAdapter, "ollama");
+	assert.equal(canonical.confidence, "canonical-id");
+
+	const exactHost = resolveProviderIdentity(provider("my-ollama", "https://ollama.com"));
+	assert.equal(exactHost.providerFamily, "ollama");
+	assert.equal(exactHost.accountAdapter, "ollama");
+	assert.equal(exactHost.confidence, "canonical-host");
+
+	const cloud = resolveProviderIdentity(provider("private-ollama-route", "https://api.ollama.com/v1"));
+	assert.equal(cloud.providerFamily, "ollama");
+	assert.equal(cloud.accountAdapter, "ollama");
+	assert.equal(cloud.confidence, "canonical-host");
+
+	for (const baseURL of ["http://localhost:11434", "http://127.0.0.1:11434", "http://[::1]:11434"]) {
+		const local = resolveProviderIdentity(provider("ollama", baseURL, "Ollama Cloud"));
+		assert.equal(local.providerFamily, "unknown", `${baseURL} must not be classified as Ollama Cloud`);
+		assert.equal(local.accountAdapter, null);
+		assert.equal(local.confidence, "unknown");
+	}
+	const customLoopback = resolveProviderIdentity(provider("my-ollama", "http://127.0.0.1:11434", "Ollama Cloud"));
+	assert.equal(customLoopback.providerFamily, "unknown");
+	assert.equal(customLoopback.accountAdapter, null);
+}
+
+{
+	const unknown = resolveProviderIdentity(provider("custom-route", "https://relay.invalid/v1", "DeepSeek"));
+	assert.equal(unknown.providerFamily, "unknown", "displayName alone must never drive identity");
+	assert.equal(unknown.accountAdapter, null);
+	assert.equal(unknown.pricingFamily, "unknown");
+	assert.equal(unknown.confidence, "unknown");
+
+	const malformed = resolveProviderIdentity(provider("custom-route", "not a URL", "Ollama"));
+	assert.equal(malformed.providerFamily, "unknown");
+	assert.equal(malformed.baseURL, "not a URL", "connection facts should be preserved without trusting them");
+
+	const absent = resolveProviderIdentity(provider("custom-route", void 0, "DeepSeek"));
+	assert.equal(absent.providerFamily, "unknown");
+	assert.equal(absent.accountAdapter, null);
+	assert.equal(absent.baseURL, null);
+}
+
+{
+	const canonical = resolveProviderIdentity(provider("orcarouter", "https://relay.invalid/v1"));
+	assert.deepEqual(canonical, {
+		routeId: "orcarouter",
+		displayName: "orcarouter",
+		providerFamily: "orcarouter",
+		accountAdapter: "orcarouter-balance",
+		pricingFamily: "unknown",
+		baseURL: "https://relay.invalid/v1",
+		confidence: "canonical-id"
+	});
+	const hostname = resolveProviderIdentity(provider("my-orca", "https://api.orcarouter.ai/v1"));
+	assert.equal(hostname.providerFamily, "orcarouter");
+	assert.equal(hostname.accountAdapter, "orcarouter-balance", "OrcaRouter uses its wallet/billing balance adapter");
+	assert.equal(hostname.pricingFamily, "unknown", "OrcaRouter routes must never inherit an upstream model's pricing");
+	assert.equal(hostname.confidence, "canonical-host");
+	assert.equal(estimateTokenCost({
+		identity: canonical,
+		model: "deepseek-v4-pro",
+		timestamp: Date.UTC(2026, 7, 27, 3, 0, 0),
+		buckets: { inputTokens: 1_000_000, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 }
+	}), null, "an upstream-looking model name must not opt an OrcaRouter route into DeepSeek pricing");
+	assert.equal(resolveAccountSpec(provider("orcarouter", "https://api.orcarouter.ai/v1")).adapter, "orcarouter-balance", "OrcaRouter uses its wallet/billing balance adapter");
+}
+
+{
+	const identity = resolveProviderIdentity(provider("deepseek", "https://api.deepseek.com"), {
+		monitors: {
+			deepseek: { providerId: "deepseek", adapter: "new-api", usageBaseURL: "https://usage.invalid" }
+		}
+	});
+	assert.equal(identity.providerFamily, "new-api", "explicit monitor adapter must beat canonical id and host");
+	assert.equal(identity.accountAdapter, "new-api");
+	assert.equal(identity.pricingFamily, "unknown", "a gateway adapter does not prove the future model pricing family");
+	assert.equal(identity.confidence, "explicit");
+
+	const generic = resolveProviderIdentity(provider("deepseek", "https://api.deepseek.com"), {
+		monitors: { deepseek: { providerId: "deepseek", adapter: "general" } }
+	});
+	assert.equal(generic.providerFamily, "unknown", "a generic account protocol must not masquerade as provider identity");
+	assert.equal(generic.accountAdapter, "general");
+	assert.equal(generic.pricingFamily, "unknown");
+}
+
+{
+	// Command Code: the route id, the ids a provider plugin generates, and a
+	// commandcode.ai host all resolve to the same subscription adapter, and none
+	// of them may inherit DeepSeek pricing from the model names they resell.
+	const canonical = resolveProviderIdentity(provider("commandcode", "https://relay.invalid/v1"));
+	assert.deepEqual(canonical, {
+		routeId: "commandcode",
+		displayName: "commandcode",
+		providerFamily: "commandcode",
+		accountAdapter: "commandcode-goat",
+		pricingFamily: "unknown",
+		baseURL: "https://relay.invalid/v1",
+		confidence: "canonical-id"
+	});
+	for (const id of ["commandcode-goat", "commandcode-goat-autosync", "commandcode-pro-anthropic", "commandcode-max-responses"]) {
+		const generated = resolveProviderIdentity(provider(id, "https://relay.invalid/v1"));
+		assert.equal(generated.providerFamily, "commandcode", `${id} must resolve through the family prefix`);
+		assert.equal(generated.accountAdapter, "commandcode-goat");
+		assert.equal(generated.confidence, "canonical-id");
+	}
+	const hostname = resolveProviderIdentity(provider("my-cc", "https://api.commandcode.ai/provider/v1"));
+	assert.equal(hostname.providerFamily, "commandcode");
+	assert.equal(hostname.accountAdapter, "commandcode-goat");
+	assert.equal(hostname.confidence, "canonical-host");
+	assert.equal(resolveAccountSpec(provider("commandcode", "https://api.commandcode.ai/provider/v1")).adapter, "commandcode-goat");
+	// A prefix is not a vendor guess: a route that merely starts with a lookalike
+	// string must stay unknown.
+	assert.equal(resolveProviderIdentity(provider("commandcodex", "https://relay.invalid/v1")).providerFamily, "unknown");
+	assert.equal(estimateTokenCost({
+		identity: canonical,
+		model: "deepseek/deepseek-v4.1-flash",
+		timestamp: Date.UTC(2026, 7, 27, 3, 0, 0),
+		buckets: { inputTokens: 1_000_000, outputTokens: 0, cacheReadTokens: 0, cacheWriteTokens: 0 }
+	}), null, "Command Code sells upstream models; its routes must not borrow their official pricing");
+}
+
+{
+	const state = createUsageState();
+	applyUsageDelta(state, [
+		requestEvent(0, "route-a", "shared-model"),
+		assistantEvent(1, "route-b", "shared-model")
+	]);
+	const context = currentSessionContext("session-1", state, provider("route-b", "https://api.deepseek.com"));
+	assert.deepEqual(context, {
+		sessionId: "session-1",
+		providerId: "route-b",
+		providerFamily: "deepseek",
+		model: "shared-model",
+		accountId: "route-b",
+		updatedAt: Date.UTC(2026, 7, 23, 12, 1, 1)
+	});
+	assert.equal(state.currentModel, "route-a/shared-model", "session context must not change request-driven usage attribution state");
+
+	applyUsageDelta(state, [requestEvent(2, "route-a", "shared-model")]);
+	assert.equal(currentSessionContext("session-1", state, provider("route-a", "https://relay.invalid")).providerId, "route-a");
+	assert.equal(state.currentModel, "route-a/shared-model", "same model on two routes must stay route-distinct");
+}
+
+{
+	const state = createUsageState();
+	assert.equal(currentSessionContext("empty", state, provider("deepseek")), null);
+}
+
+console.log("PROVIDER IDENTITY + SESSION CONTEXT TESTS PASSED");

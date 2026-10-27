@@ -1,0 +1,44 @@
+           CPU0       CPU1       CPU2       CPU3       
+ 11:   10622402   10733694    8747410   14477150    GICv3  30 Level     arch_timer
+ 14:          0          0          0          0    GICv3  58 Level     1fbf0200.system-controller:pinctrl
+ 15:        282          0          0          0    GICv3  50 Level     ttyS0
+ 16:          1          0          0          0    GICv3  67 Level     1faa1000.rng
+ 19:    5700277          0          0          0     INTx   0 Edge    -INTx      mt7915e-hif
+ 20:          0          0          0          0 MTK3-PCI-MSI-0000:00:00.0   0 Edge      PCIe PME, aerdrv, PCIe bwctrl
+ 22:          0          0          0          0 MTK3-PCI-MSI-0001:00:00.0   0 Edge      PCIe PME, aerdrv, PCIe bwctrl
+ 23:   24204216          0          0          0    GICv3  69 Level     airoha_eth.0
+ 24:         11          0          0          0    GICv3  87 Level     airoha_eth.1
+ 25:          1          0          0          0    GICv3  88 Level     airoha_eth.2
+ 26:          1          0          0          0    GICv3  89 Level     airoha_eth.3
+ 27:  113303366      33300          0          0    GICv3  70 Level     airoha_eth.4
+ 28:         11          0          0          0    GICv3  90 Level     airoha_eth.5
+ 29:          1          0          0          0    GICv3  91 Level     airoha_eth.6
+ 30:          1          0          0          0    GICv3  92 Level     airoha_eth.7
+ 31:          0          0          0          0    GICv3 157 Level     airoha-npu-mbox
+ 32:          0          0          0          0    GICv3 135 Level     airoha-npu-wdt
+ 33:          0          0          0          0    GICv3 141 Level     airoha-npu-wdt
+ 34:          0          0          0          0    GICv3 145 Level     airoha-npu-wdt
+ 35:          0          0          0          0    GICv3 149 Level     airoha-npu-wdt
+ 36:          0          0          0          0    GICv3 166 Level     airoha-npu-wdt
+ 37:          0          0          0          0    GICv3 167 Level     airoha-npu-wdt
+ 38:          0          0          0          0    GICv3 168 Level     airoha-npu-wdt
+ 39:          0          0          0          0    GICv3 169 Level     airoha-npu-wdt
+ 46:          0          0          0          0    GICv3  55 Level     1efbd000.thermal-sensor
+ 47:          0          0          0          0    GICv3  63 Level     mt7530
+ 48:          0          0          0          0 airoha-gpio-irq  35 Edge      keys
+ 49:          0          0          0          0 airoha-gpio-irq   4 Edge      keys
+ 50:          0          0          0          0 airoha-gpio-irq   3 Edge      keys
+ 51:          0          0          0          0    GICv3  65 Level     xhci-hcd:usb1
+ 52:          0          0          0          0    GICv3 182 Level     xhci-hcd:usb3
+ 53:   16034957          0          0          0 MTK3-PCI-MSI-0001:01:00.0   0 Edge      mt7915e
+ 54:      55363          0          0          0    GICv3  74 Level     1fb64000.ethernet
+ 55:          3          0          0          0    GICv3  75 Level     airoha-xpon-phy
+IPI0:    112653     213973     211575     233978       Rescheduling interrupts
+IPI1:  57607988   45763786   41421153   47746439       Function call interrupts
+IPI2:         0          0          0          0       CPU stop interrupts
+IPI3:         0          0          0          0       CPU stop NMIs
+IPI4:         0          0          0          0       Timer broadcast interrupts
+IPI5:   1395536    1155787    1064705    1631886       IRQ work interrupts
+IPI6:         0          0          0          0       CPU backtrace interrupts
+IPI7:         0          0          0          0       KGDB roundup interrupts
+Err:          0

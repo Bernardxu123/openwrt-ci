@@ -1,0 +1,430 @@
+# enable_telnet.py 静态常量/名字清单（由 marshal 直接读取，未执行）
+模块 docstring:
+'Enable Telnet on this HG5585F firmware, then persist its LAN switches.\n\nRun: python3 enable_telnet.py\nRequires Python 3.9+ and either OpenSSL (macOS/Linux) or Windows PowerShell.\n'
+## 模块级 co_names
+('__doc__', '__future__', 'annotations', 'argparse', 'base64', 'getpass', 'hashlib', 'ipaddress', 'json', 'os', 're', 'socket', 'subprocess', 'sys', 'time', 'urllib.error', 'urllib', 'urllib.request', 'EXPECTED_HARDWARE', 'EXPECTED_SOFTWARE', 'TELNET_PATHS', 'POWERSHELL_AES', 'CONTACT_QQ', 'WINDOW_TITLE', 'Exception', 'ToolError', 'print_contact', '_enable_vt', 'set_console_title', 'press_any_key', 'aes_cbc', 'http_bytes', 'local_ip_for', 'derive_key_iv', 'tool_call', 'TelnetSession', 'persist_telnet', 'wait_for_telnet', 'build_parser', 'run', 'ask', 'wizard', 'main', '__name__', 'SystemExit')
+
+## 模块级 co_consts（非 code）
+[0] 'Enable Telnet on this HG5585F firmware, then persist its LAN switches.\n\nRun: python3 enable_telnet.py\nRequires Python 3.9+ and either OpenSSL (macOS/Linux) or Windows PowerShell.\n'
+[1] 0
+[2] ('annotations',)
+[3] None
+[4] 'V4.2.0'
+[5] '24FHW45000'
+[6] ('InternetGatewayDevice.DeviceInfo.X_CT-COM_ServiceManage.TelnetEnable', 'InternetGatewayDevice.DeviceInfo.X_CT-COM_ServiceManage.Lan.TelnetEnable')
+[7] "\n$ErrorActionPreference = 'Stop'\n$request = [Console]::In.ReadToEnd() | ConvertFrom-Json\n$aes = [System.Security.Cryptography.Aes]::Create()\ntry {\n    $aes.Mode = [System.Security.Cryptography.CipherMode]::CBC\n    $aes.Padding = [System.Security.Cryptography.PaddingMode]::PKCS7\n    $aes.Key = [Convert]::FromBase64String($request.key)\n    $aes.IV = [Convert]::FromBase64String($request.iv)\n    $data = [Convert]::FromBase64String($request.data)\n    if ($request.action -eq 'encrypt') {\n        $transform = $aes.CreateEncryptor()\n    } else {\n        $transform = $aes.CreateDecryptor()\n    }\n    try {\n        $result = $transform.TransformFinalBlock($data, 0, $data.Length)\n        [Console]::Out.Write([Convert]::ToBase64String($result))\n    } finally {\n        $transform.Dispose()\n    }\n} finally {\n    $aes.Dispose()\n}\n"
+[8] '550097676'
+[9] 'HG5585F CT V2版 一键开Telnet Xx'
+[11] 'ToolError'
+[16] False
+[17] ('decrypt',)
+[19] ('body',)
+[25] 'TelnetSession'
+[33] '__main__'
+[34] ('return', 'None')
+[35] ('return', 'bool')
+[36] ('title', 'str', 'return', 'None')
+[37] ('data', 'bytes', 'key', 'bytes', 'iv', 'bytes', 'decrypt', 'bool', 'return', 'bytes')
+[38] ('url', 'str', 'body', 'bytes | None', 'return', 'bytes')
+[39] ('host', 'str', 'port', 'int', 'return', 'str')
+[40] ('mac', 'str', 'return', 'tuple[bytes, bytes]')
+[41] ('base_url', 'str', 'key', 'bytes', 'iv', 'bytes', 'func', 'str', 'params', 'str', 'return', 'dict')
+[42] ('host', 'str', 'mac', 'str', 'username', 'str', 'password', 'str | None', 'return', 'None')
+[43] ('host', 'str', 'return', 'None')
+[44] ('return', 'argparse.ArgumentParser')
+[45] ('args', 'argparse.Namespace', 'return', 'int')
+[46] ('prompt', 'str', 'default', 'str', 'return', 'str')
+[47] ('return', 'argparse.Namespace')
+[48] ('return', 'int')
+
+
+# ===== 逐函数 =====
+
+## <module>.ToolError
+  行号: 63
+  co_names   : ['__name__', '__module__', '__qualname__', '__firstlineno__', '__static_attributes__']
+  co_varnames: []
+  co_consts  :
+    [0] 'ToolError'
+    [1] 63
+    [2] ()
+    [3] None
+
+## <module>.print_contact
+  行号: 67
+  co_names   : ['CONTACT_QQ', 'sys', 'stdout', 'hasattr', 'isatty', '_enable_vt', 'print']
+  co_varnames: ['line', 'stream', 'dim']
+  co_consts  :
+    [0] 'Print the contact once, dimmed so it stays low-key.'
+    [1] 'Xx QQ '
+    [2] False
+    [3] 'isatty'
+    [4] '\x1b[2m'
+    [5] '\x1b[0m'
+    [6] None
+
+## <module>._enable_vt
+  行号: 77
+  co_names   : ['os', 'name', 'ctypes', 'windll', 'kernel32', 'GetStdHandle', 'c_ulong', 'GetConsoleMode', 'byref', 'SetConsoleMode', 'value', 'Exception']
+  co_varnames: ['ctypes', 'kernel32', 'handle', 'mode']
+  co_consts  :
+    [0] 'Turn on ANSI escape support so the footer line can be dimmed.'
+    [1] 'nt'
+    [2] True
+    [3] 0
+    [4] None
+    [5] -11
+    [6] False
+    [7] 4
+
+## <module>.set_console_title
+  行号: 95
+  co_names   : ['os', 'name', 'ctypes', 'windll', 'kernel32', 'SetConsoleTitleW', 'Exception']
+  co_varnames: ['title', 'ctypes']
+  co_consts  :
+    [0] 'Retitle the console window (Windows only, silently ignored elsewhere).'
+    [1] 'nt'
+    [2] None
+    [3] 0
+
+## <module>.press_any_key
+  行号: 107
+  co_names   : ['hasattr', 'sys', 'stdin', 'isatty', 'os', 'name', 'system', 'input']
+  co_varnames: []
+  co_consts  :
+    [0] 'Keep the window open after a double-click launch.'
+    [1] 'isatty'
+    [2] None
+    [3] 'nt'
+    [4] 'pause'
+    [5] '按回车键退出...'
+
+## <module>.aes_cbc
+  行号: 117
+  co_names   : ['os', 'name', 'json', 'dumps', 'base64', 'b64encode', 'decode', 'subprocess', 'run', 'POWERSHELL_AES', 'b64decode', 'stdout', 'strip', 'OSError', 'SubprocessError', 'ValueError', 'ToolError', 'hex']
+  co_varnames: ['data', 'key', 'iv', 'decrypt', 'request', 'result', 'exc']
+  co_consts  :
+    [0] None
+    [1] 'nt'
+    [2] 'decrypt'
+    [3] 'encrypt'
+    [4] 'ascii'
+    [5] ('action', 'key', 'iv', 'data')
+    [6] 'powershell.exe'
+    [7] '-NoProfile'
+    [8] '-NonInteractive'
+    [9] '-Command'
+    [10] True
+    [11] 15
+    [12] ('input', 'text', 'capture_output', 'timeout', 'check')
+    [13] ('validate',)
+    [14] 'Windows PowerShell AES 处理失败'
+    [15] 'openssl'
+    [16] 'enc'
+    [17] '-d'
+    [18] '-e'
+    [19] '-aes-128-cbc'
+    [20] '-K'
+    [21] '-iv'
+    [22] '-nosalt'
+    [23] 10
+    [24] ('input', 'capture_output', 'timeout', 'check')
+    [25] 'OpenSSL AES 处理失败；请确认系统已安装 openssl'
+
+## <module>.http_bytes
+  行号: 156
+  co_names   : ['urllib', 'request', 'Request', 'build_opener', 'ProxyHandler', 'open', 'read', 'error', 'HTTPError', 'ToolError', 'code', 'full_url', 'URLError', 'TimeoutError', 'OSError']
+  co_varnames: ['url', 'body', 'request', 'opener', 'response', 'exc']
+  co_consts  :
+    [0] None
+    [1] 'text/plain'
+    [2] 'close'
+    [3] ('Content-Type', 'Connection')
+    [4] 'POST'
+    [5] 'GET'
+    [6] ('data', 'headers', 'method')
+    [7] 6
+    [8] ('timeout',)
+    [9] '设备返回 HTTP '
+    [10] ': '
+    [11] '无法连接设备: '
+
+## <module>.local_ip_for
+  行号: 173
+  co_names   : ['socket', 'create_connection', 'str', 'getsockname', 'OSError', 'ToolError']
+  co_varnames: ['host', 'port', 'sock', 'exc']
+  co_consts  :
+    [0] None
+    [1] 3
+    [2] ('timeout',)
+    [3] 0
+    [4] '无法连接 '
+    [5] ':'
+
+## <module>.derive_key_iv
+  行号: 181
+  co_names   : ['hashlib', 'sha256', 'encode', 'hexdigest', 'join', 'range']
+  co_varnames: ['mac', 'key', 'iv']
+  co_consts  :
+    [0] None
+    [1] 'ascii'
+    [2] ''
+    [3] 16
+  内嵌 code: ['<genexpr>', '<genexpr>']
+
+## <module>.derive_key_iv.<genexpr>
+  行号: 183
+  co_names   : []
+  co_varnames: ['.0', 'i']
+  co_consts  :
+    [0] 2
+    [1] None
+
+## <module>.derive_key_iv.<genexpr>
+  行号: 184
+  co_names   : []
+  co_varnames: ['.0', 'i']
+  co_consts  :
+    [0] 3
+    [1] None
+
+## <module>.tool_call
+  行号: 188
+  co_names   : ['json', 'dumps', 'encode', 'aes_cbc', 'http_bytes', 'base64', 'b64encode', 'b64decode', 'strip', 'loads', 'ValueError', 'JSONDecodeError', 'ToolError', 'isinstance', 'dict', 'str', 'get']
+  co_varnames: ['base_url', 'key', 'iv', 'func', 'params', 'payload', 'plaintext', 'ciphertext', 'response', 'decoded', 'result', 'exc']
+  co_consts  :
+    [0] None
+    [1] '1'
+    [2] ('index', 'func')
+    [3] (',', ':')
+    [4] False
+    [5] ('separators', 'ensure_ascii')
+    [6] 'utf-8'
+    [7] '/fh_tool/api'
+    [8] ('body',)
+    [9] True
+    [10] ('validate',)
+    [11] ('decrypt',)
+    [12] ' 响应无法解密或解析；设备协议可能不同'
+    [13] 'result'
+    [14] '0'
+    [15] ' 未成功，返回码 '
+    [16] '未知'
+
+## <module>.TelnetSession
+  行号: 205
+  co_names   : ['__name__', '__module__', '__qualname__', '__firstlineno__', '__doc__', '__init__', 'close', 'write_line', 'read_until', '__static_attributes__']
+  co_varnames: []
+  co_consts  :
+    [0] 'TelnetSession'
+    [1] 205
+    [2] 'Small Telnet reader that declines optional negotiations and hides input.'
+    [3] ('buffer', 'command', 'sock', 'state')
+    [4] None
+    [5] (23,)
+    [6] ('host', 'str', 'port', 'int')
+    [7] ('return', 'None')
+    [8] ('line', 'str', 'return', 'None')
+    [9] (8,)
+    [10] ('marker', 'bytes', 'timeout', 'float', 'return', 'bytes')
+  内嵌 code: ['__init__', 'close', 'write_line', 'read_until']
+
+## <module>.TelnetSession.__init__
+  行号: 208
+  co_names   : ['socket', 'create_connection', 'sock', 'state', 'command', 'bytearray', 'buffer']
+  co_varnames: ['self', 'host', 'port']
+  co_consts  :
+    [0] None
+    [1] 6
+    [2] ('timeout',)
+    [3] 0
+
+## <module>.TelnetSession.close
+  行号: 214
+  co_names   : ['sock', 'close']
+  co_varnames: ['self']
+  co_consts  :
+    [0] None
+
+## <module>.TelnetSession.write_line
+  行号: 217
+  co_names   : ['sock', 'sendall', 'encode']
+  co_varnames: ['self', 'line']
+  co_consts  :
+    [0] None
+    [1] 'utf-8'
+    [2] b'\n'
+
+## <module>.TelnetSession.read_until
+  行号: 220
+  co_names   : ['time', 'monotonic', 'buffer', 'ToolError', 'sock', 'settimeout', 'recv', 'socket', 'timeout', 'state', 'append', 'command', 'sendall', 'bytes', 'index', 'len']
+  co_varnames: ['self', 'marker', 'timeout', 'deadline', 'remaining', 'chunk', 'exc', 'byte', 'reply', 'end', 'out']
+  co_consts  :
+    [0] None
+    [1] 0
+    [2] 'Telnet 等待提示符超时'
+    [3] 4096
+    [4] 'Telnet 连接被设备关闭'
+    [5] 255
+    [6] 1
+    [7] (251, 252, 253, 254)
+    [8] 2
+    [9] 250
+    [10] 3
+    [11] (251, 252)
+    [12] 254
+    [13] 252
+    [14] 4
+    [15] 240
+
+## <module>.persist_telnet
+  行号: 264
+  co_names   : ['TelnetSession', 'read_until', 'write_line', 'TELNET_PATHS', 'ToolError', 'close']
+  co_varnames: ['host', 'mac', 'username', 'password', 'session', 'path']
+  co_consts  :
+    [0] None
+    [1] 'FH-nE7jA%5m'
+    [2] -6
+    [3] b'Login:'
+    [4] b'Password:'
+    [5] b'$'
+    [6] 'cfg_cmd set '
+    [7] ' 1'
+    [8] b'set success!'
+    [9] '持久化写入失败: '
+    [10] 'cfg_cmd get '
+    [11] b'value=1'
+    [12] '持久化回读失败: '
+    [13] 'exit'
+
+## <module>.wait_for_telnet
+  行号: 285
+  co_names   : ['range', 'socket', 'create_connection', 'settimeout', 'recv', 'OSError', 'time', 'sleep', 'ToolError']
+  co_varnames: ['host', '_', 'sock']
+  co_consts  :
+    [0] None
+    [1] 12
+    [2] 23
+    [3] 2
+    [4] ('timeout',)
+    [5] 32
+    [6] 1
+    [7] '接口返回成功，但 23 端口未出现 Telnet 握手'
+
+## <module>.build_parser
+  行号: 298
+  co_names   : ['argparse', 'ArgumentParser', 'add_argument', 'int']
+  co_varnames: ['parser']
+  co_consts  :
+    [0] None
+    [1] 'HG5585F 一键开启并持久化 Telnet'
+    [2] ('description',)
+    [3] '--host'
+    [4] '192.168.1.1'
+    [5] '光猫 LAN 地址'
+    [6] ('default', 'help')
+    [7] '--web-port'
+    [8] 8080
+    [9] '管理页端口'
+    [10] ('type', 'default', 'help')
+    [11] '--probe'
+    [12] 'store_true'
+    [13] '只读验证协议，不修改设备'
+    [14] ('action', 'help')
+    [15] '--runtime-only'
+    [16] '只开启本次运行，不登录 Telnet 写入配置'
+    [17] '--telnet-user'
+    [18] 'telnetadmin'
+    [19] ('default',)
+    [20] '--telnet-password'
+    [21] '自定义 Telnet 密码（不建议在命令行里传）'
+    [22] '--telnet-password-stdin'
+    [23] '从标准输入读取自定义 Telnet 密码'
+
+## <module>.run
+  行号: 310
+  co_names   : ['str', 'ipaddress', 'ip_address', 'host', 'web_port', 'ToolError', 'local_ip_for', 'ip_network', 'json', 'loads', 'http_bytes', 'get', 're', 'fullmatch', 'derive_key_iv', 'tool_call', 'EXPECTED_HARDWARE', 'EXPECTED_SOFTWARE', 'print', 'probe', 'wait_for_telnet', 'runtime_only', 'telnet_password_stdin', 'sys', 'stdin', 'readline', 'rstrip', 'telnet_password', 'persist_telnet', 'telnet_user', 'ValueError', 'JSONDecodeError', 'stderr']
+  co_varnames: ['args', 'host', 'source', 'base', 'info', 'mac', 'key', 'iv', 'device', 'hw', 'sw', 'custom_password', 'exc']
+  co_consts  :
+    [0] None
+    [1] 1
+    [2] 65535
+    [3] '管理端口超出范围'
+    [4] '/24'
+    [5] False
+    [6] ('strict',)
+    [7] '目标不在当前直连 LAN；本机源地址为 '
+    [8] 'http://'
+    [9] ':'
+    [10] '/cgi-bin/ajax?ajaxmethod=web_get_brmad'
+    [11] 'brmad'
+    [12] ''
+    [13] '[0-9A-F]{12}'
+    [14] '无法读取有效的设备 MAC'
+    [15] 'GetDevInfo'
+    [16] 'hardwareversion'
+    [17] 'softwareversion'
+    [18] '设备版本与已验证目标不符：硬件 '
+    [19] '，软件 '
+    [20] '设备验证通过：硬件 '
+    [21] '只读探测完成，未修改设备。'
+    [22] 0
+    [23] 'TelnetEnable'
+    [24] '1'
+    [25] ('telnet',)
+    [26] 'Telnet 已开启，23 端口握手正常。'
+    [27] '当前为运行时开启；重启后需要再次运行。'
+    [28] '\r\n'
+    [29] '总开关和 LAN 开关已写入并回读为 1；此固件已验证重启后自动开启。'
+    [30] '失败：'
+    [31] ('file',)
+
+## <module>.ask
+  行号: 349
+  co_names   : ['input', 'strip']
+  co_varnames: ['prompt', 'default', 'answer']
+  co_consts  :
+    [0] None
+    [1] ' [默认 '
+    [2] ']：'
+
+## <module>.wizard
+  行号: 354
+  co_names   : ['build_parser', 'parse_args', 'print', 'EXPECTED_HARDWARE', 'EXPECTED_SOFTWARE', 'ask', 'host', 'replace', 'rstrip', 'ipaddress', 'ip_address', 'ValueError', 'str', 'web_port', 'int', 'probe', 'runtime_only', 'input', 'telnet_user', 'strip', 'lower', 'getpass', 'telnet_password']
+  co_varnames: ['args', 'port', 'mode', 'user']
+  co_consts  :
+    [0] 'Guide a double-click user through the few options that matter.'
+    [1] '===================================================='
+    [2] ' HG5585F CT V2版 · 一键开启 Telnet'
+    [3] ' 适用版本：硬件 '
+    [4] ' / 软件 '
+    [5] '请先确认：电脑已用网线直连光猫 LAN 口，且能打开管理页面。'
+    [6] '光猫 LAN 地址'
+    [7] 'http://'
+    [8] ''
+    [9] '/'
+    [10] '  地址格式不对，请输入形如 192.168.1.1 的 IP。'
+    [11] '管理页端口'
+    [12] 1
+    [13] 65535
+    [14] '  端口需在 1~65535 之间。'
+    [15] '执行方式（1=只读探测 / 2=仅本次生效 / 3=持久化）'
+    [16] '3'
+    [17] '1'
+    [18] '2'
+    [19] 'Telnet 用户名 [默认 '
+    [20] ']：'
+    [21] '是否使用自定义 Telnet 密码？[y/N]：'
+    [22] 'y'
+    [23] '密码（输入不回显）：'
+
+## <module>.main
+  行号: 396
+  co_names   : ['set_console_title', 'WINDOW_TITLE', 'len', 'sys', 'argv', 'run', 'build_parser', 'parse_args', 'print_contact', 'wizard', 'EOFError', 'KeyboardInterrupt', 'print', 'input', 'press_any_key']
+  co_varnames: ['code', 'args']
+  co_consts  :
+    [0] None
+    [1] 1
+    [2] '\n已取消。'
+    [3] 130
+    [4] '确认无误后按回车键开始，Ctrl+C 可随时中止...'

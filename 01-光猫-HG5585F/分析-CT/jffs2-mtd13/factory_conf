@@ -1,0 +1,205 @@
+
+config key 'UserPasswd'
+	option value '12345'
+	option encryflag '0'
+
+config key 'ManufacturerOUI'
+	option encryflag '0'
+	option value '70D51E'
+
+config key 'SerialNumber'
+	option value '00000013181'
+	option encryflag '0'
+
+config key 'SSID_2G'
+	option value 'ChinaNet-10gpon2g1'
+	option encryflag '0'
+
+config key 'PreSharedKey_2G'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'SSID_5G'
+	option value 'ChinaNet-10gpon5g1'
+	option encryflag '0'
+
+config key 'PreSharedKey_5G'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'SSID1'
+	option value 'ChinaNet-10gpon2g1'
+	option encryflag '0'
+
+config key 'PreSharedKey1'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'BeaconType1'
+	option value 'WPA/WPA2'
+	option encryflag '0'
+
+config key 'SSID2'
+	option value 'ChinaNet-10gpon2g2'
+	option encryflag '0'
+
+config key 'PreSharedKey2'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'BeaconType2'
+	option value 'WPA/WPA2'
+	option encryflag '0'
+
+config key 'SSID3'
+	option value 'ChinaNet-10gpon2g3'
+	option encryflag '0'
+
+config key 'PreSharedKey3'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'BeaconType3'
+	option value 'WPA/WPA2'
+	option encryflag '0'
+
+config key 'SSID4'
+	option value 'ChinaNet-10gpon2g4'
+	option encryflag '0'
+
+config key 'PreSharedKey4'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'BeaconType4'
+	option value 'WPA/WPA2'
+	option encryflag '0'
+
+config key 'SSID5_1'
+	option value 'ChinaNet-10gpon5g1'
+	option encryflag '0'
+
+config key 'PreSharedKey5_1'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'BeaconType5_1'
+	option value 'UCI_NULL'
+	option encryflag '0'
+
+config key 'SSID5_2'
+	option value 'ChinaNet-10gpon5g2'
+	option encryflag '0'
+
+config key 'PreSharedKey5_2'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'BeaconType5_2'
+	option value 'UCI_NULL'
+	option encryflag '0'
+
+config key 'SSID5_3'
+	option value 'ChinaNet-10gpon5g3'
+	option encryflag '0'
+
+config key 'PreSharedKey5_3'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'BeaconType5_3'
+	option value 'UCI_NULL'
+	option encryflag '0'
+
+config key 'SSID5_4'
+	option value 'ChinaNet-10gpon5g4'
+	option encryflag '0'
+
+config key 'PreSharedKey5_4'
+	option value '12345678'
+	option encryflag '0'
+
+config key 'BeaconType5_4'
+	option value 'UCI_NULL'
+	option encryflag '0'
+
+config key 'APMAC_1'
+	option value '00:0a:c2:d6:00:00'
+	option encryflag '0'
+
+config key 'APMAC_2'
+	option value '00:0a:c2:d6:00:00'
+	option encryflag '0'
+
+config key 'macnum'
+	option value '12'
+	option encryflag '0'
+
+config key 'brmac'
+	option encryflag '0'
+	option value '70:D5:1E:06:9C:78'
+
+config key 'internetmac'
+	option encryflag '0'
+	option value '70:D5:1E:06:9C:79'
+
+config key 'tr069mac'
+	option encryflag '0'
+	option value '70:D5:1E:06:9C:7A'
+
+config key 'voipmac'
+	option encryflag '0'
+	option value '70:D5:1E:06:9C:7B'
+
+config key 'priprotocolmac'
+	option encryflag '0'
+	option value '70:D5:1E:06:9C:7C'
+
+config key 'GponSN'
+	option value '4648545400244D02'
+	option encryflag '0'
+
+config key 'GPONPassWord'
+	option value '48473236303132333435'
+	option encryflag '0'
+
+config key 'VendorCode'
+	option value 'FH'
+	option encryflag '0'
+
+config key 'pon_mode'
+	option value '4'
+	option encryflag '0'
+
+config key 'Apei'
+	option value '123451234512345'
+	option encryflag '0'
+
+config key 'base_mac'
+	option value '70:D5:1E:06:9C:78'
+	option encryflag '0'
+
+config key 'ponmac'
+	option value '70:D5:1E:06:9C:78'
+	option encryflag '0'
+
+config key 'eth1mac'
+	option value '70:D6:1E:06:9C:99'
+	option encryflag '0'
+
+config key 'eth2mac'
+	option value '70:D6:1E:06:9C:9A'
+	option encryflag '0'
+
+config key 'eth3mac'
+	option value '70:D6:1E:06:9C:9B'
+	option encryflag '0'
+
+config key 'eth4mac'
+	option value '70:D6:1E:06:9C:9C'
+	option encryflag '0'
+
+config key 'PCBASN'
+	option value '12190291ACQF'
+	option encryflag '0'
+

@@ -1,0 +1,449 @@
+# ============================================================
+# OpenClash / Mihomo 配置 — QWRT HG5585F-CT (AN7581, 512MB)
+# 生成: 2026-10-22
+# 说明:
+#   - 运行模式: Fake-IP + Redirect (无 TProxy; 本机内核无 nft_tproxy)
+#   - 国内域名: oc-cn-domain.mrs (避免 GEOSITE,cn 的 OOM)
+#   - 非中国 IPv6: 由 openclash_v6_guard (nft) fail-closed
+#   - 自建节点: 显式写入; x-ui 的 2096 订阅不可用
+#   - 乌龟订阅 403 时允许启动为空, 解锁后按 86400s 刷新
+# 注意: 本文件含订阅 token 与自建节点密钥, 仅私有保存
+# ============================================================
+
+# ---------- 基础 ----------
+port: 7890
+socks-port: 7891
+redir-port: 7892
+mixed-port: 7893
+tproxy-port: 7895
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+ipv6: true
+unified-delay: true
+tcp-concurrent: true
+find-process-mode: "off"
+keep-alive-interval: 180
+keep-alive-idle: 600
+
+external-controller: 0.0.0.0:9090
+secret: "Y5MNeQyv"
+# external-ui / external-ui-name 由 OpenClash 在运行时注入
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+geodata-loader: memconservative
+
+ntp:
+  enable: true
+  server: ntp.aliyun.com
+  port: 123
+  interval: 30
+  write-to-system: true
+
+# ---------- 订阅源 ----------
+proxy-providers:
+  极速:
+    type: http
+    url: "https://hm.zmglqtdbkr.com/jiqun/96c9086f57deae4d3cf4b022cf630ed8"
+    interval: 86400
+    path: ./proxy_provider/jisu.yaml
+    proxy: DIRECT
+    override:
+      additional-prefix: "[极速] "
+    exclude-filter: '(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航'
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 1800
+      timeout: 5000
+      lazy: true
+
+  乌龟:
+    type: http
+    url: "https://1.14.154.150:43443/wuguisub?token=68d4b49963bb88509855b5c4da3f4070"
+    interval: 86400
+    path: ./proxy_provider/wugui.yaml
+    proxy: DIRECT
+    override:
+      additional-prefix: "[乌龟] "
+    exclude-filter: '(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航'
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 1800
+      timeout: 5000
+      lazy: true
+
+  极速CF:
+    type: http
+    url: "https://cfnew.xy.kg/sub?host=https%3A%2F%2Fgoui.290490.xyz&uuid=ba8f0e2c-9ee7-4c8f-867b-285f985b663c&target=clash"
+    interval: 86400
+    path: ./proxy_provider/cf.yaml
+    proxy: DIRECT
+    override:
+      additional-prefix: "[CF] "
+    exclude-filter: '(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航'
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 1800
+      timeout: 5000
+      lazy: true
+
+# ---------- 自建节点 (x-ui DB, 2026-10-22) ----------
+proxies:
+  - name: "🇸🇬 新加坡-自建Hy2"
+    type: hysteria2
+    server: 161.118.196.196
+    port: 49426
+    password: "8ae4a192ff1b4cbfaee86176dd0fc3dd"
+    sni: xx.290490.xyz
+    obfs: salamander
+    obfs-password: "1k0t8lv2qtbfyvi4"
+    udp: true
+
+  # 2026-10-22: 3x-ui 新建 VLESS TCP+TLS 入站 (8443)，兼容 mihomo/OpenClash，避免 REALITY 握手问题
+  - name: "🇸🇬 新加坡-自建TLS"
+    type: vless
+    server: 161.118.196.196
+    port: 8443
+    uuid: d01a144e-d927-408e-a72f-09c945215158
+    network: tcp
+    udp: true
+    tls: true
+    servername: xx.290490.xyz
+    alpn:
+      - http/1.1
+
+# ---------- 策略组 ----------
+proxy-groups:
+  - name: "🚀 默认代理"
+    type: select
+    proxies:
+      - "♻️ 香港自动"
+      - "♻️ 新加坡自动"
+      - "🛡️ 稳定固定"
+      - "🇭🇰 香港节点"
+      - "🇸🇬 新加坡节点"
+      - "🌐 全部节点"
+      - DIRECT
+
+  - name: "🤖 ChatGPT"
+    type: select
+    proxies:
+      - "🛡️ 稳定固定"
+      - "🚀 默认代理"
+      - DIRECT
+
+  - name: "📺 YouTube"
+    type: select
+    proxies:
+      - "🚀 默认代理"
+      - "🛡️ 稳定固定"
+      - DIRECT
+
+  - name: "🔍 Google"
+    type: select
+    proxies:
+      - "🇸🇬 新加坡-自建TLS"
+      - "🛡️ 稳定固定"
+      - "🚀 默认代理"
+      - DIRECT
+
+  - name: "🎬 流媒体"
+    type: select
+    proxies:
+      - "♻️ 新加坡自动"
+      - "♻️ 香港自动"
+      - "🚀 默认代理"
+      - "🛡️ 稳定固定"
+      - DIRECT
+
+  - name: "📦 GitHub"
+    type: select
+    proxies:
+      - "🚀 默认代理"
+      - "♻️ 香港自动"
+      - "🌐 全部节点"
+      - DIRECT
+
+  - name: "✈️ Telegram"
+    type: select
+    proxies:
+      - "🚀 默认代理"
+      - "♻️ 香港自动"
+      - "♻️ 新加坡自动"
+      - DIRECT
+
+  - name: "🍎 Apple"
+    type: select
+    proxies:
+      - DIRECT
+      - "🚀 默认代理"
+
+  - name: "🪟 微软"
+    type: select
+    proxies:
+      - DIRECT
+      - "🚀 默认代理"
+
+  - name: "🏢 甲骨文 Oracle"
+    type: select
+    proxies:
+      - DIRECT
+      - "🚀 默认代理"
+
+  - name: "✈️ Speedtest"
+    type: select
+    proxies:
+      - DIRECT
+      - "🚀 默认代理"
+
+  - name: "🎯 直连"
+    type: select
+    proxies:
+      - DIRECT
+      - "🚀 默认代理"
+
+  - name: "🐟 漏网之鱼"
+    type: select
+    proxies:
+      - "🚀 默认代理"
+      - DIRECT
+
+  - name: "🛡️ 稳定固定"
+    type: select
+    proxies:
+      - "🇸🇬 新加坡-自建TLS"
+      - "🇸🇬 新加坡-自建Hy2"
+      - "♻️ 新加坡自动"
+
+  - name: "♻️ 香港自动"
+    type: url-test
+    use:
+      - 极速
+      - 乌龟
+      - 极速CF
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    tolerance: 100
+    max-failed-times: 2
+    lazy: true
+    filter: '(?i)港|hk|hong ?kong'
+    exclude-filter: '(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航'
+
+  - name: "♻️ 新加坡自动"
+    type: url-test
+    use:
+      - 极速
+      - 乌龟
+      - 极速CF
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    tolerance: 100
+    max-failed-times: 2
+    lazy: true
+    filter: '(?i)新加坡|狮|singapore|sg-?[0-9]'
+    exclude-filter: '(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航'
+
+  - name: "🇭🇰 香港节点"
+    type: select
+    use:
+      - 极速
+      - 乌龟
+      - 极速CF
+    filter: '(?i)港|hk|hong ?kong'
+    exclude-filter: '(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航'
+
+  - name: "🇸🇬 新加坡节点"
+    type: select
+    use:
+      - 极速
+      - 乌龟
+      - 极速CF
+    filter: '(?i)新加坡|狮|singapore|sg-?[0-9]'
+    exclude-filter: '(?i)剩余|流量|到期|重置|官网|过期|套餐|订阅|邀请|更新|防失联|距离|expire|traffic|update|导航'
+
+  - name: "🌐 全部节点"
+    type: select
+    use:
+      - 极速
+      - 乌龟
+      - 极速CF
+    proxies:
+      - "🇸🇬 新加坡-自建TLS"
+      - "🇸🇬 新加坡-自建Hy2"
+
+# ---------- DNS ----------
+dns:
+  enable: true
+  listen: 0.0.0.0:7874
+  ipv6: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  fake-ip-range6: 2001:2::1/64
+  fake-ip-filter-mode: rule
+  cache-algorithm: lru
+  cache-size: 4096
+  prefer-h3: false
+  respect-rules: true
+  use-hosts: true
+
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  proxy-server-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+  direct-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+
+  nameserver:
+    - https://1.1.1.1/dns-query
+    - tls://8.8.4.4:853
+
+  nameserver-policy:
+    "rule-set:oc-cn-domain":
+      - 223.5.5.5
+      - 119.29.29.29
+    "geosite:private":
+      - 223.5.5.5
+      - 119.29.29.29
+
+  fake-ip-filter:
+    - RULE-SET,oc-cn-domain,real-ip
+    - GEOSITE,private,real-ip
+    - DOMAIN-SUFFIX,lan,real-ip
+    - DOMAIN-SUFFIX,local,real-ip
+    - DOMAIN-SUFFIX,localdomain,real-ip
+    - DOMAIN-SUFFIX,home.arpa,real-ip
+    - DOMAIN-SUFFIX,msftconnecttest.com,real-ip
+    - DOMAIN-SUFFIX,msftncsi.com,real-ip
+    - GEOSITE,connectivity-check,real-ip
+    - DOMAIN-SUFFIX,ntp.aliyun.com,real-ip
+    - DOMAIN-SUFFIX,ntp.tencent.com,real-ip
+    - DOMAIN-SUFFIX,cn.pool.ntp.org,real-ip
+    - MATCH,fake-ip
+
+# ---------- 规则集 ----------
+rule-providers:
+  oc-cn-domain:
+    type: http
+    behavior: domain
+    format: mrs
+    interval: 43200
+    url: "https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@meta/geo/geosite/cn.mrs"
+    path: ./rule_provider/oc-cn-domain.mrs
+
+  zdcn:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: "https://testingcf.jsdelivr.net/gh/Bernardxu123/xu@main/zdcn.list"
+    path: ./rule_provider/zdcn.list
+
+  zdgw:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: "https://testingcf.jsdelivr.net/gh/Bernardxu123/xu@main/zdgw.list"
+    path: ./rule_provider/zdgw.list
+
+  oracle:
+    type: http
+    behavior: classical
+    format: text
+    interval: 86400
+    url: "https://testingcf.jsdelivr.net/gh/Bernardxu123/xu@main/oracle.list"
+    path: ./rule_provider/oracle.list
+
+# ---------- 路由规则 (自上而下, 首个命中) ----------
+rules:
+  # 私有域 / 局域网 / 组播
+  - GEOSITE,private,🎯 直连
+  - IP-CIDR,192.168.0.0/16,🎯 直连,no-resolve
+  - IP-CIDR,10.0.0.0/8,🎯 直连,no-resolve
+  - IP-CIDR,172.16.0.0/12,🎯 直连,no-resolve
+  - IP-CIDR,100.64.0.0/10,🎯 直连,no-resolve
+  - IP-CIDR,127.0.0.0/8,🎯 直连,no-resolve
+  - IP-CIDR,169.254.0.0/16,🎯 直连,no-resolve
+  - IP-CIDR,224.0.0.0/3,🎯 直连,no-resolve
+  - IP-CIDR6,fdae:8777:3859::/60,🎯 直连,no-resolve
+  - IP-CIDR6,fe80::/10,🎯 直连,no-resolve
+  - IP-CIDR6,ff00::/8,🎯 直连,no-resolve
+  - IP-CIDR6,::1/128,🎯 直连,no-resolve
+
+  # STUN / 游戏 UDP 直连 (IPv4 为主; IPv6 由 guard 统一 fail-closed)
+  - AND,((NETWORK,UDP),(DST-PORT,3478)),🎯 直连
+  - AND,((NETWORK,UDP),(DST-PORT,19302)),🎯 直连
+  - AND,((NETWORK,UDP),(DST-PORT,7844)),🎯 直连
+
+  # NTP
+  - DST-PORT,123,🎯 直连
+
+  # 国外 QUIC 兜底 (IPv4 由 OpenClash nft 先拦; IPv6 由 guard 拦)
+  - AND,((NETWORK,UDP),(DST-PORT,443),(NOT,((GEOIP,CN)))),REJECT
+
+  # 自有服务
+  - DOMAIN,vlook.290490.xyz,🚀 默认代理
+  - DOMAIN,xx.290490.xyz,🎯 直连
+  - DOMAIN-SUFFIX,290490.xyz,🎯 直连
+
+  # 用户自定义列表
+  - RULE-SET,zdcn,🎯 直连
+  - RULE-SET,zdgw,🚀 默认代理
+
+  # Steam
+  - DOMAIN-SUFFIX,steamcontent.com,🎯 直连
+  - DOMAIN-SUFFIX,steamstatic.com,🎯 直连
+  - DOMAIN-SUFFIX,steamcdn-a.akamaihd.net,🎯 直连
+  - GEOSITE,steam,🚀 默认代理
+
+  # Google AI (固定出口, 必须在 GEOSITE,google 之前)
+  - DOMAIN-SUFFIX,aistudio.google.com,🛡️ 稳定固定
+  - DOMAIN-SUFFIX,makersuite.google.com,🛡️ 稳定固定
+  - DOMAIN-SUFFIX,alkalimakersuite-pa.clients6.google.com,🛡️ 稳定固定
+  - DOMAIN-SUFFIX,alkalimakersuite-pa.googleapis.com,🛡️ 稳定固定
+  - DOMAIN-SUFFIX,generativelanguage.googleapis.com,🛡️ 稳定固定
+  - GEOSITE,google-gemini,🛡️ 稳定固定
+
+  # YouTube / 通用 AI
+  - GEOSITE,youtube,📺 YouTube
+  - GEOSITE,category-ai-!cn,🤖 ChatGPT
+
+  # 流媒体
+  - GEOSITE,netflix,🎬 流媒体
+  - GEOSITE,disney,🎬 流媒体
+  - GEOSITE,spotify,🎬 流媒体
+  - GEOSITE,tiktok,🎬 流媒体
+
+  # 常用服务
+  - GEOSITE,github,📦 GitHub
+  - DOMAIN-SUFFIX,githubusercontent.com,📦 GitHub
+  - DOMAIN-SUFFIX,github.io,📦 GitHub
+  - DOMAIN-SUFFIX,githubapp.com,📦 GitHub
+  - GEOSITE,telegram,✈️ Telegram
+  - GEOSITE,twitter,🚀 默认代理
+  - GEOSITE,google,🔍 Google
+  - GEOSITE,google-cn,🔍 Google
+  - GEOSITE,apple,🍎 Apple
+  - GEOSITE,apple-cn,🍎 Apple
+  - GEOSITE,onedrive,🚀 默认代理
+  - GEOSITE,microsoft,🪟 微软
+  - RULE-SET,oracle,🏢 甲骨文 Oracle
+  - GEOSITE,oracle,🏢 甲骨文 Oracle
+  - GEOSITE,ookla-speedtest,✈️ Speedtest
+
+  # 国内
+  - RULE-SET,oc-cn-domain,🎯 直连
+  - GEOIP,CN,🎯 直连,no-resolve
+
+  # 兜底
+  - MATCH,🐟 漏网之鱼

@@ -1,0 +1,6 @@
+capture_start=2026-10-18T15:29:33+0800 run=1
+tcpdump: listening on oam0, link-type RAW (Raw IP), snapshot length 262144 bytes
+26 packets captured
+26 packets received by filter
+0 packets dropped by kernel
+capture_stop=2026-10-18T15:29:46+0800 run=1 status=stopped

@@ -1,0 +1,6 @@
+configured=epon-10g-1g
+active=none
+controls=oam0,omci0
+serial_number: 46485454c1c6acaa
+active_serial_number: 46485454c1c6acaa
+registration_id: default-zero

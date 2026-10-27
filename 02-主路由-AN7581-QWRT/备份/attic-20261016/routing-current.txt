@@ -1,0 +1,25 @@
+pname(NetworkManager, systemd-resolved, dnsmasq) -> must_direct
+dip(geoip:private) -> direct
+domain(geosite:private) -> direct
+
+# 传输层协议治理：全局阻断 QUIC 强制 TCP，NTP 直连校时
+l4proto(udp) && dport(443) -> block
+l4proto(udp) && dport(123) -> direct
+
+# 自建服务直连
+domain(xx.290490.xyz) -> direct
+
+# 境外特例直连修正与国内放行
+domain(stripo.email, justuno.com, mailchimp.com, freepik.com, joeyblog.net, googleapis.cn, services.googleapis.cn, xn--ngstr-lra8j.com, dl.google.com, nvidia.com, workbuddy.ai) -> proxy
+domain(geosite:cn) -> direct
+dip(geoip:cn) -> direct
+
+# AI 专属路由 (地区严格合规)
+domain(geosite:openai, geosite:anthropic, geosite:google-gemini) -> AI
+domain(opencode.ai, oracle.com, oraclecloud.com, oci.oraclecloud.com) -> AI
+
+# 流媒体专属路由 (物理隔离 CF Worker，保证带宽与 IP 粘性)
+domain(geosite:youtube, geosite:netflix, geosite:disney, geosite:spotify) -> Media
+
+# 兜底常规代理
+fallback: proxy

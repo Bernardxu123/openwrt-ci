@@ -1,0 +1,2 @@
+# command: cat /sys/kernel/debug/airoha-xpon-pon0/crypto
+active: 0

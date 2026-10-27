@@ -1,0 +1,10 @@
+# command: cat /sys/kernel/debug/airoha-xpon-pon0/datapath
+tx_packets_submitted: 188
+tx_packets_completed: 188
+tx_packets_dropped: 0
+tx_no_mapping: 0
+rx_packets_delivered: 127088
+rx_descriptors_dropped: 9237
+rx_crc_errors: 0
+channel_0_tx_packets: 188
+channel_0_rx_packets: 136448

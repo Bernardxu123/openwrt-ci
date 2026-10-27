@@ -1,0 +1,1002 @@
+import assert from "node:assert/strict";
+import { collectSubscription, collectSubscriptions, commandCodeDefaultVersion, isCommandCodeVersion, subscriptionCredentialRefs } from "../lib/subscriptions.js";
+
+function credentials(values) {
+	return {
+		resolve: async (ref) => Object.hasOwn(values, ref) ? { value: values[ref] } : void 0
+	};
+}
+
+const now = Date.parse("2026-08-14T00:00:00Z");
+const noLocalAuth = {
+	homedir: () => "/test-home",
+	readFile: async () => { throw new Error("missing"); }
+};
+
+{
+	const providers = await collectSubscriptions(credentials({}), {}, { ...noLocalAuth, now: () => now });
+	assert.deepEqual(providers.map((provider) => [provider.id, provider.status]), [
+		["opencode-go", "not-configured"],
+		["zai", "not-configured"]
+	]);
+	assert.deepEqual(providers[0].missingCredentials, [subscriptionCredentialRefs.openCodeApiKey]);
+	console.log("not-configured states ok");
+}
+
+{
+	const calls = [];
+	const secret = "sk-opencode-test";
+	const providers = await collectSubscriptions(credentials({ OPENCODE_GO_API_KEY: secret }), {}, {
+		...noLocalAuth,
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			if (String(url).includes("api.z.ai")) return { ok: false, status: 401, json: async () => ({}) };
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({ usage: {
+					rolling: { status: "ok", percent: 9, resetsAt: "2026-08-14T07:20:04.810Z" },
+					weekly: { status: "ok", percent: 12, resetsAt: "2026-08-17T00:00:00.810Z" },
+					monthly: { status: "ok", percent: 6, resetsAt: "2026-09-09T00:41:03.810Z" }
+				} })
+			};
+		}
+	});
+	const go = providers[0];
+	assert.equal(go.status, "ok");
+	assert.deepEqual(go.windows.map((window) => [window.kind, window.usedPercent]), [["session", 9], ["weekly", 12], ["monthly", 6]]);
+	assert.equal(calls[0].url, "https://opencode.ai/inference/go/v1/usage");
+	assert.equal(calls[0].init.headers.authorization, `Bearer ${secret}`);
+	assert.equal(JSON.stringify(go).includes(secret), false, "API key must not cross the module interface");
+	console.log("OpenCode Go Bearer endpoint normalization ok");
+}
+
+{
+	const calls = [];
+	const secret = "super-secret-cookie";
+	const providers = await collectSubscriptions(credentials({
+		OPENCODE_GO_AUTH_COOKIE: secret,
+		OPENCODE_GO_WORKSPACE_ID: "https://opencode.ai/workspace/wrk_TEST/go"
+	}), {}, {
+		...noLocalAuth,
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			return {
+				ok: true,
+				status: 200,
+				text: async () => JSON.stringify({
+					rollingUsage: { usagePercent: 12, resetInSec: 3600 },
+					weeklyUsage: { usagePercent: 34, resetInSec: 86400 },
+					monthlyUsage: { usagePercent: 56, resetInSec: 2592000 }
+				})
+			};
+		}
+	});
+	const go = providers[0];
+	assert.equal(go.status, "ok");
+	assert.deepEqual(go.windows.map((window) => [window.kind, window.usedPercent]), [["session", 12], ["weekly", 34], ["monthly", 56]]);
+	assert.equal(calls[0].url, "https://opencode.ai/workspace/wrk_TEST/go");
+	assert.equal(calls[0].init.headers.cookie, `auth=${secret}`);
+	assert.equal(JSON.stringify(go).includes(secret), false, "cookie must not cross the module interface");
+	console.log("OpenCode Go dashboard normalization ok");
+}
+
+{
+	const calls = [];
+	const providers = await collectSubscriptions(credentials({}), {}, {
+		homedir: () => "/users/demo",
+		readFile: async (path) => {
+			assert.equal(String(path).replaceAll("\\", "/"), "/users/demo/.local/share/opencode/auth.json");
+			return JSON.stringify({ "opencode-go": { type: "api", key: "local-opencode-key" } });
+		},
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push(String(url));
+			assert.equal(init.headers.authorization, "Bearer local-opencode-key");
+			return { ok: true, status: 200, json: async () => ({ usage: { rolling: { percent: 1 }, weekly: { percent: 2 }, monthly: { percent: 3 } } }) };
+		}
+	});
+	assert.equal(providers[0].status, "ok");
+	assert.deepEqual(calls, ["https://opencode.ai/inference/go/v1/usage"]);
+	console.log("OpenCode auth.json fallback ok");
+}
+
+{
+	for (const status of [401, 403, 429, 500, 404, 405]) {
+		const calls = [];
+		const account = await collectSubscription("opencode-go", credentials({ OPENCODE_API_KEY: "new-dsh-key", OPENCODE_GO_API_KEY: "legacy-other-account",
+			OPENCODE_GO_AUTH_COOKIE: "another-cookie-account", OPENCODE_GO_WORKSPACE_ID: "wrk_OTHER" }), {}, {
+			...noLocalAuth, now: () => now,
+			fetch: async (url, init) => {
+				calls.push(String(url));
+				assert.equal(init.headers.authorization, "Bearer new-dsh-key");
+				if (String(url).includes("/inference/")) return { ok: false, status };
+				return { ok: true, status: 200, json: async () => ({ usage: { rolling: { percent: 0.5 }, weekly: { percent: 2 } } }) };
+			}
+		});
+		assert.equal(calls.length, status === 404 || status === 405 ? 2 : 1);
+		if (calls.length === 2) {
+			assert.equal(calls[1], "https://opencode.ai/zen/go/v1/usage");
+			assert.equal(account.status, "ok");
+			assert.equal(account.windows[0].usedPercent, 0.5, "API percentages below 1 are not ratios");
+		} else assert.equal(account.status, status === 429 ? "rate-limited" : status === 500 ? "unavailable" : "unauthorized");
+	}
+	console.log("OpenCode migrated endpoint compatibility, current key precedence and no authentication retry ok");
+}
+
+{
+	const calls = [];
+	const secret = "zai-secret-key";
+	const providers = await collectSubscriptions(credentials({ ZAI_API_KEY: secret }), {}, {
+		...noLocalAuth,
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			if (String(url).endsWith("/quota/limit")) {
+				return {
+					ok: true,
+					status: 200,
+					json: async () => ({ data: { limits: [
+						{ type: "TOKENS_LIMIT", unit: 3, number: 5, usage: 1000, currentValue: 120, remaining: 850 },
+						{ type: "CREDIT_LIMIT", unit: 6, number: 1, percentage: 25 },
+						{ type: "TIME_LIMIT", remaining: 9, percentage: 40 }
+					] } })
+				};
+			}
+			return { ok: true, status: 200, json: async () => ({ data: [{ product_name: "GLM Coding Pro", next_renew_time: "2026-09-01T00:00:00Z" }] }) };
+		}
+	});
+	const zai = providers[1];
+	assert.equal(zai.status, "ok");
+	assert.equal(zai.plan, "GLM Coding Pro");
+	assert.deepEqual(zai.windows.map((window) => [window.kind, Math.round(window.usedPercent)]), [["session", 15], ["weekly", 25], ["billing", 40]]);
+	assert.deepEqual(calls.map((call) => call.url), [
+		"https://api.z.ai/api/monitor/usage/quota/limit",
+		"https://api.z.ai/api/biz/subscription/list"
+	]);
+	assert.ok(calls.every((call) => call.init.headers.authorization === secret));
+	assert.equal(JSON.stringify(zai).includes(secret), false, "API key must not cross the module interface");
+	console.log("Z.ai quota normalization ok");
+}
+
+{
+	const providers = await collectSubscriptions(credentials({ ZAI_API_KEY: "x", ZAI_API_REGION: "cn" }), {}, {
+		...noLocalAuth,
+		now: () => now,
+		fetch: async (url) => {
+			assert.match(String(url), /^https:\/\/open\.bigmodel\.cn\//);
+			return { ok: false, status: 401, json: async () => ({}) };
+		}
+	});
+	assert.equal(providers[1].region, "bigmodel-cn");
+	assert.equal(providers[1].status, "unauthorized");
+	console.log("Z.ai region and auth error mapping ok");
+}
+
+{
+	const secret = "kimi-secret";
+	const kimi = await collectSubscription("kimi", credentials({ KIMI_API_KEY: secret }), {}, {
+		now: () => now,
+		fetch: async (url, init) => {
+			assert.equal(String(url), "https://api.kimi.com/coding/v1/usages");
+			assert.equal(init.headers.authorization, `Bearer ${secret}`);
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({
+					plan: "Coding Pro",
+					limits: [{ detail: { limit: 1000, remaining: 750, resetTime: "2026-08-14T05:00:00Z" } }],
+					usage: { limit: 10000, remaining: 6000, resetTime: "2026-08-17T00:00:00Z" }
+				})
+			};
+		}
+	});
+	assert.equal(kimi.status, "ok");
+	assert.equal(kimi.plan, "Coding Pro");
+	assert.deepEqual(kimi.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 25, 75],
+		["weekly", 40, 60]
+	]);
+	assert.equal(JSON.stringify(kimi).includes(secret), false);
+	console.log("Kimi token plan normalization ok");
+}
+
+{
+	const secret = "minimax-secret";
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: secret, MINIMAX_API_REGION: "cn" }), {}, {
+		now: () => now,
+		fetch: async (url, init) => {
+			assert.equal(String(url), "https://www.minimaxi.com/v1/token_plan/remains");
+			assert.equal(init.headers.authorization, `Bearer ${secret}`);
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({
+					base_resp: { status_code: 0 },
+					model_remains: [{
+						model_name: "general",
+						current_interval_remaining_percent: 82,
+						remains_time: 3600000,
+						current_weekly_status: 1,
+						current_weekly_remaining_percent: 45,
+						weekly_remains_time: 604800000
+					}]
+				})
+			};
+		}
+	});
+	assert.equal(minimax.status, "ok");
+	assert.equal(minimax.region, "cn");
+	assert.deepEqual(minimax.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 18, 82],
+		["weekly", 55, 45]
+	]);
+	assert.deepEqual(minimax.windows.map((window) => window.resetsAt), [
+		"2026-08-14T01:00:00.000Z",
+		"2026-08-21T00:00:00.000Z"
+	]);
+	assert.equal(JSON.stringify(minimax).includes(secret), false);
+	console.log("MiniMax token plan normalization ok");
+}
+
+{
+	const calls = [];
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			if (calls.length === 1) return { ok: false, status: 404, json: async () => ({}) };
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({ model_remains: [{ model_name: "general", current_interval_remaining_percent: 90, current_weekly_status: 0 }] })
+			};
+		}
+	});
+	assert.equal(minimax.status, "ok");
+	assert.deepEqual(minimax.windows.map((window) => [window.kind, window.remainingPercent]), [["session", 90]]);
+	assert.deepEqual(calls, [
+		"https://www.minimax.io/v1/token_plan/remains",
+		"https://api.minimax.io/v1/token_plan/remains"
+	]);
+	console.log("MiniMax official endpoint and api-host fallback ok");
+}
+
+{
+	const calls = [];
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			if (calls.length < 3) return { ok: false, status: 404, json: async () => ({}) };
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({ model_remains: [{ model_name: "general", current_interval_remaining_percent: 88 }] })
+			};
+		}
+	});
+	assert.equal(minimax.status, "ok");
+	assert.deepEqual(calls, [
+		"https://www.minimax.io/v1/token_plan/remains",
+		"https://api.minimax.io/v1/token_plan/remains",
+		"https://api.minimax.io/v1/api/openplatform/coding_plan/remains"
+	]);
+	console.log("MiniMax legacy coding-plan fallback ok");
+}
+
+{
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async () => ({
+			ok: true,
+			status: 200,
+			json: async () => ({ model_remains: [{ model_name: "video", current_interval_remaining_percent: 99 }] })
+		})
+	});
+	assert.equal(minimax.status, "invalid-response");
+	assert.deepEqual(minimax.windows, []);
+	assert.equal(minimax.reason, "model_remains has no general/chat-model entry");
+	console.log("MiniMax ignores non-chat model quotas ok");
+}
+
+{
+	// Newer payload versions name the chat entry after the model itself
+	// (e.g. "MiniMax-M3") instead of the "general" resource group (#14).
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async () => ({
+			ok: true,
+			status: 200,
+			json: async () => ({
+				base_resp: { status_code: 0, status_msg: "success" },
+				model_remains: [
+					{ model_name: "video", current_interval_remaining_percent: 66, current_weekly_remaining_percent: 95 },
+					{
+						model_name: "MiniMax-M3",
+						current_interval_remaining_percent: 80,
+						remains_time: 3600000,
+						current_weekly_remaining_percent: 45,
+						weekly_remains_time: 604800000
+					}
+				]
+			})
+		})
+	});
+	assert.equal(minimax.status, "ok");
+	assert.deepEqual(minimax.windows.map((window) => [window.kind, window.remainingPercent]), [
+		["session", 80],
+		["weekly", 45]
+	]);
+	console.log("MiniMax model-named chat entry ok");
+}
+
+{
+	// Window status semantics: 1 = normal, 2 = exhausted, 3 = unlimited.
+	// Exhausted/unlimited windows must still render instead of disappearing (#14).
+	const fetchFor = (entry) => async () => ({ ok: true, status: 200, json: async () => ({ model_remains: [{ model_name: "general", ...entry }] }) });
+	const exhausted = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: fetchFor({ current_interval_remaining_percent: 12, current_weekly_status: 2 })
+	});
+	assert.deepEqual(exhausted.windows.map((window) => [window.kind, window.remainingPercent]), [
+		["session", 12],
+		["weekly", 0]
+	]);
+	const unlimited = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: fetchFor({ current_interval_status: 3, current_weekly_status: 1, current_weekly_remaining_percent: 64 })
+	});
+	assert.deepEqual(unlimited.windows.map((window) => [window.kind, window.remainingPercent]), [
+		["session", 100],
+		["weekly", 64]
+	]);
+	const legacyCounters = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: fetchFor({ current_interval_total_count: 1500, current_interval_usage_count: 300, current_weekly_remaining_percent: 70 })
+	});
+	assert.deepEqual(legacyCounters.windows.map((window) => [window.kind, window.remainingPercent]), [
+		["session", 80],
+		["weekly", 70]
+	]);
+	console.log("MiniMax window status and counter fallbacks ok");
+}
+
+{
+	// Upstream business errors surface as invalid-response with a safe reason.
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async () => ({
+			ok: true,
+			status: 200,
+			json: async () => ({ base_resp: { status_code: 2057, status_msg: "not a coding plan key" } })
+		})
+	});
+	assert.equal(minimax.status, "invalid-response");
+	assert.deepEqual(minimax.windows, []);
+	assert.equal(minimax.reason, "base_resp status_code 2057: not a coding plan key");
+	console.log("MiniMax base_resp error reason ok");
+}
+
+{
+	// A CN coding-plan key rejected by the global hosts is retried against the
+	// CN hosts instead of being reported as unrecognized quota data.
+	const calls = [];
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "cn-plan-key" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			const cn = String(url).includes("minimaxi.com");
+			return {
+				ok: true,
+				status: 200,
+				json: async () => cn
+					? { base_resp: { status_code: 0, status_msg: "success" }, model_remains: [{ model_name: "general", current_interval_remaining_percent: 61, current_weekly_remaining_percent: 80 }] }
+					: { base_resp: { status_code: 2049, status_msg: "invalid api key" } }
+			};
+		}
+	});
+	assert.equal(minimax.status, "ok");
+	assert.equal(minimax.region, "cn");
+	assert.deepEqual(minimax.windows.map((window) => [window.kind, window.remainingPercent]), [["session", 61], ["weekly", 80]]);
+	assert.deepEqual(calls, [
+		"https://www.minimax.io/v1/token_plan/remains",
+		"https://www.minimaxi.com/v1/token_plan/remains"
+	]);
+	console.log("MiniMax cross-region retry on rejected credential ok");
+}
+
+{
+	// A credential the upstream rejects in every region is an authority
+	// problem, not a response that could not be parsed. The cross-region
+	// fallback only exists for routes with no region signal; a declared
+	// region (below and above) pins the request to its own hosts.
+	const calls = [];
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "revoked-key" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return { ok: true, status: 200, json: async () => ({ base_resp: { status_code: 1004, status_msg: "login fail" } }) };
+		}
+	});
+	assert.equal(minimax.status, "unauthorized");
+	assert.deepEqual(minimax.windows, []);
+	assert.equal(minimax.reason, "base_resp status_code 1004: login fail");
+	assert.equal(calls.length, 2, "one probe per region");
+	console.log("MiniMax credential rejected in both regions is unauthorized ok");
+}
+
+{
+	// A declared region pins the credential to that region's hosts: no
+	// credential rejection may leak the key to the other region's domains.
+	const globalCalls = [];
+	const globalResult = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "global-rejected" }), { region: "global" }, {
+		now: () => now,
+		fetch: async (url) => {
+			globalCalls.push(String(url));
+			return { ok: true, status: 200, json: async () => ({ base_resp: { status_code: 2049, status_msg: "invalid api key" } }) };
+		}
+	});
+	assert.equal(globalResult.status, "unauthorized");
+	assert.equal(globalResult.region, "global");
+	assert.deepEqual(globalCalls, [
+		"https://www.minimax.io/v1/token_plan/remains"
+	], "a declared global region never touches CN hosts");
+	const cnCalls = [];
+	const cnResult = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "cn-rejected" }), { region: "cn" }, {
+		now: () => now,
+		fetch: async (url) => {
+			cnCalls.push(String(url));
+			return { ok: true, status: 200, json: async () => ({ base_resp: { status_code: 1004, status_msg: "login fail" } }) };
+		}
+	});
+	assert.equal(cnResult.status, "unauthorized");
+	assert.equal(cnResult.region, "cn");
+	assert.deepEqual(cnCalls, ["https://www.minimaxi.com/v1/token_plan/remains"], "a declared CN region never touches global hosts");
+	console.log("MiniMax declared region pins hosts and skips the cross-region probe ok");
+}
+
+{
+	// Route inference is a fallback. The monitor and the configured region
+	// remain deliberate choices, and every chosen region pins the credential.
+	const cases = [
+		{ name: "inferred global", options: { inferredRegion: "global" }, region: "global" },
+		{ name: "inferred CN", options: { inferredRegion: "cn" }, region: "cn" },
+		{ name: "configured CN beats inferred global", options: { inferredRegion: "global" }, configured: "cn", region: "cn" },
+		{ name: "configured global beats inferred CN", options: { inferredRegion: "cn" }, configured: "global", region: "global" },
+		{ name: "monitor CN beats configured global", options: { region: "cn", inferredRegion: "global" }, configured: "global", region: "cn" },
+		{ name: "monitor global beats configured CN", options: { region: "global", inferredRegion: "cn" }, configured: "cn", region: "global" },
+		{ name: "empty configured region keeps inference", options: { inferredRegion: "cn" }, configured: "   ", region: "cn" },
+		{ name: "trimmed configured region", options: { inferredRegion: "global" }, configured: " cn ", region: "cn" }
+	];
+	for (const test of cases) {
+		for (const failure of [null, { http: 401 }, { code: 1004 }, { code: 2049 }]) {
+			const calls = [];
+			const values = { MINIMAX_API_KEY: "region-mock-secret", ...(test.configured === void 0 ? {} : { MINIMAX_API_REGION: test.configured }) };
+			const result = await collectSubscription("minimax", credentials(values), test.options, {
+				now: () => now,
+				fetch: async (url, init) => {
+					calls.push(String(url));
+					assert.equal(init.headers.authorization, "Bearer region-mock-secret", test.name);
+					return {
+						ok: failure?.http === void 0,
+						status: failure?.http ?? 200,
+						json: async () => failure === null
+							? { base_resp: { status_code: 0 }, model_remains: [{ model_name: "general", current_interval_remaining_percent: 55 }] }
+							: { base_resp: { status_code: failure.code ?? 0 } }
+					};
+				}
+			});
+			const host = test.region === "cn" ? "www.minimaxi.com" : "www.minimax.io";
+			assert.equal(result.status, failure === null ? "ok" : "unauthorized", test.name);
+			assert.equal(result.region, test.region, test.name);
+			assert.deepEqual(calls, [`https://${host}/v1/token_plan/remains`], `${test.name}: never probe the other region`);
+			assert.equal(JSON.stringify(result).includes("region-mock-secret"), false, test.name);
+		}
+	}
+	console.log("MiniMax monitor/configured/inferred region precedence and rejection pinning ok");
+}
+
+{
+	// An explicit usage endpoint is the caller's answer for the region; a
+	// credential rejection there must not probe the other region's hosts.
+	const calls = [];
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), { baseURL: "https://quota.example.com/v1/remains" }, {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return { ok: true, status: 200, json: async () => ({ base_resp: { status_code: 2049, status_msg: "invalid api key" } }) };
+		}
+	});
+	assert.equal(minimax.status, "unauthorized");
+	assert.deepEqual(calls, ["https://quota.example.com/v1/remains"]);
+	console.log("MiniMax explicit base URL skips the cross-region probe ok");
+}
+
+{
+	// A non-JSON (HTML) reply from the www host falls through to the api host.
+	const calls = [];
+	const minimax = await collectSubscription("minimax", credentials({ MINIMAX_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			if (calls.length === 1) return { ok: true, status: 200, json: async () => { throw new SyntaxError("Unexpected token <"); } };
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({ model_remains: [{ model_name: "general", current_interval_remaining_percent: 77, current_weekly_remaining_percent: 55 }] })
+			};
+		}
+	});
+	assert.equal(minimax.status, "ok");
+	assert.deepEqual(calls, [
+		"https://www.minimax.io/v1/token_plan/remains",
+		"https://api.minimax.io/v1/token_plan/remains"
+	]);
+	console.log("MiniMax non-JSON host fallback ok");
+}
+
+{
+	const kimi = await collectSubscription("kimi", credentials({ KIMI_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async () => ({
+			ok: true,
+			status: 200,
+			json: async () => { throw new SyntaxError("bad json"); }
+		})
+	});
+	assert.equal(kimi.status, "invalid-response");
+	assert.deepEqual(kimi.windows, []);
+	console.log("Token-plan invalid JSON classification ok");
+}
+
+{
+	// Ollama Cloud: normal limits.session.usage + limits.weekly.usage parsing.
+	const secret = "sk-ollama-test";
+	const calls = [];
+	const ollama = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: secret }), {}, {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			return {
+				ok: true,
+				status: 200,
+				json: async () => ({ limits: { session: { usage: 0.3 }, weekly: { usage: 0.08 } } })
+			};
+		}
+	});
+	assert.equal(ollama.status, "ok");
+	assert.equal(ollama.mode, "subscription");
+	assert.deepEqual(ollama.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 30, 70],
+		["weekly", 8, 92]
+	]);
+	assert.equal(calls[0].url, "https://ollama.com/api/usage");
+	assert.equal(calls[0].init.headers.authorization, "Bearer " + secret);
+	assert.equal(JSON.stringify(ollama).includes(secret), false, "API key must not cross the module interface");
+	console.log("Ollama normal window parsing ok");
+}
+
+{
+	// Ollama Cloud: 0 / 1 / negative / out-of-range / string ratios.
+	const fetchFor = (session, weekly) => async () => ({
+		ok: true,
+		status: 200,
+		json: async () => ({ limits: { session: { usage: session }, weekly: { usage: weekly } } })
+	});
+	const zero = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: "x" }), {}, { now: () => now, fetch: fetchFor(0, 0) });
+	assert.deepEqual(zero.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 0, 100],
+		["weekly", 0, 100]
+	]);
+	const full = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: "x" }), {}, { now: () => now, fetch: fetchFor(1, 0.5) });
+	assert.deepEqual(full.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 100, 0],
+		["weekly", 50, 50]
+	]);
+	// Negative clamps to 0; out-of-range (>1) clamps to a full bar instead of dropping.
+	const clamped = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: "x" }), {}, { now: () => now, fetch: fetchFor(-0.2, 1.4) });
+	assert.deepEqual(clamped.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 0, 100],
+		["weekly", 100, 0]
+	]);
+	const stringRatio = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: "x" }), {}, { now: () => now, fetch: fetchFor("0.25", "0.05") });
+	assert.deepEqual(stringRatio.windows.map((window) => [window.kind, window.usedPercent]), [
+		["session", 25],
+		["weekly", 5]
+	]);
+	console.log("Ollama ratio edge cases ok");
+}
+
+{
+	// Ollama Cloud: missing limits / non-object body -> invalid-response.
+	const missing = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async () => ({ ok: true, status: 200, json: async () => ({}) })
+	});
+	assert.equal(missing.status, "invalid-response");
+	assert.deepEqual(missing.windows, []);
+	const nonObject = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async () => ({ ok: true, status: 200, json: async () => "not-an-object" })
+	});
+	assert.equal(nonObject.status, "invalid-response");
+	assert.deepEqual(nonObject.windows, []);
+	console.log("Ollama invalid-response classification ok");
+}
+
+{
+	// Ollama Cloud: HTTP status mapping.
+	for (const [httpStatus, providerStatus] of [[401, "unauthorized"], [403, "unauthorized"], [429, "rate-limited"], [500, "unavailable"], [503, "unavailable"]]) {
+		const account = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: "x" }), {}, {
+			now: () => now,
+			fetch: async () => ({ ok: false, status: httpStatus, json: async () => ({}) })
+		});
+		assert.equal(account.status, providerStatus, "HTTP " + httpStatus + " should map to " + providerStatus);
+	}
+	console.log("Ollama HTTP status mapping ok");
+}
+
+{
+	// Ollama Cloud: missing credential -> not-configured with the ref listed.
+	const account = await collectSubscription("ollama", credentials({}), {}, {
+		now: () => now,
+		fetch: async () => { throw new Error("must not fetch without a credential"); }
+	});
+	assert.equal(account.status, "not-configured");
+	assert.deepEqual(account.missingCredentials, [subscriptionCredentialRefs.ollamaApiKey]);
+	console.log("Ollama missing credential is not-configured ok");
+}
+
+{
+	// Ollama Cloud: real captured payload shape (2026-08-20 live response).
+	// Guards against circular verification: the parser must handle the actual
+	// upstream shape, not just hand-crafted JSON that mirrors the assumption.
+	const realPayload = {
+		activity: { cost: "0.00000", period: { type: "last_4_weeks", starting_at: "2026-07-27T00:00:00Z", ending_at: "2026-08-20T18:39:14.280986854Z" }, models: [] },
+		limits: {
+			session: { usage: 0.276, models: [{ name: "deepseek-v4-flash:0731", request_count: 670 }, { name: "web search", request_count: 1 }] },
+			weekly: { usage: 0.078, models: [{ name: "deepseek-v4-flash:0731", request_count: 1158 }] }
+		}
+	};
+	const real = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: "x" }), {}, {
+		now: () => now,
+		fetch: async () => ({ ok: true, status: 200, json: async () => realPayload })
+	});
+	assert.equal(real.status, "ok");
+	assert.deepEqual(real.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 27.6, 72.4],
+		["weekly", 7.8, 92.2]
+	]);
+	console.log("Ollama real captured payload parses ok");
+}
+
+{
+	// Ollama Cloud: custom usage base URL override is honored.
+	const calls = [];
+	const account = await collectSubscription("ollama", credentials({ OLLAMA_API_KEY: "x" }), { baseURL: "https://ollama.example.com" }, {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return { ok: true, status: 200, json: async () => ({ limits: { session: { usage: 0.1 }, weekly: { usage: 0.2 } } }) };
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(calls, ["https://ollama.example.com/api/usage"]);
+	console.log("Ollama custom usage base URL ok");
+}
+
+{
+	// Command Code: a real captured /alpha/billing/credits + /alpha/usage/summary
+	// + /alpha/billing/subscriptions shape (2026-09-28 live response) becomes
+	// windows plus a monetary credit pool.
+	const secret = "user_commandcode_secret";
+	const calls = [];
+	const account = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: secret }), {}, {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			if (String(url).endsWith("/alpha/billing/credits")) {
+				return {
+					ok: true,
+					status: 200,
+					json: async () => ({
+						credits: { belowThreshold: false, creditThreshold: 0, monthlyCredits: 69.716263802, purchasedCredits: 0, freeCredits: 0 },
+						windowLimits: {
+							limited: true,
+							exceeded: null,
+							fiveHour: { used: 0.283736198, cap: 14, exceeded: false, resetAt: now + 5 * 3600000 },
+							weekly: { used: 0.283736198, cap: 35, exceeded: false, resetAt: now + 7 * 86400000 }
+						},
+						sandboxAccess: false,
+						sandboxMinutes: null
+					})
+				};
+			}
+			if (String(url).endsWith("/alpha/usage/summary")) {
+				return {
+					ok: true,
+					status: 200,
+					json: async () => ({ totalCount: 75, totalCost: 0.235832552, totalCredits: 0.235832552, totalMonthlyCredits: 0.235832552, totalTokens: 4679269 })
+				};
+			}
+			return { ok: true, status: 200, json: async () => ({ success: true, data: { planId: "individual-goat", status: "active", currentPeriodEnd: "2026-10-01T00:00:00.000Z" } }) };
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.mode, "subscription");
+	assert.equal(account.plan, "GOAT");
+	// Three windows, matching what a subscription card renders: the 5-hour and
+	// weekly money caps plus the monthly credit pool.
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 2, 98],
+		["weekly", 0.8, 99.2],
+		["monthly", 0.3, 99.7]
+	]);
+	assert.deepEqual(account.windows.map((window) => window.resetsAt), [
+		new Date(now + 5 * 3600000).toISOString(),
+		new Date(now + 7 * 86400000).toISOString(),
+		"2026-10-01T00:00:00.000Z"
+	]);
+	assert.equal(account.credits.remaining, 69.716263802);
+	assert.equal(account.credits.used, 0.235832552);
+	assert.equal(account.credits.currency, "USD");
+	assert.equal(account.credits.unlimited, false);
+	assert.deepEqual(account.credits.breakdown, { granted: 0, toppedUp: 0 });
+	assert.deepEqual(calls.map((call) => call.url), [
+		"https://api.commandcode.ai/alpha/billing/credits",
+		"https://api.commandcode.ai/alpha/usage/summary",
+		"https://api.commandcode.ai/alpha/billing/subscriptions"
+	]);
+	assert.ok(calls.every((call) => call.init.headers.authorization === `Bearer ${secret}`));
+	assert.ok(calls.every((call) => call.init.headers["x-command-code-version"] === commandCodeDefaultVersion), "the account surface expects the CLI version header");
+	assert.equal(JSON.stringify(account).includes(secret), false, "API key must not cross the module interface");
+	console.log("Command Code account normalization ok");
+}
+
+{
+	// Command Code: bought and granted credits are separate pools from the
+	// plan's monthly allowance, so they must not widen the monthly bar's
+	// denominator: 70 left of the allowance with 1 spent from it is 1/71 even
+	// when 20 bought and 10 granted credits sit beside it (dividing by
+	// 100 + 1 would report a tenth of the real consumption).
+	const account = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/alpha/billing/credits")) {
+				return { ok: true, status: 200, json: async () => ({ credits: { monthlyCredits: 70, purchasedCredits: 20, freeCredits: 10 }, windowLimits: { limited: true, fiveHour: { used: 7, cap: 14 }, weekly: { used: 14, cap: 35 } } }) };
+			}
+			if (String(url).endsWith("/alpha/usage/summary")) {
+				return { ok: true, status: 200, json: async () => ({ totalCount: 5, totalCost: 1, totalCredits: 1, totalMonthlyCredits: 1, totalPurchasedCredits: 0, totalFreeCredits: 0, totalTokens: 100 }) };
+			}
+			return { ok: true, status: 200, json: async () => ({ success: true, data: { planId: "individual-goat", status: "active", currentPeriodEnd: "2026-10-01T00:00:00.000Z" } }) };
+		}
+	});
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent, window.remainingPercent]), [
+		["session", 50, 50],
+		["weekly", 40, 60],
+		["monthly", 1.4, 98.6]
+	], "the monthly bar divides the monthly pool by itself");
+	// The balance stays every pool at once, with its rows still adding up.
+	assert.equal(account.credits.remaining, 100);
+	assert.equal(account.credits.used, 1);
+	assert.equal(account.credits.total, 101);
+	assert.deepEqual(account.credits.breakdown, { granted: 10, toppedUp: 20 });
+	console.log("Command Code monthly bar ignores bought and granted credits ok");
+}
+
+{
+	// Command Code: the wallet's rows are the aggregate pair, not the monthly
+	// counter — with the two disagreeing (5 spent across the pools, none of it
+	// from the monthly allowance) the bar reads 0% while the rows read 5.
+	const account = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/alpha/billing/credits")) {
+				return { ok: true, status: 200, json: async () => ({ credits: { monthlyCredits: 70, purchasedCredits: 20, freeCredits: 10 }, windowLimits: { limited: true, fiveHour: { used: 7, cap: 14 } } }) };
+			}
+			if (String(url).endsWith("/alpha/usage/summary")) {
+				return { ok: true, status: 200, json: async () => ({ totalCount: 5, totalCost: 5, totalCredits: 5, totalMonthlyCredits: 0, totalPurchasedCredits: 4, totalFreeCredits: 1, totalTokens: 100 }) };
+			}
+			return { ok: true, status: 200, json: async () => ({ success: true, data: { planId: "individual-goat", status: "active" } }) };
+		}
+	});
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent]), [["session", 50], ["monthly", 0]], "the bar follows the monthly counter alone");
+	assert.deepEqual([account.credits.remaining, account.credits.used, account.credits.total], [100, 5, 105], "the rows follow the aggregate counter");
+	console.log("Command Code wallet rows follow the aggregate counter ok");
+}
+
+{
+	// Command Code: `totalCredits` is the aggregate over every pool, so it can
+	// never stand in for the monthly denominator. A summary that states the
+	// aggregate but not `totalMonthlyCredits` leaves the monthly bar out rather
+	// than dividing this pool's remainder by other pools' spend.
+	const account = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/alpha/billing/credits")) {
+				return { ok: true, status: 200, json: async () => ({ credits: { monthlyCredits: 70, purchasedCredits: 20, freeCredits: 10 }, windowLimits: { limited: true, fiveHour: { used: 7, cap: 14 } } }) };
+			}
+			if (String(url).endsWith("/alpha/usage/summary")) {
+				return { ok: true, status: 200, json: async () => ({ totalCount: 5, totalCost: 3, totalCredits: 3, totalTokens: 100 }) };
+			}
+			return { ok: true, status: 200, json: async () => ({ success: true, data: { planId: "individual-goat", status: "active" } }) };
+		}
+	});
+	assert.deepEqual(account.windows.map((window) => window.kind), ["session"], "no monthly counter, no monthly bar");
+	assert.deepEqual([account.credits.remaining, account.credits.used, account.credits.total], [100, 3, 103]);
+	console.log("Command Code monthly bar needs the monthly counter ok");
+}
+
+{
+	// Command Code: the two derived facts have different needs. A summary that
+	// states only the monthly counter still draws the monthly bar (90 left of
+	// the allowance, 10 spent from it), while the wallet's rows stay out
+	// because no aggregate states what the period used across every pool.
+	const account = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/alpha/billing/credits")) {
+				return { ok: true, status: 200, json: async () => ({ credits: { monthlyCredits: 90, purchasedCredits: 0, freeCredits: 0 }, windowLimits: { limited: true, fiveHour: { used: 7, cap: 14 } } }) };
+			}
+			if (String(url).endsWith("/alpha/usage/summary")) {
+				return { ok: true, status: 200, json: async () => ({ totalCount: 5, totalMonthlyCredits: 10, totalTokens: 100 }) };
+			}
+			return { ok: true, status: 200, json: async () => ({ success: true, data: { planId: "individual-goat", status: "active" } }) };
+		}
+	});
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent]), [["session", 50], ["monthly", 10]], "the bar needs only the monthly counter");
+	assert.equal(account.credits.remaining, 90);
+	assert.equal(account.credits.used, void 0, "no aggregate, no wallet spend row");
+	assert.equal(account.credits.total, void 0, "no aggregate, no wallet total row");
+	console.log("Command Code wallet rows need the aggregate counter ok");
+}
+
+{
+	// Command Code gates its account surface by client version, so a monitor may
+	// claim one without waiting for a release — and only a version-shaped value
+	// is acceptable, because the header carries whatever it is given.
+	for (const version of ["1.72.1", "1.72", "1.72.1-beta.2", " 2.0.0 "]) {
+		assert.equal(isCommandCodeVersion(version), true, `${JSON.stringify(version)} is a version`);
+	}
+	for (const notVersion of ["", " ", "latest", "v1.72.1", "1", undefined, null, 1721]) {
+		assert.equal(isCommandCodeVersion(notVersion), false, `${JSON.stringify(notVersion)} is not a version`);
+	}
+	const calls = [];
+	const account = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), { commandCodeVersion: "9.9.9" }, {
+		now: () => now,
+		fetch: async (url, init) => {
+			calls.push({ url: String(url), init });
+			if (String(url).endsWith("/alpha/billing/credits")) {
+				return { ok: true, status: 200, json: async () => ({ credits: { monthlyCredits: 1, purchasedCredits: 0, freeCredits: 0 }, windowLimits: { limited: true, fiveHour: { used: 0, cap: 14 }, weekly: { used: 0, cap: 35 } } }) };
+			}
+			return { ok: true, status: 200, json: async () => ({ success: true, data: { planId: "individual-goat", status: "active" } }) };
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.ok(calls.length > 0);
+	assert.ok(calls.every((call) => call.init.headers["x-command-code-version"] === "9.9.9"), "a monitor override reaches every account request");
+	console.log("Command Code client version override ok");
+}
+
+{
+	// Command Code: a monitor that names the chat base must still reach the
+	// account surface one level above it.
+	const calls = [];
+	const account = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), { baseURL: "https://api.commandcode.ai/provider/v1" }, {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return { ok: true, status: 200, json: async () => ({ credits: { monthlyCredits: 1 }, windowLimits: { limited: true } }) };
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.deepEqual(calls.slice(0, 2), [
+		"https://api.commandcode.ai/alpha/billing/credits",
+		"https://api.commandcode.ai/alpha/usage/summary"
+	]);
+	console.log("Command Code chat-base root normalization ok");
+}
+
+{
+	// Command Code: an explicit account root (self-hosted or proxied) is honored.
+	const calls = [];
+	await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), { baseURL: "https://cc.example.com/" }, {
+		now: () => now,
+		fetch: async (url) => {
+			calls.push(String(url));
+			return { ok: true, status: 200, json: async () => ({ credits: { monthlyCredits: 1 }, windowLimits: { limited: true } }) };
+		}
+	});
+	assert.deepEqual(calls.slice(0, 2), [
+		"https://cc.example.com/alpha/billing/credits",
+		"https://cc.example.com/alpha/usage/summary"
+	]);
+	console.log("Command Code custom account root ok");
+}
+
+{
+	// Command Code: the plan label and the period spend are optional. Losing both
+	// must leave the credits and the windows usable instead of failing the query.
+	const account = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/alpha/billing/credits")) {
+				return { ok: true, status: 200, json: async () => ({ credits: { monthlyCredits: 12.5, purchasedCredits: 4, freeCredits: 1 }, windowLimits: { limited: true, fiveHour: { used: 7, cap: 14 }, weekly: { used: 35, cap: 35 } } }) };
+			}
+			if (String(url).endsWith("/alpha/usage/summary")) throw new Error("network down");
+			return { ok: true, status: 200, json: async () => { throw new SyntaxError("not json"); } };
+		}
+	});
+	assert.equal(account.status, "ok");
+	assert.equal(account.plan, void 0);
+	// Without the summary there is no period spend, so there is no monthly
+	// denominator to compute and no third bar to draw.
+	assert.deepEqual(account.windows.map((window) => [window.kind, window.usedPercent]), [["session", 50], ["weekly", 100]]);
+	assert.equal(account.credits.remaining, 17.5);
+	assert.equal(account.credits.used, void 0);
+	assert.equal(account.credits.total, void 0);
+	assert.deepEqual(account.credits.breakdown, { granted: 1, toppedUp: 4 });
+	console.log("Command Code optional endpoint degradation ok");
+}
+
+{
+	// Command Code: a plan id is displayed with the vendor's own tier spelling,
+	// matched by longest prefix so `individual-pro-v1` never answers as Pro v1.
+	const planFor = async (planId) => (await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), {}, {
+		now: () => now,
+		fetch: async (url) => {
+			if (String(url).endsWith("/alpha/billing/credits")) return { ok: true, status: 200, json: async () => ({ credits: { monthlyCredits: 1 }, windowLimits: { limited: true, fiveHour: { used: 1, cap: 2 } } }) };
+			if (String(url).endsWith("/alpha/usage/summary")) return { ok: false, status: 500, json: async () => ({}) };
+			return { ok: true, status: 200, json: async () => ({ data: { planId } }) };
+		}
+	})).plan;
+	assert.equal(await planFor("individual-go"), "Go");
+	assert.equal(await planFor("individual-goat"), "GOAT");
+	assert.equal(await planFor("individual-pro-v1"), "Pro");
+	assert.equal(await planFor("individual-pro"), "Pro");
+	assert.equal(await planFor("individual-max"), "Max");
+	assert.equal(await planFor("teams-pro"), "Teams Pro");
+	assert.equal(await planFor("future-plan"), "future-plan", "an unknown plan id must stay readable, not become a guess");
+	console.log("Command Code plan naming ok");
+}
+
+{
+	// Command Code: a payload with nothing readable is invalid-response with a
+	// safe reason, and the HTTP status mapping stays the shared one.
+	const empty = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), {}, {
+		now: () => now,
+		fetch: async (url) => String(url).endsWith("/alpha/billing/credits")
+			? { ok: true, status: 200, json: async () => ({ credits: {}, windowLimits: { limited: true } }) }
+			: { ok: false, status: 500, json: async () => ({}) }
+	});
+	assert.equal(empty.status, "invalid-response");
+	assert.deepEqual(empty.windows, []);
+	assert.equal(empty.credits, void 0);
+	assert.equal(empty.reason, "commandcode-billing-shape-unrecognized");
+
+	for (const [httpStatus, providerStatus] of [[401, "unauthorized"], [403, "unauthorized"], [429, "rate-limited"], [500, "unavailable"], [503, "unavailable"]]) {
+		const account = await collectSubscription("commandcode-goat", credentials({ COMMANDCODE_API_KEY: "user_x" }), {}, {
+			now: () => now,
+			fetch: async () => ({ ok: false, status: httpStatus, json: async () => ({}) })
+		});
+		assert.equal(account.status, providerStatus, "HTTP " + httpStatus + " should map to " + providerStatus);
+	}
+	console.log("Command Code invalid shape and HTTP status mapping ok");
+}
+
+{
+	// Command Code: no credential means no request at all.
+	const account = await collectSubscription("commandcode-goat", credentials({}), {}, {
+		now: () => now,
+		fetch: async () => { throw new Error("must not fetch without a credential"); }
+	});
+	assert.equal(account.status, "not-configured");
+	assert.deepEqual(account.missingCredentials, [subscriptionCredentialRefs.commandCodeApiKey]);
+	assert.deepEqual(account.windows, []);
+	console.log("Command Code missing credential is not-configured ok");
+}
+
+console.log("SUBSCRIPTION TESTS PASSED");

@@ -1,0 +1,2 @@
+# command: ls -l /sys/bus/platform/drivers/airoha-npu
+ls: /sys/bus/platform/drivers/airoha-npu: No such file or directory

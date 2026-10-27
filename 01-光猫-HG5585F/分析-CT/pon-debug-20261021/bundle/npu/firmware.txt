@@ -1,0 +1,2 @@
+# command: tr '\0' '\n' < /proc/device-tree/soc/npu@1e900000/firmware-name
+sh: can't open /proc/device-tree/soc/npu@1e900000/firmware-name: no such file

@@ -1,0 +1,41 @@
+==============================================================================
+FILE      ..\物料\可选-QWRT\QWRT-R26.10.18-airoha-an7581-fiberhome_hg5585f-ct-squashfs-sysupgrade.itb
+SIZE      42152775 bytes (0x2833347)
+SHA256    5053531f30dc9abc69e0e247e211a632204655d75df859c7ba31c0447450ae53
+FIT magic 0xd00dfeed  totalsize 4096 (0x1000)
+  off_dt_struct=0x38 size=0x4b4  off_dt_strings=0x4ec size=0x8e  version=17
+  NOTE: FIT totalsize covers the FIT structure block only when the
+        sub-images use absolute data-position offsets and are
+        concatenated after it (size on disk is much larger).
+
+IMAGES (3)
+  kernel-1   type=kernel     comp=gzip   pos=0x00001000 size=4579254 desc='ARM64 QWRT Linux-5.4.302'
+             load=0x8a000000 entry=0x8a000000
+             hash-1 algo=crc32  value=e2f48197
+             hash-2 algo=sha1   value=7cc94d68a1db37a00d7586159683a26c3f715b22
+  fdt-1      type=flat_dt    comp=none   pos=0x0045f000 size=14698 desc='ARM64 QWRT fiberhome_hg5585f-ct device tree blob'
+             hash-1 algo=crc32  value=a0ab8981
+             hash-2 algo=sha1   value=576ece700cadbfccf4a393a07883071dd9152243
+  rootfs-1   type=filesystem comp=none   pos=0x00463000 size=37552128 desc='ARM64 OpenWrt fiberhome_hg5585f-ct rootfs'
+             hash-1 algo=crc32  value=f6c4e405
+             hash-2 algo=sha1   value=581863549952af24f21902cbbcdacf4ebfc32bf3
+
+CONFIGURATIONS (1)
+  config@1 kernel=kernel-1 fdt=fdt-1 loadables=rootfs-1 desc='OpenWrt fiberhome_hg5585f-ct'
+
+EXTRACT / HASH VERIFY
+  fdt-1      -> extracted\qwrt-pkg\fdt-1.bin  14698 bytes  sha256=b56ae8c6de206a36...
+      crc32  OK   a0ab8981
+      sha1   OK   576ece700cadbfccf4a393a07883071dd9152243
+
+APPENDED SYSUPGRADE METADATA SCAN
+  found JSON at file offset 0x2833008 (tail 831 bytes from end)
+  JSON parsed OK, 282 bytes
+  ucert-ish marker after JSON: ucert (+187)
+
+  metadata_version : 1.1
+  compat_version   : 1.0
+  supported_devices: ["fiberhome,hg5585f-ct", "fiberhome,hg5585f-ct-usb-sfp"]
+  version          : dist=OpenWrt ver=25.12.3 rev=r7856-44e450dae4 target=airoha/an7581 board=fiberhome_hg5585f-ct
+
+WROTE JSON qwrt-fit.json
