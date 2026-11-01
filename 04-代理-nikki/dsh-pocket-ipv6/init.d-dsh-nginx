@@ -1,11 +1,22 @@
 #!/bin/sh /etc/rc.common
 # DSH Pocket IPv6 反代（独立于 nginx-ssl 包自带的 uci 配置，避免 80/443 端口冲突）
 # 部署位置：/etc/init.d/dsh-nginx
+#
+# ★ 2026-10-27 修复：/var 是 tmpfs，重启后 /var/lib/nginx 不存在，
+#   nginx 会因 mkdir("/var/lib/nginx/body") 失败而直接退出（表现为 3081 端口没监听）。
+#   所以启动前必须先建目录。
+# ★ 2026-11-01 增加：上游片段 /etc/dsh-nginx/upstream.conf（由 dsh-watchdog.sh 维护），
+#   缺失时补默认值，避免 include 缺失导致 nginx -t / 启动失败。
 USE_PROCD=1
 START=99
 STOP=10
 
 start_service() {
+    mkdir -p /var/lib/nginx/body /var/lib/nginx/proxy /var/lib/nginx/fastcgi \
+             /var/lib/nginx/uwsgi /var/lib/nginx/scgi /var/log
+    [ -f /etc/dsh-nginx/upstream.conf ] || \
+        echo 'server 192.168.31.218:3081 max_fails=2 fail_timeout=10s;' > /etc/dsh-nginx/upstream.conf
+    [ -f /etc/dsh-nginx/port ] || echo 3081 > /etc/dsh-nginx/port
     procd_open_instance
     procd_set_param command /usr/sbin/nginx -c /etc/dsh-nginx/nginx.conf -g "daemon off;"
     procd_set_param respawn 3600 5 5
