@@ -101,6 +101,7 @@ cp /root/bak-dsh-20261101/ddns.uci /etc/config/ddns
 
 - **Pocket 端口会漂**：DSH 默认 3081，启动时被占会 `+1..+9`；watchdog 5 分钟内自动纠正。若要立刻确认：`cat /etc/dsh-nginx/port`。
 - **探测必须用 curl**：PC 未监听端口会被 Windows 防火墙静默丢包，BusyBox `wget -T` 不覆盖 connect，会挂到 TCP 超时（2026-11-01 踩坑）。
+- **reload 后自检**：端口变更 reload 后做一次本地 HTTPS 探针（`Host` + `[::1]:3081`），非 200/302 自动 `restart` —— OpenSSL 偶发 `SSL_CTX_new` emerg 会让 reload 静默失效、旧 worker 继续用旧上游。
 - **DDNS 频率**：IP 只在重拨/重启变，轮询 30 分钟 + ifup 事件触发 + 12h 对账；`retry_max_count=0`。
 - **刷机（sysupgrade）后**：nginx-ssl/libpcre2/libxml2-16 包会丢 → `sh /usr/bin/dsh-restore.sh`（会补齐 upstream.conf/port）。CF 链路：`python tools/restore_cf_after_flash.py`。
 - **公网只有 AAAA**：纯 IPv4 网络（部分酒店/公司 WiFi）打不开；兜底用 DSH 内置命名隧道 `dsh.trustreachclf.com`（Cloudflare 边缘中转，较慢，按需开启）。

@@ -178,7 +178,7 @@ cron 共 7 条（2026-11-01 实测）：acme 续期（`17 3 * * *`）、nikki �
 - ★ **不要再给 3081/3082 加 DNAT**：会绕过 TLS/Host 改写，而且 PC 的 IPv6 是 RA/SLAAC，前缀一换就失效
 - ★ **nginx 性能/稳定性（2026-11-01 实测）**：`http2 on`（ALPN=h2，外网 VPS TTFB 0.22–0.31s）、`/assets/` 一年 immutable 缓存、gzip（HTML 42670→2074 B）、上游 keepalive、`proxy_connect_timeout 2s`、删掉已下线的 `.222` 备份（故障时曾多等 5 秒）
 - ★ **nginx 启动依赖 `/var/lib/nginx`（tmpfs，重启即丢）**：独立 init 的 `start_service()` 必须先 `mkdir -p /var/lib/nginx/{body,proxy,fastcgi,uwsgi,scgi}`，否则重启后 nginx 报 `mkdir() "/var/lib/nginx/body" failed` 直接退出 ⇒ 3081 无监听（2026-10-27 事故：DDNS 正常但入口打不开，被误判成 DDNS 失效）
-- ★ **看门狗**：`/usr/bin/dsh-watchdog.sh` + cron `*/5 * * * *`（2026-11-01 从 `*/2` 降频）—— nginx 不在就 `restart`；`dynamic_dns_updater` 不在就后台拉起（`-S <section> -- start` 是前台常驻，**必须加 `&` 放后台**，否则 cron 卡死）；端口自动发现；`pppoe-wan` 的 IPv6 与 `/etc/dsh-ddns-last` 持续 15 分钟不一致 → 告警并重启 ddns；证书 <14 天告警（每小时）；单实例锁防重叠
+- ★ **看门狗**：`/usr/bin/dsh-watchdog.sh` + cron `*/5 * * * *`（2026-11-01 从 `*/2` 降频）—— nginx 不在就 `restart`；`dynamic_dns_updater` 不在就后台拉起（`-S <section> -- start` 是前台常驻，**必须加 `&` 放后台**，否则 cron 卡死）；端口自动发现；`pppoe-wan` 的 IPv6 与 `/etc/dsh-ddns-last` 持续 15 分钟不一致 → 告警并重启 ddns；证书 <14 天告警（每小时）；单实例锁防重叠；**端口变更 reload 后做一次本地 HTTPS 探针（`Host: dsh.290490.xyz` → `[::1]:3081`），非 200/302 则自动 `restart`**（2026-11-01 实测 OpenSSL 偶发 `SSL_CTX_new` emerg 会让 reload 静默失效、旧 worker 继续用旧上游）
 - ★ **DDNS 重拨存活**：`ddns.dsh_ipv6.retry_max_count=0`（无限重试）。原值 3 会在重拨瞬间 `pppoe-wan` 无地址时连续失败 3 次后自杀，只等 hotplug ifup 捞回（不保证）
 - ★ **刷机后恢复（2026-10-29 于 R26.10.29 实测）**：sysupgrade 只保 keep 内的 `/etc` 文件与 `/etc/nikki`。三件事：
   1. **nginx-ssl / libpcre2 / libxml2-16 包会丢**（`/usr/sbin/nginx` 不存在 ⇒ 3081 无监听）→ `sh /usr/bin/dsh-restore.sh`（幂等；实测装回 `nginx-ssl 1.26.3` 后 3081 立即 200）

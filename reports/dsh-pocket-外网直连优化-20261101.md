@@ -45,6 +45,7 @@
 ### 4.4 看门狗（`/usr/bin/dsh-watchdog.sh`，cron `*/5`）
 - nginx / ddns 守护（原逻辑）。
 - **端口自动发现（轻量版）**：每轮只探当前端口（1 次 curl，`--connect-timeout 1 -m 3`）；探不通才扫 3081–3084，且扫描 10 分钟节流；漂移则原子改写 upstream + `nginx -t` + reload + syslog。
+- **reload 后校验**：reload 后 1 秒做一次本地 HTTPS 探针（`Host: dsh.290490.xyz` → `[::1]:3081`），非 200/302 直接 `restart`。原因：2026-11-01 实测 OpenSSL 偶发 `SSL_CTX_new() failed ... ioctl() Invalid argument`，会让 reload 静默失效（旧 worker 继续用旧上游），而状态文件已更新，若不校验就永远不会重试。
 - `pppoe-wan` 的 IPv6 与 `/etc/dsh-ddns-last` 持续 15 分钟不一致 → 告警并重启 ddns。
 - 证书 <14 天告警（每小时一次）。
 - 单实例锁（`/var/lock/dsh-watchdog.lock`，5 分钟可抢占）。

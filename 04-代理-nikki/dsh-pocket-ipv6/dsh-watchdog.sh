@@ -64,7 +64,14 @@ if [ "$PORT_OK" = "0" ]; then
             echo "$NEW" > "$PORTFILE"
             if /usr/sbin/nginx -t -c /etc/dsh-nginx/nginx.conf >/dev/null 2>&1; then
                 /usr/sbin/nginx -c /etc/dsh-nginx/nginx.conf -s reload >/dev/null 2>&1
-                logger -t dsh-watchdog "pocket upstream -> $PC:$NEW (was ${CUR:-none}), nginx reloaded"
+                sleep 1
+                # 2026-11-01 实测：OpenSSL 偶发 SSL_CTX_new 失败会让 reload 静默失效（旧 worker 继续用旧上游）
+                CODE=$(curl -sk -m 3 -o /dev/null -w '%{http_code}' -H "Host: dsh.290490.xyz" "https://[::1]:3081/" 2>/dev/null)
+                case "$CODE" in
+                    200|302) logger -t dsh-watchdog "pocket upstream -> $PC:$NEW (was ${CUR:-none}), nginx reloaded (probe $CODE)" ;;
+                    *)  logger -t dsh-watchdog -p user.warn "reload did not take effect (probe ${CODE:-fail}), restarting nginx"
+                        /etc/init.d/dsh-nginx restart >/dev/null 2>&1 ;;
+                esac
             else
                 logger -t dsh-watchdog -p user.err "nginx -t failed after upstream change to $NEW"
             fi
