@@ -112,3 +112,15 @@ cp /root/bak-dsh-20261101/ddns.uci /etc/config/ddns
 **2026-10-27**：重拨后入口打不开，误判 DDNS；实际是 `/var` tmpfs 丢 `/var/lib/nginx`，nginx 退出。修复：init 建目录 + 看门狗 + `retry_max_count=0`。
 
 **2026-11-01**：公网 502/超时。两条根因：① DSH 16:11 重启后 Pocket 漂到 3082，nginx 仍指 3081（且 `.222` 死备份让 502 拖到 8 秒）；② 两条未记录的 DNAT 抢流量，而 Pocket 只监听 IPv4 ⇒ 外网必超时。修复：删 DNAT、PC 固定 `proxyPort`、watchdog 自动发现端口、nginx 加 HTTP/2/缓存/gzip/keepalive/快速 502；DDNS 降频到 30 分钟并加 12h 对账。
+
+## 10. 更新系统后的行为（2026-11-01 实测）
+
+| 场景 | 结果 | 要做的事 |
+|---|---|---|
+| 路由器重启（不改固件） | `/etc` 全保留；init 会重建 `/var/lib/nginx`；ddns/nginx/cron 自启 | **无需操作**（已用 `rm -rf /var/lib/nginx` + restart 验证：目录重建、3081 监听、local 200） |
+| 路由器刷固件（sysupgrade，**保留配置**） | 配置全保留：`/etc/dsh-nginx/`（含 upstream/port/cert）、`/etc/config/{ddns,firewall}`、`/etc/nikki/`、`/etc/crontabs/`、acme/token/last、watchdog/restore/DDNS 脚本；**包会丢**（nginx-ssl、libpcre2、libxml2-16、ddns-scripts） | 跑一次 `sh /usr/bin/dsh-restore.sh`（已实测：nginx running / nginx -t ok / 3081 listening / ddns running / token+cert present / local 200） |
+| 路由器**整机重置（不保留配置）** | 全部丢失 | 需重建：装包 → 恢复 `/etc/dsh-nginx/` 与 cert/token → 重建 `ddns.dsh_ipv6` 与防火墙 allow → 恢复 nikki 规则 → 跑 `tools/deploy_dsh_entry.py`；见 §7 |
+| DSH 应用更新/重启（含 nightly 0.2.1-rc.5） | `%USERPROFILE%\.dsh\dsh-pocket\settings.json` 是用户数据，更新不删；`proxyPort=3081` 保留 | 端口若变（如 3082→3081），watchdog **≤5 分钟**自动切；想立刻恢复：`python ssh_run.py '/usr/bin/dsh-watchdog.sh'` |
+| Windows 更新/重启 | 路由器侧完全不受影响；DSH 设置保留 | **DSH 没有设开机自启**（实测无 Run/启动项/计划任务）→ 重启后需手动打开 DSH，否则公网 502（现在是 2 秒快速失败）。需要常开可加开机自启 |
+
+> 刷机后自检（任意一条不满足就跑 restore）：`pidof nginx`、`netstat -lntp | grep 3081`、`nginx -t -c /etc/dsh-nginx/nginx.conf`、`cat /etc/dsh-nginx/upstream.conf`、`curl -sk https://[::1]:3081/ -H 'Host: dsh.290490.xyz'`。

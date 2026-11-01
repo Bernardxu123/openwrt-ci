@@ -11,6 +11,7 @@ echo "[1/5] opkg update + 补装 nginx-ssl / ddns-scripts"
 opkg update >/dev/null 2>&1
 opkg list-installed 2>/dev/null | grep -q "^nginx-ssl " || opkg install nginx-ssl
 opkg list-installed 2>/dev/null | grep -q "^ddns-scripts " || opkg install ddns-scripts luci-app-ddns
+[ -x /etc/init.d/ddns ] && /etc/init.d/ddns enable 2>/dev/null || true
 
 echo "[2/5] 停用 nginx-ssl 自带 init（它会抢 80/443，和 uhttpd/mihomo 冲突）"
 /etc/init.d/nginx stop 2>/dev/null || true
@@ -41,8 +42,12 @@ done
 
 echo "[5/5] 状态检查"
 pidof nginx >/dev/null 2>&1 && echo "  nginx   : running" || echo "  nginx   : FAILED"
+/usr/sbin/nginx -t -c /etc/dsh-nginx/nginx.conf >/dev/null 2>&1 && echo "  cfg     : nginx -t ok" || echo "  cfg     : nginx -t FAILED（新固件 nginx 可能 <1.25.1，不认 http2 指令）"
 netstat -lntp 2>/dev/null | grep -q ":3081" && echo "  3081    : listening" || echo "  3081    : FAILED"
+echo "  upstream: $(cat /etc/dsh-nginx/upstream.conf 2>/dev/null)"
 ps w 2>/dev/null | grep -q "[d]ynamic_dns" && echo "  ddns    : running" || echo "  ddns    : not running"
+uci -q get ddns.dsh_ipv6.domain >/dev/null 2>&1 && echo "  ddns cfg: present" || echo "  ddns cfg: MISSING（需重建 uci ddns.dsh_ipv6）"
+grep -q "dsh-watchdog.sh" /etc/crontabs/root 2>/dev/null && echo "  cron    : present" || echo "  cron    : MISSING"
 [ -f /etc/cf-dns.token ] && echo "  token   : present" || echo "  token   : MISSING（需要重新放 /etc/cf-dns.token）"
 [ -f /etc/dsh-nginx/cert/dsh.fullchain.pem ] && echo "  cert    : present" || echo "  cert    : MISSING"
 curl -sk -m 8 -o /dev/null -w "  local   : https=%{http_code}\n" https://dsh.290490.xyz:3081/ 2>/dev/null || echo "  local   : curl failed"

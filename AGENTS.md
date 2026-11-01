@@ -180,8 +180,9 @@ cron 共 7 条（2026-11-01 实测）：acme 续期（`17 3 * * *`）、nikki �
 - ★ **nginx 启动依赖 `/var/lib/nginx`（tmpfs，重启即丢）**：独立 init 的 `start_service()` 必须先 `mkdir -p /var/lib/nginx/{body,proxy,fastcgi,uwsgi,scgi}`，否则重启后 nginx 报 `mkdir() "/var/lib/nginx/body" failed` 直接退出 ⇒ 3081 无监听（2026-10-27 事故：DDNS 正常但入口打不开，被误判成 DDNS 失效）
 - ★ **看门狗**：`/usr/bin/dsh-watchdog.sh` + cron `*/5 * * * *`（2026-11-01 从 `*/2` 降频）—— nginx 不在就 `restart`；`dynamic_dns_updater` 不在就后台拉起（`-S <section> -- start` 是前台常驻，**必须加 `&` 放后台**，否则 cron 卡死）；端口自动发现；`pppoe-wan` 的 IPv6 与 `/etc/dsh-ddns-last` 持续 15 分钟不一致 → 告警并重启 ddns；证书 <14 天告警（每小时）；单实例锁防重叠；**端口变更 reload 后做一次本地 HTTPS 探针（`Host: dsh.290490.xyz` → `[::1]:3081`），非 200/302 则自动 `restart`**（2026-11-01 实测 OpenSSL 偶发 `SSL_CTX_new` emerg 会让 reload 静默失效、旧 worker 继续用旧上游）
 - ★ **DDNS 重拨存活**：`ddns.dsh_ipv6.retry_max_count=0`（无限重试）。原值 3 会在重拨瞬间 `pppoe-wan` 无地址时连续失败 3 次后自杀，只等 hotplug ifup 捞回（不保证）
+- ★ **PC 侧**：DSH **没有设开机自启**（Windows 重启/更新后需手动打开，否则入口快速 502）；DSH 更新/重启后 Pocket 端口若变（3081↔3082），watchdog ≤5 分钟自愈，想立刻恢复执行 `python ssh_run.py '/usr/bin/dsh-watchdog.sh'`
 - ★ **刷机后恢复（2026-10-29 于 R26.10.29 实测）**：sysupgrade 只保 keep 内的 `/etc` 文件与 `/etc/nikki`。三件事：
-  1. **nginx-ssl / libpcre2 / libxml2-16 包会丢**（`/usr/sbin/nginx` 不存在 ⇒ 3081 无监听）→ `sh /usr/bin/dsh-restore.sh`（幂等；实测装回 `nginx-ssl 1.26.3` 后 3081 立即 200）
+  1. **nginx-ssl / libpcre2 / libxml2-16 包会丢**（`/usr/sbin/nginx` 不存在 ⇒ 3081 无监听）→ `sh /usr/bin/dsh-restore.sh`（幂等；2026-11-01 实测：装包 + 建 tmpfs 目录 + 补 upstream.conf/port + cron/keep + `nginx -t` 检查；输出 `nginx running / 3081 listening / ddns running / token+cert present / local 200`）。**更新/刷机/Windows 重启后的完整行为表见 `04-代理-nikki/dsh-pocket-ipv6/README.md` §10**
   2. **CF 优选链路整条丢**（`/etc/cf/` 与 `/usr/local/bin/cf-refresh.sh` 原不在 keep，但 cron 那行还在 → 每天 04:17 静默失败）→ 已补进 keep；PC 侧 `python tools/restore_cf_after_flash.py` 一键重建并 `DRY` 自检（期望 `DRY ok nodes=N`）
   3. **PC 侧 IPv6 旧前缀残留**（重拨后旧 /64 失效）会让 `curl -6 https://dsh...` 超时/`000`，删掉旧地址或重连网卡即可（判据：PC 能 ping 通 `ip -6 addr show pppoe-wan` 的地址）
 
