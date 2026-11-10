@@ -177,6 +177,19 @@ proxies:
       - http/1.1
 
 
+  # 2026-11-10: Vision 客户端（3x-ui client router-vision-8443），与自建TLS用同一入站，仅多 flow=xtls-rprx-vision
+  - name: "🇸🇬 自建-Vision8443"
+    type: vless
+    server: 161.118.196.196
+    port: 8443
+    uuid: 11f82834-e249-4f4e-b2d5-8b6d61132766
+    network: tcp
+    udp: true
+    tls: true
+    servername: xx.290490.xyz
+    flow: xtls-rprx-vision
+    alpn:
+      - http/1.1
 # ---------- 策略组 ----------
 proxy-groups:
   - name: "🚀 默认代理"
@@ -302,6 +315,7 @@ proxy-groups:
     type: select
     proxies:
       - "🇸🇬 新加坡-自建TLS"
+      - "🇸🇬 自建-Vision8443"
       - "🇸🇬 新加坡-自建Hy2"
       - "♻️ 新加坡自动"
 
@@ -371,6 +385,7 @@ proxy-groups:
       - CF优选
     proxies:
       - "🇸🇬 新加坡-自建TLS"
+      - "🇸🇬 自建-Vision8443"
       - "🇸🇬 新加坡-自建Hy2"
 
   # 2026-11-10: Google 专用出口（Gemini / AI Studio / Play / 登录 / 静态资源统一一组一 IP）

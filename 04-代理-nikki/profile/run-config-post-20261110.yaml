@@ -84,6 +84,18 @@ proxies:
     servername: xx.290490.xyz
     alpn:
       - http/1.1
+  - name: "\U0001F1F8\U0001F1EC 自建-Vision8443"
+    type: vless
+    server: 161.118.196.196
+    port: 8443
+    uuid: 11f82834-e249-4f4e-b2d5-8b6d61132766
+    network: tcp
+    udp: true
+    tls: true
+    servername: xx.290490.xyz
+    flow: xtls-rprx-vision
+    alpn:
+      - http/1.1
 proxy-groups:
   - name: "\U0001F680 默认代理"
     type: select
@@ -194,6 +206,7 @@ proxy-groups:
     type: select
     proxies:
       - "\U0001F1F8\U0001F1EC 新加坡-自建TLS"
+      - "\U0001F1F8\U0001F1EC 自建-Vision8443"
       - "\U0001F1F8\U0001F1EC 新加坡-自建Hy2"
       - "♻️ 新加坡自动"
   - name: "♻️ 香港自动"
@@ -249,6 +262,7 @@ proxy-groups:
       - CF优选
     proxies:
       - "\U0001F1F8\U0001F1EC 新加坡-自建TLS"
+      - "\U0001F1F8\U0001F1EC 自建-Vision8443"
       - "\U0001F1F8\U0001F1EC 新加坡-自建Hy2"
   - name: "\U0001F510 Google"
     type: select
